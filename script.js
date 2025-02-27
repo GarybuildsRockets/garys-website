@@ -1,8 +1,7 @@
-// Select the button and check local storage
 const toggleButton = document.getElementById("dark-mode-toggle");
 const body = document.body;
 
-// Check if dark mode was enabled before
+// Apply dark mode if previously enabled
 if (localStorage.getItem("darkMode") === "enabled") {
     body.classList.add("dark-mode");
     toggleButton.textContent = "☀️ Light Mode";
@@ -20,3 +19,4 @@ toggleButton.addEventListener("click", () => {
         toggleButton.textContent = "🌙 Dark Mode";
     }
 });
+
