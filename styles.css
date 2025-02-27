@@ -145,6 +145,58 @@ button:hover {
     color: white;
     padding: 20px;
 }
+/* Dark Mode Default */
+body {
+    background-color: white;
+    color: black;
+    transition: background 0.3s, color 0.3s;
+}
+
+#dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+}
+
+#dark-mode-toggle:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.dark-mode a {
+    color: #4dabf7;
+}
+
+.dark-mode .resume-left, 
+.dark-mode .resume-right {
+    background: #2c2c2c;
+    color: white;
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .download-btn {
+    background: #4dabf7;
+    color: black;
+}
+
+.dark-mode .download-btn:hover {
+    background: #1e90ff;
+}
+
 
 
 
