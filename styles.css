@@ -196,6 +196,39 @@ body {
 .dark-mode .download-btn:hover {
     background: #1e90ff;
 }
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: #ffffff; /* Light text */
+}
+
+/* Ensure sections also switch */
+.dark-mode .section {
+    background-color: #1e1e1e; /* Slightly lighter dark */
+    color: #ffffff;
+}
+
+/* Ensure cards switch too */
+.dark-mode .card {
+    background-color: #2a2a2a; /* Dark card */
+    color: white;
+    border: 1px solid #444; /* Subtle border */
+}
+
+/* Fix navbar color */
+.dark-mode .navbar {
+    background-color: #1e1e1e;
+}
+
+/* Ensure links are visible */
+.dark-mode a {
+    color: #4da6ff; /* Light blue links */
+}
+
+.dark-mode a:hover {
+    color: #66ccff; /* Brighter on hover */
+}
+
 
 
 
