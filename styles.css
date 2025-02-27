@@ -228,6 +228,18 @@ body {
 .dark-mode a:hover {
     color: #66ccff; /* Brighter on hover */
 }
+/* Default Light Mode */
+body {
+    background-color: white;
+    color: black;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #1e1e1e;
+    color: white;
+}
 
 
 
