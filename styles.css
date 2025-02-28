@@ -335,22 +335,6 @@ body {
     color: white;
     border: 1px solid white;
 }
-#dark-mode-toggle {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background-color: #007BFF;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#dark-mode-toggle:hover {
-    background-color: #0056b3;
-}
 
 
 
