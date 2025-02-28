@@ -153,22 +153,20 @@ body {
 }
 
 #dark-mode-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    position: fixed;  /* Keeps it fixed in one spot */
+    top: 10px;        /* Distance from the top */
+    right: 10px;      /* Distance from the right */
     padding: 10px 15px;
-    background: #007bff;
+    background-color: #007BFF;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease-in-out;
+    z-index: 1000; /* Ensures it's always on top */
 }
 
 #dark-mode-toggle:hover {
-    background: #0056b3;
-    transform: scale(1.1);
+    background-color: #0056b3;
 }
 
 /* Dark Mode Styles */
