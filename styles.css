@@ -270,6 +270,72 @@ body {
 .dark-mode button:hover {
     background-color: #777;
 }
+/* Default Light Mode */
+body {
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: white; /* White text */
+}
+
+/* Ensure sections contrast properly */
+.section {
+    background-color: white; /* Light mode default */
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Change section colors in dark mode */
+.dark-mode .section {
+    background-color: #1E1E1E; /* Darker background */
+    color: white;
+}
+
+/* Ensure project cards are visible in dark mode */
+.dark-mode .project-card {
+    background-color: #222; /* Darker project card background */
+    color: white;
+}
+
+/* Fix text visibility inside cards */
+.dark-mode .project-card h3,
+.dark-mode .project-card p {
+    color: white;
+}
+
+/* Fix navigation links */
+.dark-mode a {
+    color: #1E90FF; /* Bright blue links */
+}
+
+.dark-mode a:hover {
+    color: #87CEFA; /* Light blue hover */
+}
+
+/* Fix buttons */
+.dark-mode button {
+    background-color: #555;
+    color: white;
+    border: none;
+}
+
+.dark-mode button:hover {
+    background-color: #777;
+}
+
+/* Fix text input fields */
+.dark-mode input, 
+.dark-mode textarea {
+    background-color: #333;
+    color: white;
+    border: 1px solid white;
+}
+
 
 
 
