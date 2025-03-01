@@ -1,10 +1,109 @@
-function showPopup(projectName) {
-    document.getElementById("popup-text").textContent = projectName;
-    document.getElementById("popup").style.display = "block";
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: white;
+    margin: 0;
+    padding: 0;
 }
 
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
+/* Header */
+header {
+    background: #222;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 3px solid #555;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+/* Dropdown Menu */
+nav {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-btn {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    background: #333;
+    list-style: none;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropdown li {
+    padding: 5px;
+}
+
+.dropdown a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Profile Section */
+.profile-container {
+    text-align: center;
+    margin-top: 50px;
+    border: 2px solid white;
+    padding: 20px;
+    width: 300px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.profile-pic {
+    width: 150px;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+/* Projects Section */
+.projects-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.project {
+    background: #222;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s;
+    cursor: pointer;
+    width: 250px;
+}
+
+.project:hover {
+    transform: scale(1.05);
+}
+
+.project-desc {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.project-link {
+    color: cyan;
+    text-decoration: none;
+}
+
+/* Dark Mode Toggle */
+.dark-mode {
+    background-color: #000;
+    color: #fff;
 }
 
 
