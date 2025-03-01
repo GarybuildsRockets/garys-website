@@ -6,8 +6,8 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     background-size: 25px 25px;
 }
 
@@ -82,23 +82,23 @@ nav {
     display: block !important;
 }
 
-/* 🔹 Rotating Gears (Fixed) */
+/* 🔹 Rotating Gears (Fixed & More Visible) */
 .gear-container {
     position: fixed;
     z-index: -1;
-    opacity: 0.15; /* Increased visibility */
-    pointer-events: none; /* So gears do not interfere with clicks */
+    opacity: 0.2; /* More visibility */
+    pointer-events: none;
 }
 
-/* Ensuring Rotation Works */
+/* Ensure Rotation Works */
 .gear {
     position: absolute;
     width: 50px;
     animation: rotateGear 8s linear infinite;
-    opacity: 0.2;
+    filter: contrast(120%); /* Make more visible */
 }
 
-/* 🔹 Keyframe for Rotation (Ensures Continuous Rotation) */
+/* 🔹 Keyframe for Rotation */
 @keyframes rotateGear {
     from {
         transform: rotate(0deg);
@@ -108,27 +108,27 @@ nav {
     }
 }
 
-/* 🔹 Gear Sizes for Visibility */
+/* 🔹 Better Gear Sizes */
 .gear-small {
-    width: 35px;
+    width: 40px;
     animation-duration: 6s;
 }
 .gear-medium {
-    width: 60px;
+    width: 70px;
     animation-duration: 10s;
 }
 .gear-large {
-    width: 90px;
+    width: 100px;
     animation-duration: 12s;
 }
 
-/* 🔹 Improved Gear Positioning */
-.top-left { top: 30px; left: 50px; }
-.top-right { top: 30px; right: 50px; }
-.bottom-left { bottom: 30px; left: 50px; }
-.bottom-right { bottom: 30px; right: 50px; }
-.center-left { top: 50%; left: 10%; transform: translateY(-50%); }
-.center-right { top: 50%; right: 10%; transform: translateY(-50%); }
+/* 🔹 Better Gear Placement */
+.top-left { top: 40px; left: 60px; }
+.top-right { top: 40px; right: 60px; }
+.bottom-left { bottom: 40px; left: 60px; }
+.bottom-right { bottom: 40px; right: 60px; }
+.center-left { top: 50%; left: 15%; transform: translateY(-50%); }
+.center-right { top: 50%; right: 15%; transform: translateY(-50%); }
 
 /* 🔹 Sections */
 section {
@@ -142,19 +142,26 @@ section {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 🔹 Buttons */
-.button, .linkedin-btn {
+/* 🔹 LinkedIn Button - Proper Positioning */
+.linkedin-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.linkedin-btn {
     display: inline-block;
     padding: 12px 18px;
     font-size: 18px;
     font-weight: 500;
     color: #ffffff;
-    background-color: #007bff;
+    background-color: #0077b5;
     text-decoration: none;
     border-radius: 8px;
     transition: background 0.3s, transform 0.2s;
+    text-align: center;
 }
-.button:hover, .linkedin-btn:hover {
+
+.linkedin-btn:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
