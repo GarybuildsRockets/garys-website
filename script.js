@@ -9,9 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Toggle dropdown menu
+    // Toggle dropdown menu when button is clicked
     menuBtn.addEventListener("click", () => {
-        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        dropdown.classList.toggle("show-dropdown");
+    });
+
+    // Close dropdown if user clicks outside
+    document.addEventListener("click", (event) => {
+        if (!menuBtn.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.remove("show-dropdown");
+        }
     });
 
     // Make entire project card clickable
