@@ -1,4 +1,4 @@
-/* Ensure the Blueprint Background is Applied */
+/* Global Blueprint Style */
 body {
     font-family: 'Courier New', Courier, monospace;
     background-color: #0d1b2a;
@@ -74,7 +74,38 @@ nav {
     margin: auto;
 }
 
-/* Blueprint-style Tooltip */
+/* Projects */
+.projects-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.project {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border: 2px solid #778da9;
+    text-align: center;
+    width: 250px;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    cursor: pointer; /* Makes it clear that it's clickable */
+}
+
+/* Hover Effect */
+.project:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Click Effect (Scale Down for Feedback) */
+.project:active {
+    transform: scale(0.95);
+}
+
+/* Tooltip Effect */
 .project-desc {
     position: absolute;
     bottom: -40px;
