@@ -5,10 +5,12 @@ html {
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: white;
+    color: black;
     text-align: center;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Header */
@@ -34,6 +36,11 @@ nav ul li a {
     text-decoration: none;
     color: #ADD8E6;
     font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+nav ul li a:hover {
+    color: #ff6600;
 }
 
 /* Sections */
@@ -44,34 +51,17 @@ section {
     width: 80%;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Footer */
-footer {
-    background-color: #333;
-    color: white;
-    padding: 10px;
-    margin-top: 20px;
-}
-/* Hover effect for navigation links */
-nav a {
-    transition: color 0.3s ease-in-out;
-}
-
-nav a:hover {
-    color: #ff6600; /* Change color on hover */
-}
-
-/* Hover effect for sections */
-section {
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards 0.3s;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 section:hover {
-    transform: scale(1.02); /* Slight zoom effect */
+    transform: scale(1.02);
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
-/* Fade-in animation */
+
+/* Fade-in Animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -83,13 +73,15 @@ section:hover {
     }
 }
 
-/* Apply fade-in effect to sections */
-section {
-    opacity: 0;
-    animation: fadeIn 1s ease-in-out forwards;
-    animation-delay: 0.3s;
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
 }
-/* Button Hover Effect */
+
+/* Button Styles */
 button {
     background-color: #007bff;
     color: white;
@@ -105,6 +97,7 @@ button:hover {
     background-color: #0056b3;
     transform: scale(1.1);
 }
+
 /* Project Card Flip Animation */
 .project-card {
     width: 250px;
@@ -145,195 +138,70 @@ button:hover {
     color: white;
     padding: 20px;
 }
-/* Dark Mode Default */
-body {
-    background-color: white;
-    color: black;
-    transition: background 0.3s, color 0.3s;
-}
 
+/* Dark Mode Toggle Button */
 #dark-mode-toggle {
-    position: fixed;  /* Keeps it fixed in one spot */
-    top: 10px;        /* Distance from the top */
-    right: 10px;      /* Distance from the right */
+    position: fixed;
+    top: 10px;
+    right: 10px;
     padding: 10px 15px;
     background-color: #007BFF;
     color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    z-index: 1000; /* Ensures it's always on top */
+    z-index: 1000;
 }
 
 #dark-mode-toggle:hover {
     background-color: #0056b3;
 }
 
-/* Dark Mode Styles */
+/* Dark Mode */
 .dark-mode {
-    background-color: #1e1e1e;
+    background-color: #121212;
     color: white;
 }
 
 .dark-mode a {
-    color: #4dabf7;
+    color: #4da6ff;
 }
 
-.dark-mode .resume-left, 
-.dark-mode .resume-right {
-    background: #2c2c2c;
+.dark-mode a:hover {
+    color: #66ccff;
+}
+
+.dark-mode section {
+    background-color: #1e1e1e;
     color: white;
     box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.1);
 }
 
-.dark-mode .download-btn {
-    background: #4dabf7;
-    color: black;
-}
-
-.dark-mode .download-btn:hover {
-    background: #1e90ff;
-}
-/* Dark Mode Styles */
-.dark-mode {
-    background-color: #121212; /* Dark background */
-    color: #ffffff; /* Light text */
-}
-
-/* Ensure sections also switch */
-.dark-mode .section {
-    background-color: #1e1e1e; /* Slightly lighter dark */
-    color: #ffffff;
-}
-
-/* Ensure cards switch too */
-.dark-mode .card {
-    background-color: #2a2a2a; /* Dark card */
-    color: white;
-    border: 1px solid #444; /* Subtle border */
-}
-
-/* Fix navbar color */
-.dark-mode .navbar {
-    background-color: #1e1e1e;
-}
-
-/* Ensure links are visible */
-.dark-mode a {
-    color: #4da6ff; /* Light blue links */
-}
-
-.dark-mode a:hover {
-    color: #66ccff; /* Brighter on hover */
-}
-/* Default Light Mode */
-body {
-    background-color: white;
-    color: black;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-/* Dark Mode */
-.dark-mode {
-    background-color: #121212; /* Dark background */
-    color: white; /* Light text for contrast */
-}
-
-/* Ensure links are visible in dark mode */
-.dark-mode a {
-    color: #1E90FF; /* Bright blue links */
-}
-
-.dark-mode a:hover {
-    color: #87CEFA; /* Light blue on hover */
-}
-
-/* Ensure section backgrounds contrast with dark mode */
-.dark-mode .section {
-    background-color: #1E1E1E;
+.dark-mode .project-card {
+    background-color: #222;
     color: white;
 }
 
-/* Fix input fields and buttons */
+.dark-mode .project-card h3, 
+.dark-mode .project-card p {
+    color: white;
+}
+
+/* Input Fields in Dark Mode */
 .dark-mode input, .dark-mode textarea {
     background-color: #333;
     color: white;
     border: 1px solid white;
 }
 
+/* Buttons in Dark Mode */
 .dark-mode button {
     background-color: #555;
     color: white;
-    border: none;
 }
 
 .dark-mode button:hover {
     background-color: #777;
-}
-/* Default Light Mode */
-body {
-    background-color: white;
-    color: black;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-/* Dark Mode */
-.dark-mode {
-    background-color: #121212; /* Dark background */
-    color: white; /* White text */
-}
-
-/* Ensure sections contrast properly */
-.section {
-    background-color: white; /* Light mode default */
-    color: black;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-/* Change section colors in dark mode */
-.dark-mode .section {
-    background-color: #1E1E1E; /* Darker background */
-    color: white;
-}
-
-/* Ensure project cards are visible in dark mode */
-.dark-mode .project-card {
-    background-color: #222; /* Darker project card background */
-    color: white;
-}
-
-/* Fix text visibility inside cards */
-.dark-mode .project-card h3,
-.dark-mode .project-card p {
-    color: white;
-}
-
-/* Fix navigation links */
-.dark-mode a {
-    color: #1E90FF; /* Bright blue links */
-}
-
-.dark-mode a:hover {
-    color: #87CEFA; /* Light blue hover */
-}
-
-/* Fix buttons */
-.dark-mode button {
-    background-color: #555;
-    color: white;
-    border: none;
-}
-
-.dark-mode button:hover {
-    background-color: #777;
-}
-
-/* Fix text input fields */
-.dark-mode input, 
-.dark-mode textarea {
-    background-color: #333;
-    color: white;
-    border: 1px solid white;
 }
 
 
