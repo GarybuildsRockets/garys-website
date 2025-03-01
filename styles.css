@@ -1,58 +1,133 @@
-/* Improve Section Styling */
+/* Global Blueprint Style */
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #0d1b2a;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Header */
+header {
+    background: #1b263b;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid #778da9;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+/* Dropdown Menu */
+nav {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-btn {
+    background: #415a77;
+    color: white;
+    border: 2px solid #778da9;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    background: #1b263b;
+    list-style: none;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #778da9;
+}
+
+.dropdown li {
+    padding: 8px;
+}
+
+.dropdown a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Sections - More Professional Styling */
 section {
-    margin: 25px auto;
+    margin: 30px auto;
     width: 80%;
-    max-width: 700px;
-    padding: 25px; /* More padding for readability */
-    background: rgba(255, 255, 255, 0.12); /* Increase contrast slightly */
-    border-radius: 10px;
-    border: 2.5px solid #a0aec0; /* Make borders slightly more visible */
+    max-width: 750px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    border: 3px solid #a0aec0;
     box-shadow: 0px 0px 12px rgba(255, 255, 255, 0.2);
 }
 
 /* Section Titles */
 h2 {
-    font-size: 22px;
+    font-size: 24px;
     border-bottom: 3px solid #778da9;
-    padding-bottom: 5px;
+    padding-bottom: 6px;
     display: inline-block;
 }
 
-/* Resume Button - Improve Visibility */
-.resume a {
+/* Contact Info */
+.contact-info p {
+    font-size: 18px;
+    margin: 6px 0;
+}
+
+.contact-info a {
+    color: #4da8da;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.contact-info a:hover {
+    color: #82c0cc;
+    text-decoration: underline;
+}
+
+/* Resume Button - Bigger and More Noticeable */
+.button {
     display: inline-block;
-    margin-top: 10px;
-    padding: 12px 18px; /* Slightly larger */
-    font-size: 17px; /* Slightly larger font */
+    margin-top: 12px;
+    padding: 14px 20px;
+    font-size: 18px;
+    font-weight: bold;
     color: #ffffff;
     background-color: #4da8da;
-    border: 2px solid #778da9;
+    border: 3px solid #778da9;
     text-decoration: none;
-    border-radius: 6px;
+    border-radius: 8px;
     transition: background 0.3s, transform 0.2s;
 }
 
-.resume a:hover {
+.button:hover {
     background-color: #82c0cc;
-    transform: scale(1.07);
+    transform: scale(1.08);
 }
 
-/* LinkedIn Button - Make it Stand Out */
+/* LinkedIn Button - Make It Stand Out */
 .linkedin-container {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .linkedin-btn {
     display: inline-block;
-    padding: 15px 25px; /* Bigger size */
-    font-size: 20px; /* More emphasis */
+    padding: 18px 30px;
+    font-size: 22px;
+    font-weight: bold;
     color: #ffffff;
     background-color: #0077b5;
     border: 3px solid #a0aec0;
     text-decoration: none;
     border-radius: 10px;
-    font-weight: bold;
     transition: background 0.3s, transform 0.2s;
 }
 
