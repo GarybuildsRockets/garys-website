@@ -84,7 +84,7 @@ nav ul li a:hover {
 }
 
 .profile-pic {
-    width: 600px;
+    width: 500px;
     border-radius: 50%;
     transition: opacity 0.5s;
 }
