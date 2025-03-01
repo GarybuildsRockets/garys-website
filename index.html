@@ -3,54 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Portfolio</title>
+    <title>Gary Kanyuh | Engineering Portfolio</title>
     <link rel="stylesheet" href="styles.css">
     <script defer src="script.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Gary Kanyuh | Engineering Portfolio</h1>
+    <!-- Navbar -->
+    <header id="navbar">
         <nav>
-            <button class="menu-btn">☰ Menu</button>
-            <ul class="dropdown">
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#contact">Contact Me</a></li>
-                <li><a href="#resume">Resume</a></li>
-                <li><a href="#projects">Projects</a></li>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <div class="gear-container">
-            <img src="gear.png" alt="Rotating Gear" class="gear gear-small top-left">
-            <img src="gear.png" alt="Rotating Gear" class="gear gear-medium top-right">
-            <img src="gear.png" alt="Rotating Gear" class="gear gear-small bottom-left">
-            <img src="gear.png" alt="Rotating Gear" class="gear gear-large bottom-right">
+    <!-- Profile Section -->
+    <section id="profile">
+        <div class="profile-container">
+            <img src="profile.jpg" alt="Profile Picture" class="profile-pic">
+            <div class="intro-text">
+                <h1 id="typewriter"></h1>
+                <p class="static-title">Mechanical Engineer</p>
+                <a href="resume.pdf" download class="resume-btn">Download My Resume</a>
+            </div>
         </div>
+    </section>
 
-        <section id="about">
-            <h2>About Me</h2>
-            <p>I am a passionate Mechanical Engineer dedicated to integrating AI and sustainability solutions to create a better future.</p>
-        </section>
+    <!-- Skills Banner -->
+    <section id="skills">
+        <div class="skill-box">AI Integration</div>
+        <div class="skill-box">Sustainability Engineering</div>
+        <div class="skill-box">Robotics</div>
+        <div class="skill-box">CAD Design</div>
+        <div class="skill-box">Machine Learning</div>
+    </section>
 
-        <section id="contact">
-            <h2>Contact Me</h2>
-            <p>Email: gkanyuhr@gmail.com</p>
-            <p>School Email: gkany@illinois.edu</p>
-        </section>
-
-        <section id="resume">
-            <h2>Resume</h2>
-            <a href="resume.pdf" download class="button">Download My Resume</a>
-        </section>
-
-        <div class="linkedin-container">
-            <a href="https://www.linkedin.com/in/gary-kanyuh-2564a82ab/" target="_blank" class="linkedin-btn">
-                Connect on LinkedIn
-            </a>
+    <!-- Project Previews -->
+    <section id="projects-preview">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Project 1</h3>
+                </div>
+                <div class="flip-card-back">
+                    <p>Short description of Project 1...</p>
+                    <a href="project1.html" class="see-more-btn">See More</a>
+                </div>
+            </div>
         </div>
-    </main>
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Project 2</h3>
+                </div>
+                <div class="flip-card-back">
+                    <p>Short description of Project 2...</p>
+                    <a href="project2.html" class="see-more-btn">See More</a>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
 
