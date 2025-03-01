@@ -5,58 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Engineering Portfolio</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0e0e0;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-        }
-        nav ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        section {
-            padding: 40px;
-            text-align: center;
-        }
-        #home {
-            background-color: #f4f4f4;
-            padding: 60px;
-        }
-        #home img {
-            width: 150px;
-            border-radius: 50%;
-        }
-        #projects {
-            background-color: #d0d0d0;
-            padding: 50px;
-        }
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
@@ -81,26 +30,44 @@
 
     <section id="about">
         <h2>About Engineering</h2>
-        <p>A brief introduction to my engineering background and interests.</p>
+        <div class="about-container">
+            <img src="engineering_building.jpg" alt="Engineering Building">
+            <p>A brief introduction to my engineering background and interests.</p>
+        </div>
     </section>
     
     <section id="projects">
         <h2>Projects</h2>
         <div class="projects-container">
-            <!-- Interactive gear pop-ups will be placed here -->
+            <div class="project" onclick="showPopup('Project 1')">
+                <img src="project1.jpg" alt="Project 1">
+                <p>Project 1 Description</p>
+            </div>
+            <div class="project" onclick="showPopup('Project 2')">
+                <img src="project2.jpg" alt="Project 2">
+                <p>Project 2 Description</p>
+            </div>
         </div>
     </section>
     
     <section id="resume">
         <h2>Resume</h2>
-        <p>Download my resume <a href="resume.pdf" download>here</a>.</p>
+        <div class="resume-container">
+            <embed src="resume.pdf" type="application/pdf" width="80%" height="500px">
+            <p><a href="resume.pdf" download>Download Resume</a></p>
+        </div>
     </section>
 
     <footer>
         <p>&copy; 2025 Engineering Portfolio</p>
     </footer>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <p id="popup-text"></p>
+        </div>
+    </div>
 </body>
 </html>
-
-
  
