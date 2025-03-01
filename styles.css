@@ -1,170 +1,191 @@
-/* 🔹 Global Engineering Notebook Style */
+/* 🔹 Global Styles */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+    color: #ffffff;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-    background-size: 25px 25px;
 }
 
-/* 🔹 Header */
+/* 🔹 Navbar */
 header {
-    background: #ffffff;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 3px solid #c3c3c3;
-    font-size: 24px;
-    text-transform: uppercase;
-    color: #333;
-    font-weight: 600;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 🔹 Dropdown Menu */
-nav {
-    position: relative;
-    display: inline-block;
-}
-
-.menu-btn {
-    background: #6c757d;
-    color: white;
-    border: 2px solid #adb5bd;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-    display: block;
-    margin: 10px auto;
-}
-
-.menu-btn:hover {
-    background: #495057;
-}
-
-/* 🔹 Fix Dropdown Menu */
-.dropdown {
-    display: none;
-    position: absolute;
-    background: #ffffff;
-    border: 2px solid #adb5bd;
-    border-radius: 5px;
-    padding: 10px;
-    list-style: none;
-    right: 0;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.dropdown li {
-    padding: 10px;
-    text-align: center;
-}
-
-.dropdown a {
-    color: #333;
-    text-decoration: none;
-    font-size: 16px;
-    display: block;
-    transition: color 0.3s ease;
-}
-
-.dropdown a:hover {
-    color: #007bff;
-}
-
-/* Show Dropdown */
-.show-dropdown {
-    display: block !important;
-}
-
-/* 🔹 Rotating Gears (Fixed & More Visible) */
-.gear-container {
     position: fixed;
-    z-index: -1;
-    opacity: 0.2; /* More visibility */
-    pointer-events: none;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: transparent;
+    padding: 15px 0;
+    transition: background 0.3s ease;
+    box-shadow: none;
 }
 
-/* Ensure Rotation Works */
-.gear {
-    position: absolute;
-    width: 50px;
-    animation: rotateGear 8s linear infinite;
-    filter: contrast(120%); /* Make more visible */
-}
-
-/* 🔹 Keyframe for Rotation */
-@keyframes rotateGear {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* 🔹 Better Gear Sizes */
-.gear-small {
-    width: 40px;
-    animation-duration: 6s;
-}
-.gear-medium {
-    width: 70px;
-    animation-duration: 10s;
-}
-.gear-large {
-    width: 100px;
-    animation-duration: 12s;
-}
-
-/* 🔹 Better Gear Placement */
-.top-left { top: 40px; left: 60px; }
-.top-right { top: 40px; right: 60px; }
-.bottom-left { bottom: 40px; left: 60px; }
-.bottom-right { bottom: 40px; right: 60px; }
-.center-left { top: 50%; left: 15%; transform: translateY(-50%); }
-.center-right { top: 50%; right: 15%; transform: translateY(-50%); }
-
-/* 🔹 Sections */
-section {
-    margin: 40px auto;
-    width: 80%;
-    max-width: 750px;
-    padding: 25px;
-    background: #ffffff;
-    border-radius: 10px;
-    border: 2px solid #adb5bd;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 🔹 LinkedIn Button - Proper Positioning */
-.linkedin-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.linkedin-btn {
-    display: inline-block;
-    padding: 12px 18px;
-    font-size: 18px;
-    font-weight: 500;
+hea/* 🔹 Global Styles */
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
     color: #ffffff;
-    background-color: #0077b5;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🔹 Navbar */
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: transparent;
+    padding: 15px 0;
+    transition: background 0.3s ease;
+    box-shadow: none;
+}
+
+header.scrolled {
+    background: #1b263b;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: white;
     text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
+    font-size: 18px;
+    padding-bottom: 5px;
+    transition: all 0.3s;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* 🔹 Profile Section */
+#profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     text-align: center;
 }
 
-.linkedin-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.profile-pic {
+    width: 150px;
+    border-radius: 50%;
+    transition: opacity 0.5s;
+}
+
+.profile-pic:hover {
+    opacity: 0.8;
+}
+
+#typewriter {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.static-title {
+    font-size: 24px;
+    color: #ddd;
+}
+
+.resume-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 2px solid #007bff;
+    color: #007bff;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: all 0.3s;
+}
+
+.resume-btn:hover {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 0 10px #007bff;
+}
+
+/* 🔹 Skills Banner */
+#skills {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    gap: 10px;
+}
+
+.skill-box {
+    background: #1b263b;
+    padding: 15px;
+    border-radius: 5px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.skill-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px white;
+}
+
+/* 🔹 Flip Cards */
+.flip-card {
+    width: 200px;
+    height: 250px;
+    perspective: 1000px;
+}
+
+.flip-card-inner {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+}
+
+.see-more-btn {
+    color: white;
+    text-decoration: none;
+    border: 1px solid white;
+    padding: 5px 10px;
+}
+
+.see-more-btn:hover {
+    background: white;
+    color: black;
+}
+
 
 
 
