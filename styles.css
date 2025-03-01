@@ -185,6 +185,29 @@ nav ul li a:hover {
     background: white;
     color: black;
 }
+/* 🔹 LinkedIn Button - Proper Styling */
+.linkedin-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.linkedin-btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #0077b5;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+    text-align: center;
+}
+
+.linkedin-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
 
 
 
