@@ -159,6 +159,30 @@ button:hover {
 
 /* Dark Mode */
 .dark-mode {
+    /* Fix project cards in dark mode */
+.dark-mode .project-card {
+    background-color: #222; /* Darker background */
+    color: white;
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Fix text contrast inside project cards */
+.dark-mode .project-card h3,
+.dark-mode .project-card p {
+    color: white !important; /* Ensures visibility */
+}
+
+/* Ensure the project card flip animation works properly */
+.dark-mode .project-front {
+    background-color: #2a2a2a !important; /* Dark front side */
+    color: white !important;
+}
+
+.dark-mode .project-back {
+    background-color: #007bff !important; /* Maintain visibility */
+    color: white !important;
+}
+
     background-color: #121212;
     color: white;
 }
