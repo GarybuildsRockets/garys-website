@@ -74,6 +74,25 @@ nav {
     margin: auto;
 }
 
+/* LinkedIn Button */
+.linkedin-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #0077b5;
+    border: 2px solid #778da9;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.linkedin-btn:hover {
+    background-color: #005582;
+    transform: scale(1.05);
+}
+
 /* Projects */
 .projects-container {
     display: flex;
@@ -91,7 +110,7 @@ nav {
     border-radius: 10px;
     transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
-    cursor: pointer; /* Makes it clear that it's clickable */
+    cursor: pointer;
 }
 
 /* Hover Effect */
@@ -105,23 +124,6 @@ nav {
     transform: scale(0.95);
 }
 
-/* Tooltip Effect */
-.project-desc {
-    position: absolute;
-    bottom: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #778da9;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.project:hover .project-desc {
-    opacity: 1;
-}
 
 
 
