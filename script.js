@@ -9,19 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Toggle dropdown menu when button is clicked
+    // Toggle dropdown menu
     menuBtn.addEventListener("click", () => {
         dropdown.classList.toggle("show-dropdown");
     });
 
-    // Close dropdown if user clicks outside of menu
+    // Close dropdown when clicking outside
     document.addEventListener("click", (event) => {
         if (!menuBtn.contains(event.target) && !dropdown.contains(event.target)) {
             dropdown.classList.remove("show-dropdown");
         }
     });
 
-    // Make entire project card clickable
+    // Make project cards clickable
     document.querySelectorAll(".project").forEach(project => {
         project.addEventListener("click", () => {
             const projectPage = project.getAttribute("data-url");
