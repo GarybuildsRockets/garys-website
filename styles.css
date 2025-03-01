@@ -227,6 +227,68 @@ button:hover {
 .dark-mode button:hover {
     background-color: #777;
 }
+/* Dark Mode */
+.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+/* Fix navigation links */
+.dark-mode a {
+    color: #4da6ff;
+}
+
+.dark-mode a:hover {
+    color: #66ccff;
+}
+
+/* Fix sections in dark mode */
+.dark-mode section {
+    background-color: #1e1e1e;
+    color: white;
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Fix project cards in dark mode */
+.dark-mode .project-card {
+    background-color: #222;
+    color: white;
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Fix text contrast inside project cards */
+.dark-mode .project-card h3,
+.dark-mode .project-card p {
+    color: white !important;
+}
+
+/* Ensure the project card flip animation works properly */
+.dark-mode .project-front {
+    background-color: #2a2a2a !important;
+    color: white !important;
+}
+
+.dark-mode .project-back {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+/* Fix input fields in dark mode */
+.dark-mode input, .dark-mode textarea {
+    background-color: #333;
+    color: white;
+    border: 1px solid white;
+}
+
+/* Fix buttons in dark mode */
+.dark-mode button {
+    background-color: #555;
+    color: white;
+}
+
+.dark-mode button:hover {
+    background-color: #777;
+}
 
 
 
