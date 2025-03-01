@@ -1,17 +1,17 @@
-/* Global Engineering Notebook Style */
+/* 🔹 Global Engineering Notebook Style */
 body {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #f8f9fa; /* Light background */
-    color: #333; /* Dark text for readability */
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-    background-size: 25px 25px; /* Graph-paper effect */
+    background-size: 25px 25px;
 }
 
-/* Header */
+/* 🔹 Header */
 header {
     background: #ffffff;
     padding: 20px;
@@ -20,10 +20,11 @@ header {
     font-size: 24px;
     text-transform: uppercase;
     color: #333;
+    font-weight: 600;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Dropdown Menu */
+/* 🔹 Dropdown Menu */
 nav {
     position: relative;
     display: inline-block;
@@ -44,106 +45,79 @@ nav {
     background: #495057;
 }
 
-/* Dropdown Menu Styles */
-.dropdown {
-    display: none;
+/* 🔹 Rotating Gears */
+.gear-container {
+    position: fixed;
+    z-index: -1;
+    opacity: 0.15;
+}
+
+/* All Gears Rotate */
+.gear {
     position: absolute;
-    top: 50px;
-    left: 0;
-    width: 180px;
-    background: rgba(255, 255, 255, 0.95);
-    list-style: none;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #adb5bd;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    animation: rotateGear 6s linear infinite;
 }
 
-.dropdown li {
-    padding: 10px;
-    text-align: center;
+/* Rotate Speed Variations */
+@keyframes rotateGear {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-.dropdown a {
-    color: #333;
-    text-decoration: none;
-    font-size: 16px;
-    display: block;
-    transition: color 0.3s ease;
+/* 🔹 Gear Sizes & Placements */
+.gear-small {
+    width: 40px;
+    animation-duration: 5s;
+}
+.gear-medium {
+    width: 70px;
+    animation-duration: 8s;
+}
+.gear-large {
+    width: 100px;
+    animation-duration: 10s;
 }
 
-.dropdown a:hover {
-    color: #007bff;
-}
+.top-left { top: 10px; left: 20px; }
+.top-right { top: 10px; right: 20px; }
+.bottom-left { bottom: 10px; left: 20px; }
+.bottom-right { bottom: 10px; right: 20px; }
+.center-left { top: 50%; left: 5%; transform: translateY(-50%); }
+.center-right { top: 50%; right: 5%; transform: translateY(-50%); }
 
-/* Show Dropdown */
-.show-dropdown {
-    display: block !important;
-}
-
-/* Sections */
+/* 🔹 Sections */
 section {
-    margin: 30px auto;
+    margin: 40px auto;
     width: 80%;
     max-width: 750px;
     padding: 25px;
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 2px solid #adb5bd;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
 }
 
-/* Section Hover Effect */
-.hover-effect:hover {
-    transform: scale(1.02);
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Resume Button */
-.button {
+/* 🔹 Buttons */
+.button, .linkedin-btn {
     display: inline-block;
-    margin-top: 12px;
-    padding: 14px 22px;
+    padding: 12px 18px;
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 500;
     color: #ffffff;
     background-color: #007bff;
-    border: 2px solid #0056b3;
     text-decoration: none;
     border-radius: 8px;
     transition: background 0.3s, transform 0.2s;
 }
-
-.button:hover {
+.button:hover, .linkedin-btn:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
 
-/* LinkedIn Button */
-.linkedin-container {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.linkedin-btn {
-    display: inline-block;
-    padding: 18px 30px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #0077b5;
-    border: 2px solid #005582;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.linkedin-btn:hover {
-    background-color: #005582;
-    transform: scale(1.05);
-}
 
 
 
