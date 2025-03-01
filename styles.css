@@ -16,7 +16,7 @@ header {
     padding: 15px;
     text-align: center;
     border-bottom: 3px solid #778da9;
-    font-size: 20px;
+    font-size: 22px;
     text-transform: uppercase;
 }
 
@@ -54,74 +54,61 @@ nav {
     text-decoration: none;
 }
 
-/* Profile Section */
-.profile-container {
-    text-align: center;
-    margin-top: 50px;
-    border: 2px solid #778da9;
+/* General Section Styling */
+section {
+    margin: 30px auto;
+    width: 80%;
+    max-width: 800px;
     padding: 20px;
-    width: 350px;
-    margin: auto;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 2px solid #778da9;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.15);
 }
 
-.profile-pic {
-    width: 150px;
-    border-radius: 50%;
-    border: 3px solid #ffffff;
-    display: block;
-    margin: auto;
-}
-
-/* LinkedIn Button */
-.linkedin-btn {
+/* Section Titles */
+h2 {
+    font-size: 22px;
+    border-bottom: 2px solid #778da9;
+    padding-bottom: 5px;
     display: inline-block;
-    margin-top: 15px;
+}
+
+/* Contact Info */
+.contact-info p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.contact-info a {
+    color: #4da8da;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.contact-info a:hover {
+    color: #82c0cc;
+    text-decoration: underline;
+}
+
+/* Resume Download Button */
+.resume a {
+    display: inline-block;
+    margin-top: 10px;
     padding: 10px 15px;
     font-size: 16px;
     color: #ffffff;
-    background-color: #0077b5;
+    background-color: #4da8da;
     border: 2px solid #778da9;
     text-decoration: none;
     border-radius: 5px;
     transition: background 0.3s, transform 0.2s;
 }
 
-.linkedin-btn:hover {
-    background-color: #005582;
+.resume a:hover {
+    background-color: #82c0cc;
     transform: scale(1.05);
-}
-
-/* Projects */
-.projects-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.project {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border: 2px solid #778da9;
-    text-align: center;
-    width: 250px;
-    border-radius: 10px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    cursor: pointer;
-}
-
-/* Hover Effect */
-.project:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-/* Click Effect (Scale Down for Feedback) */
-.project:active {
-    transform: scale(0.95);
 }
 
 
