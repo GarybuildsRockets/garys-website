@@ -84,7 +84,7 @@ nav ul li a:hover {
 }
 
 .profile-pic {
-    width: 150px;
+    width: 550px;
     border-radius: 50%;
     transition: opacity 0.5s;
 }
@@ -94,12 +94,12 @@ nav ul li a:hover {
 }
 
 #typewriter {
-    font-size: 40px;
+    font-size: 60px;
     font-weight: bold;
 }
 
 .static-title {
-    font-size: 24px;
+    font-size: 50px;
     color: #ddd;
 }
 
