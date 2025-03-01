@@ -5,6 +5,7 @@ body {
     color: #ffffff;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
     background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 30px 30px;
@@ -20,79 +21,70 @@ header {
     text-transform: uppercase;
 }
 
-/* Dropdown Menu */
-nav {
-    position: relative;
-    display: inline-block;
+/* Rotating Gears */
+.gear-container {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    z-index: -1;
 }
 
-.menu-btn {
-    background: #415a77;
-    color: white;
-    border: 2px solid #778da9;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.dropdown {
-    display: none;
+.gear {
     position: absolute;
-    background: #1b263b;
-    list-style: none;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #778da9;
+    animation: rotateGear 6s linear infinite;
+    opacity: 0.4;
 }
 
-.dropdown li {
-    padding: 8px;
+.gear-small {
+    width: 50px;
+    top: 20px;
+    left: 40px;
+    animation-duration: 5s;
 }
 
-.dropdown a {
-    color: #ffffff;
-    text-decoration: none;
+.gear-medium {
+    width: 80px;
+    top: 80px;
+    left: 120px;
+    animation-duration: 8s;
 }
 
-/* Sections - More Professional Styling */
+.gear-large {
+    width: 120px;
+    top: 150px;
+    left: 200px;
+    animation-duration: 10s;
+}
+
+@keyframes rotateGear {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Sections */
 section {
     margin: 30px auto;
     width: 80%;
     max-width: 750px;
     padding: 25px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     border: 3px solid #a0aec0;
     box-shadow: 0px 0px 12px rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease-in-out;
 }
 
-/* Section Titles */
-h2 {
-    font-size: 24px;
-    border-bottom: 3px solid #778da9;
-    padding-bottom: 6px;
-    display: inline-block;
+/* Hover Effect */
+.hover-effect:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3);
 }
 
-/* Contact Info */
-.contact-info p {
-    font-size: 18px;
-    margin: 6px 0;
-}
-
-.contact-info a {
-    color: #4da8da;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-.contact-info a:hover {
-    color: #82c0cc;
-    text-decoration: underline;
-}
-
-/* Resume Button - Bigger and More Noticeable */
+/* Buttons */
 .button {
     display: inline-block;
     margin-top: 12px;
@@ -112,7 +104,7 @@ h2 {
     transform: scale(1.08);
 }
 
-/* LinkedIn Button - Make It Stand Out */
+/* LinkedIn Button */
 .linkedin-container {
     text-align: center;
     margin-top: 40px;
@@ -135,6 +127,7 @@ h2 {
     background-color: #005582;
     transform: scale(1.1);
 }
+
 
 
 
