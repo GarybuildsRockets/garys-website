@@ -49,13 +49,13 @@ nav {
 .gear-container {
     position: fixed;
     z-index: -1;
-    opacity: 0.15;
+    opacity: 0.08; /* Subtle opacity */
 }
 
-/* All Gears Rotate */
+/* Gears Rotate */
 .gear {
     position: absolute;
-    animation: rotateGear 6s linear infinite;
+    animation: rotateGear 8s linear infinite;
 }
 
 /* Rotate Speed Variations */
@@ -68,26 +68,27 @@ nav {
     }
 }
 
-/* 🔹 Gear Sizes & Placements */
+/* 🔹 Smaller Gear Sizes */
 .gear-small {
-    width: 40px;
-    animation-duration: 5s;
+    width: 25px;
+    animation-duration: 6s;
 }
 .gear-medium {
-    width: 70px;
-    animation-duration: 8s;
-}
-.gear-large {
-    width: 100px;
+    width: 50px;
     animation-duration: 10s;
 }
+.gear-large {
+    width: 70px;
+    animation-duration: 12s;
+}
 
-.top-left { top: 10px; left: 20px; }
-.top-right { top: 10px; right: 20px; }
-.bottom-left { bottom: 10px; left: 20px; }
-.bottom-right { bottom: 10px; right: 20px; }
-.center-left { top: 50%; left: 5%; transform: translateY(-50%); }
-.center-right { top: 50%; right: 5%; transform: translateY(-50%); }
+/* 🔹 Improved Gear Positioning */
+.top-left { top: 20px; left: 30px; }
+.top-right { top: 20px; right: 30px; }
+.bottom-left { bottom: 20px; left: 30px; }
+.bottom-right { bottom: 20px; right: 30px; }
+.center-left { top: 50%; left: 10%; transform: translateY(-50%); }
+.center-right { top: 50%; right: 10%; transform: translateY(-50%); }
 
 /* 🔹 Sections */
 section {
@@ -117,7 +118,6 @@ section {
     background-color: #0056b3;
     transform: scale(1.05);
 }
-
 
 
 
