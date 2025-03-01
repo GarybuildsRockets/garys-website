@@ -25,37 +25,38 @@ header {
 .gear-container {
     position: fixed;
     top: 10%;
-    left: 10%;
+    left: 5%;
     z-index: -1;
+    opacity: 0.3;
 }
 
 .gear {
     position: absolute;
     animation: rotateGear 6s linear infinite;
-    opacity: 0.4;
 }
 
 .gear-small {
-    width: 50px;
-    top: 20px;
-    left: 40px;
-    animation-duration: 5s;
+    width: 60px;
+    top: 30px;
+    left: 50px;
+    animation-duration: 4s;
 }
 
 .gear-medium {
-    width: 80px;
-    top: 80px;
-    left: 120px;
-    animation-duration: 8s;
+    width: 90px;
+    top: 100px;
+    left: 150px;
+    animation-duration: 6s;
 }
 
 .gear-large {
     width: 120px;
-    top: 150px;
-    left: 200px;
-    animation-duration: 10s;
+    top: 200px;
+    left: 300px;
+    animation-duration: 8s;
 }
 
+/* Smooth Rotating Animation */
 @keyframes rotateGear {
     from {
         transform: rotate(0deg);
@@ -71,24 +72,24 @@ section {
     width: 80%;
     max-width: 750px;
     padding: 25px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     border: 3px solid #a0aec0;
-    box-shadow: 0px 0px 12px rgba(255, 255, 255, 0.2);
+    box-shadow: 0px 0px 12px rgba(255, 255, 255, 0.3);
     transition: transform 0.3s ease-in-out;
 }
 
-/* Hover Effect */
+/* Section Hover Effect */
 .hover-effect:hover {
     transform: scale(1.02);
-    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.3);
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.4);
 }
 
-/* Buttons */
+/* Resume Button */
 .button {
     display: inline-block;
     margin-top: 12px;
-    padding: 14px 20px;
+    padding: 14px 22px;
     font-size: 18px;
     font-weight: bold;
     color: #ffffff;
