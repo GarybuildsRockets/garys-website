@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dropdown.classList.toggle("show-dropdown");
     });
 
-    // Close dropdown if user clicks outside
+    // Close dropdown if user clicks outside of menu
     document.addEventListener("click", (event) => {
         if (!menuBtn.contains(event.target) && !dropdown.contains(event.target)) {
             dropdown.classList.remove("show-dropdown");
@@ -31,4 +31,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
-
