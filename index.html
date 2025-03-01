@@ -5,69 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Engineering Portfolio</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <script defer src="script.js"></script>
 </head>
 <body>
     <header>
         <h1>Interactive Engineering Portfolio</h1>
         <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
+            <button class="menu-btn">☰ Menu</button>
+            <ul class="dropdown">
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#contact">Contact Me</a></li>
                 <li><a href="#resume">Resume</a></li>
+                <li><a href="#projects">Projects</a></li>
             </ul>
         </nav>
     </header>
-    
-    <section id="home">
-        <div class="home-content">
-            <img src="profile.jpg" alt="Profile Picture">
-            <h2>Welcome</h2>
-            <p>Interactive engineering portfolio showcasing my work and experiences.</p>
-        </div>
-    </section>
 
-    <section id="about">
-        <h2>About Engineering</h2>
-        <div class="about-container">
-            <img src="engineering_building.jpg" alt="Engineering Building">
-            <p>A brief introduction to my engineering background and interests.</p>
-        </div>
-    </section>
-    
-    <section id="projects">
-        <h2>Projects</h2>
-        <div class="projects-container">
-            <div class="project" onclick="showPopup('Project 1')">
-                <img src="project1.jpg" alt="Project 1">
-                <p>Project 1 Description</p>
+    <main>
+        <!-- Profile Section -->
+        <section id="home">
+            <div class="profile-container">
+                <img src="profile.jpg" alt="Profile Picture" class="profile-pic">
+                <h2>Your Name</h2>
+                <p>Mechanical Engineer | AI & Sustainability Enthusiast</p>
             </div>
-            <div class="project" onclick="showPopup('Project 2')">
-                <img src="project2.jpg" alt="Project 2">
-                <p>Project 2 Description</p>
+        </section>
+
+        <!-- About Me -->
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Passionate about engineering, sustainability, and AI integration.</p>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact">
+            <h2>Contact Me</h2>
+            <p>Email: your.email@example.com</p>
+        </section>
+
+        <!-- Resume -->
+        <section id="resume">
+            <h2>Resume</h2>
+            <a href="resume.pdf" download>Download Resume</a>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="projects-container">
+                <!-- Project Example -->
+                <div class="project">
+                    <h3>Project Title</h3>
+                    <p class="project-desc">Short description of the project...</p>
+                    <a href="project1.html" class="project-link">Click Here</a>
+                </div>
+                <!-- Repeat for up to 10 projects -->
             </div>
-        </div>
-    </section>
-    
-    <section id="resume">
-        <h2>Resume</h2>
-        <div class="resume-container">
-            <embed src="resume.pdf" type="application/pdf" width="80%" height="500px">
-            <p><a href="resume.pdf" download>Download Resume</a></p>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2025 Engineering Portfolio</p>
-    </footer>
-
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup()">&times;</span>
-            <p id="popup-text"></p>
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
 </html>
+
  
