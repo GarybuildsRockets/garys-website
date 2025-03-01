@@ -1,24 +1,34 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById("dark-mode-toggle");
-    const body = document.body;
+document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.querySelector(".menu-btn");
+    const dropdown = document.querySelector(".dropdown");
 
-    // Check if the user has a preferred theme stored
-    if (localStorage.getItem("dark-mode") === "enabled") {
-        body.classList.add("dark-mode");
-        toggleButton.textContent = "Light Mode 🌞";
-    }
+    // Toggle dropdown menu
+    menuBtn.addEventListener("click", () => {
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
 
-    toggleButton.addEventListener("click", function () {
-        body.classList.toggle("dark-mode");
+    // Project animations
+    document.querySelectorAll(".project").forEach(project => {
+        project.addEventListener("mouseenter", () => {
+            project.style.transform = "scale(1.1)";
+        });
+        project.addEventListener("mouseleave", () => {
+            project.style.transform = "scale(1)";
+        });
+    });
 
-        // Save the preference to localStorage
-        if (body.classList.contains("dark-mode")) {
-            localStorage.setItem("dark-mode", "enabled");
-            toggleButton.textContent = "Light Mode 🌞";
-        } else {
-            localStorage.setItem("dark-mode", "disabled");
-            toggleButton.textContent = "Dark Mode 🌙";
-        }
+    // Dark mode toggle
+    const darkModeToggle = document.createElement("button");
+    darkModeToggle.innerText = "Dark Mode";
+    darkModeToggle.style.position = "fixed";
+    darkModeToggle.style.top = "10px";
+    darkModeToggle.style.right = "10px";
+    darkModeToggle.style.padding = "5px";
+    
+    document.body.appendChild(darkModeToggle);
+
+    darkModeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
     });
 });
 
