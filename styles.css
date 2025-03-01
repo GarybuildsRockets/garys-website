@@ -6,8 +6,8 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
     background-size: 25px 25px;
 }
 
@@ -39,26 +39,66 @@ nav {
     font-size: 16px;
     border-radius: 5px;
     transition: background 0.3s ease;
+    display: block;
+    margin: 10px auto;
 }
 
 .menu-btn:hover {
     background: #495057;
 }
 
-/* 🔹 Rotating Gears */
+/* 🔹 Fix Dropdown Menu */
+.dropdown {
+    display: none;
+    position: absolute;
+    background: #ffffff;
+    border: 2px solid #adb5bd;
+    border-radius: 5px;
+    padding: 10px;
+    list-style: none;
+    right: 0;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown li {
+    padding: 10px;
+    text-align: center;
+}
+
+.dropdown a {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.dropdown a:hover {
+    color: #007bff;
+}
+
+/* Show Dropdown */
+.show-dropdown {
+    display: block !important;
+}
+
+/* 🔹 Rotating Gears (Fixed) */
 .gear-container {
     position: fixed;
     z-index: -1;
-    opacity: 0.08; /* Subtle opacity */
+    opacity: 0.15; /* Increased visibility */
+    pointer-events: none; /* So gears do not interfere with clicks */
 }
 
-/* Gears Rotate */
+/* Ensuring Rotation Works */
 .gear {
     position: absolute;
+    width: 50px;
     animation: rotateGear 8s linear infinite;
+    opacity: 0.2;
 }
 
-/* Rotate Speed Variations */
+/* 🔹 Keyframe for Rotation (Ensures Continuous Rotation) */
 @keyframes rotateGear {
     from {
         transform: rotate(0deg);
@@ -68,25 +108,25 @@ nav {
     }
 }
 
-/* 🔹 Smaller Gear Sizes */
+/* 🔹 Gear Sizes for Visibility */
 .gear-small {
-    width: 25px;
+    width: 35px;
     animation-duration: 6s;
 }
 .gear-medium {
-    width: 50px;
+    width: 60px;
     animation-duration: 10s;
 }
 .gear-large {
-    width: 70px;
+    width: 90px;
     animation-duration: 12s;
 }
 
 /* 🔹 Improved Gear Positioning */
-.top-left { top: 20px; left: 30px; }
-.top-right { top: 20px; right: 30px; }
-.bottom-left { bottom: 20px; left: 30px; }
-.bottom-right { bottom: 20px; right: 30px; }
+.top-left { top: 30px; left: 50px; }
+.top-right { top: 30px; right: 50px; }
+.bottom-left { bottom: 30px; left: 50px; }
+.bottom-right { bottom: 30px; right: 50px; }
 .center-left { top: 50%; left: 10%; transform: translateY(-50%); }
 .center-right { top: 50%; right: 10%; transform: translateY(-50%); }
 
