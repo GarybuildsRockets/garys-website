@@ -1,4 +1,4 @@
-ddocument.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
     // Typewriter Effect for Headers
     function typeWriterEffect(elementId, text, speed = 100) {
         let index = 0;
@@ -18,7 +18,7 @@ ddocument.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
 
-    // Project Filter System
+    // Project Filter System - Fixing Issue
     const filters = document.querySelectorAll(".filter");
     const projects = document.querySelectorAll(".project-card");
 
@@ -40,9 +40,20 @@ ddocument.addEventListener("DOMContentLoaded", function() {
     projectCards.forEach(card => {
         card.addEventListener("mouseenter", function() {
             this.style.transform = "rotateY(180deg)";
+            this.style.boxShadow = "0 0 15px white";
         });
         card.addEventListener("mouseleave", function() {
             this.style.transform = "rotateY(0deg)";
+            this.style.boxShadow = "none";
+        });
+    });
+
+    // Navigate to Project Details Page
+    const detailButtons = document.querySelectorAll(".details-btn");
+    detailButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            const projectName = this.closest(".project-card").getAttribute("data-project");
+            window.location.href = `projects/${projectName}.html`;
         });
     });
 
@@ -54,5 +65,6 @@ ddocument.addEventListener("DOMContentLoaded", function() {
         contactForm.reset();
     });
 });
+
 
 
