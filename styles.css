@@ -19,27 +19,6 @@ header {
     box-shadow: none;
 }
 
-hea/* 🔹 Global Styles */
-body {
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-}
-
-/* 🔹 Navbar */
-header {
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    background: transparent;
-    padding: 15px 0;
-    transition: background 0.3s ease;
-    box-shadow: none;
-}
-
 header.scrolled {
     background: #1b263b;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
@@ -185,6 +164,7 @@ nav ul li a:hover {
     background: white;
     color: black;
 }
+
 /* 🔹 LinkedIn Button - Proper Styling */
 .linkedin-container {
     text-align: center;
@@ -208,6 +188,7 @@ nav ul li a:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
+
 
 
 
