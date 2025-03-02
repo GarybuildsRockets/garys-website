@@ -9,61 +9,92 @@
 </head>
 <body>
     <!-- Navbar -->
-    <header id="navbar">
+    <header id="navbar" class="curved-navbar">
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#skills">My Skills</a></li>
+                <li><a href="#projects">My Projects</a></li>
+                <li><a href="#contact">Contact Me</a></li>
             </ul>
+            <div class="dark-mode-toggle">
+                <input type="checkbox" id="darkMode">
+                <label for="darkMode" class="toggle"></label>
+            </div>
         </nav>
     </header>
 
     <!-- Profile Section -->
-    <section id="profile">
+    <section id="home" class="profile">
         <div class="profile-container">
             <img src="profile.jpg" alt="Profile Picture" class="profile-pic">
-            <div class="intro-text">
-                <h1 id="typewriter"></h1>
-                <p class="static-title">Mechanical Engineer</p>
+            <h1 id="typewriter">Hello, I'm Gary Kanyuh</h1>
+            <p class="static-title">Mechanical Engineer</p>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="about-me">
+        <div class="about-container">
+            <div class="about-image">
+                <img src="collage.jpg" alt="About Me Image" class="circular-image">
+            </div>
+            <div class="about-text">
+                <h2 id="aboutTypewriter">About Me</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
                 <a href="resume.pdf" download class="resume-btn">Download My Resume</a>
             </div>
         </div>
     </section>
 
-    <!-- Skills Banner -->
-    <section id="skills">
-        <div class="skill-box">AI Integration</div>
-        <div class="skill-box">Electronics</div>
-        <div class="skill-box">Robotics</div>
-        <div class="skill-box">CAD Design</div>
-        <div class="skill-box">Machine Learning and Reasearch</div>
-    </section>
-
-    <!-- Project Previews -->
-    <section id="projects-preview">
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <h3>Raspberry PI, AI Sustainablity Statistics Project</h3>
-                </div>
-                <div class="flip-card-back">
-                    <p>Combines AI with sensors and camera to mesure crutial enviromental stats</p>
-                    <a href="project1.html" class="see-more-btn">See More</a>
-                </div>
+    <!-- My Skills Section -->
+    <section id="skills" class="my-skills">
+        <h2 id="skillsTypewriter">My Skills</h2>
+        <div class="skills-container">
+            <div class="skill" data-description="Skill description here">
+                <p>CAD Design</p>
+                <div class="progress-bar"><span style="width: 90%"></span></div>
+            </div>
+            <div class="skill" data-description="Skill description here">
+                <p>AI Integration</p>
+                <div class="progress-bar"><span style="width: 80%"></span></div>
             </div>
         </div>
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <h3>     Midas MK5 (Avionics Computer)</h3>
-                </div>
-                <div class="flip-card-back">
-                    <p>A team project conducted with the Illinois Space Society...</p>
-                    <a href="project2.html" class="see-more-btn">See More</a>
-                </div>
+    </section>
+
+    <!-- My Projects Section -->
+    <section id="projects" class="my-projects">
+        <h2 id="projectsTypewriter">My Projects</h2>
+        <div class="filter-bar">
+            <button class="filter" data-category="ai">AI</button>
+            <button class="filter" data-category="robotics">Robotics</button>
+            <button class="filter" data-category="electronics">Electronics</button>
+            <button class="filter" data-category="cad">CAD</button>
+            <button class="filter" data-category="research">Research</button>
+        </div>
+        <div class="projects-container">
+            <div class="project-card ai">
+                <h3>AI Sustainability Project</h3>
             </div>
+            <div class="project-card robotics">
+                <h3>Midas MK5 Avionics</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Me Section -->
+    <section id="contact" class="contact-me">
+        <h2 id="contactTypewriter">Contact Me</h2>
+        <form class="contact-form">
+            <input type="text" placeholder="First Name" required>
+            <input type="text" placeholder="Last Name" required>
+            <input type="email" placeholder="Email" required>
+            <textarea placeholder="Your Message"></textarea>
+            <button type="submit">Send</button>
+        </form>
+        <div class="linkedin-container">
+            <a href="https://linkedin.com" class="linkedin-btn">Connect on LinkedIn</a>
         </div>
     </section>
 </body>
