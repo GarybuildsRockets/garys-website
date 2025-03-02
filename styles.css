@@ -291,11 +291,11 @@ nav ul li a:hover {
 
 /* Button Styling */
 .contact-form button {
-    color: #FFFFFF;
     width: 100%;
     max-width: 400px;
     padding: 12px;
     font-size: 18px;
+    font-color: #FFFFFF;
     margin-top: 15px;
     border: none;
     border-radius: 8px;
