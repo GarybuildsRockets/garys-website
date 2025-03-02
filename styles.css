@@ -6,6 +6,10 @@ body {
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
+    height: auto;
+    overflow-y: scroll;
+}
+
 }
 
 /* Navbar */
