@@ -15,21 +15,34 @@ header {
     left: 0;
     background: transparent;
     padding: 15px 0;
-    transition: background 0.3s ease, padding 0.3s ease;
+    transition: background 0.3s ease;
     box-shadow: none;
-    z-index: 1000;
-    text-align: center;
+}
+
+hea/* 🔹 Global Styles */
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🔹 Navbar */
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: transparent;
+    padding: 15px 0;
+    transition: background 0.3s ease;
+    box-shadow: none;
 }
 
 header.scrolled {
     background: #1b263b;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    padding: 10px 0;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
 }
 
 nav ul {
@@ -37,7 +50,6 @@ nav ul {
     justify-content: center;
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 nav ul li {
@@ -56,52 +68,13 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
-/* 🔹 Mobile Navbar Fix */
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    z-index: 1100;
-}
-
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
-    }
-    
-    nav ul {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background: #1b263b;
-        padding: 10px 0;
-    }
-    
-    nav ul.show {
-        display: flex;
-    }
-}
-
 /* 🔹 Profile Section */
 #profile {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100vh;
     text-align: center;
-    height: auto;
-    min-height: 90vh;
-    padding: 40px 20px;
 }
 
 .profile-container {
@@ -111,8 +84,7 @@ nav ul li a:hover {
 }
 
 .profile-pic {
-    width: 100%;
-    max-width: 280px;
+    width: 460px;
     border-radius: 50%;
     transition: opacity 0.5s;
 }
@@ -122,25 +94,23 @@ nav ul li a:hover {
 }
 
 #typewriter {
-    font-size: 36px;
+    font-size: 55px;
     font-weight: bold;
 }
 
 .static-title {
-    font-size: 30px;
+    font-size: 50px;
     color: #ddd;
 }
 
 .resume-btn {
     display: inline-block;
-    padding: 12px 20px;
+    padding: 10px 20px;
     border: 2px solid #007bff;
     color: #007bff;
     text-decoration: none;
-    margin-top: 15px;
+    margin-top: 10px;
     transition: all 0.3s;
-    text-align: center;
-    border-radius: 5px;
 }
 
 .resume-btn:hover {
@@ -149,15 +119,12 @@ nav ul li a:hover {
     box-shadow: 0 0 10px #007bff;
 }
 
-/* 🔹 Skills Section */
+/* 🔹 Skills Banner */
 #skills {
     display: flex;
     justify-content: center;
     padding: 20px;
-    gap: 15px;
-    flex-wrap: wrap;
-    max-width: 90%;
-    margin: auto;
+    gap: 10px;
 }
 
 .skill-box {
@@ -165,8 +132,6 @@ nav ul li a:hover {
     padding: 15px;
     border-radius: 5px;
     transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-    min-width: 160px;
 }
 
 .skill-box:hover {
@@ -174,31 +139,18 @@ nav ul li a:hover {
     box-shadow: 0px 0px 10px white;
 }
 
-/* 🔹 Project Section Fix */
-#projects-preview {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 50px 0;
-    gap: 20px;
-    max-width: 90%;
-    margin: auto;
-}
-
+/* 🔹 Flip Cards */
 .flip-card {
-    width: 320px;
-    height: 400px;
-    perspective: 1200px;
+    width: 200px;
+    height: 250px;
+    perspective: 1000px;
 }
 
 .flip-card-inner {
-    position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.8s;
+    transition: transform 0.6s;
     transform-style: preserve-3d;
-    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
 }
 
 .flip-card:hover .flip-card-inner {
@@ -210,42 +162,51 @@ nav ul li a:hover {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1b263b, #415a77);
-    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    backface-visibility: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     border-radius: 10px;
-    backface-visibility: hidden;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .flip-card-back {
     transform: rotateY(180deg);
 }
 
-.flip-card-back p {
-    font-size: 16px;
-    padding: 10px;
-}
-
 .see-more-btn {
-    display: inline-block;
     color: white;
     text-decoration: none;
-    border: 2px solid white;
-    padding: 8px 14px;
-    margin-top: 15px;
-    transition: 0.3s;
-    border-radius: 5px;
+    border: 1px solid white;
+    padding: 5px 10px;
 }
 
 .see-more-btn:hover {
     background: white;
     color: black;
-    box-shadow: 0px 0px 10px white;
+}
+/* 🔹 LinkedIn Button - Proper Styling */
+.linkedin-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.linkedin-btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #0077b5;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+    text-align: center;
+}
+
+.linkedin-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
 
