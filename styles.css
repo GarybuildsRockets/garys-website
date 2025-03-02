@@ -300,7 +300,7 @@ nav ul li a:hover {
     border-radius: 8px;
     cursor: pointer;
     background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
+    color: black;
     transition: background 0.3s ease-in-out, box-shadow 0.3s;
 }
 
