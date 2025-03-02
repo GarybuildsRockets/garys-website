@@ -42,6 +42,44 @@ nav ul {
 }
 
 nav ul li {
+    margin: 0 20px;/* 🔹 Global Styles */
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🔹 Navbar */
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: transparent;
+    padding: 15px 0;
+    transition: background 0.3s ease, padding 0.3s ease;
+    box-shadow: none;
+    z-index: 1000;
+    text-align: center;
+}
+
+header.scrolled {
+    background: #1b263b;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
     margin: 0 20px;
 }
 
@@ -198,79 +236,6 @@ nav ul li a:hover {
     box-shadow: 0px 0px 10px white;
 }
 
-/* 🔹 Flip Card Styles */
-#projects-preview {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    padding: 50px 0;
-    max-width: 90%;
-    margin: auto;
-}
-
-.flip-card {
-    width: 320px;
-    height: 400px;
-    perspective: 1200px;
-}
-
-.flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
-.flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-}
-
-.flip-card-front,
-.flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1b263b, #415a77);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-radius: 10px;
-    backface-visibility: hidden;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.flip-card-back {
-    transform: rotateY(180deg);
-}
-
-.flip-card-back p {
-    font-size: 16px;
-    padding: 10px;
-}
-
-.see-more-btn {
-    display: inline-block;
-    color: white;
-    text-decoration: none;
-    border: 2px solid white;
-    padding: 8px 14px;
-    margin-top: 15px;
-    transition: 0.3s;
-    border-radius: 5px;
-}
-
-.see-more-btn:hover {
-    background: white;
-    color: black;
-    box-shadow: 0px 0px 10px white;
-}
 
 
 
