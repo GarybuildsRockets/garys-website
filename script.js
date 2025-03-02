@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Project Filter System - Fixing Issue
+    // Project Filter System Fix
     const filters = document.querySelectorAll(".filter");
     const projects = document.querySelectorAll(".project-card");
 
@@ -50,11 +50,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const projectCards = document.querySelectorAll(".project-card");
     projectCards.forEach(card => {
         card.addEventListener("mouseenter", function() {
-            this.style.transform = "rotateY(180deg)";
+            this.querySelector(".project-title").style.display = "none";
+            this.querySelector(".project-description").style.display = "block";
             this.style.boxShadow = "0 0 15px white";
         });
         card.addEventListener("mouseleave", function() {
-            this.style.transform = "rotateY(0deg)";
+            this.querySelector(".project-title").style.display = "block";
+            this.querySelector(".project-description").style.display = "none";
             this.style.boxShadow = "none";
         });
     });
