@@ -1,4 +1,4 @@
-/* 🔹 Global Styles */
+* 🔹 Global Styles */
 body {
     font-family: 'Courier New', monospace;
     background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
@@ -18,6 +18,7 @@ header {
     transition: background 0.3s ease, padding 0.3s ease;
     box-shadow: none;
     z-index: 1000;
+    text-align: center;
 }
 
 header.scrolled {
@@ -26,19 +27,12 @@ header.scrolled {
     padding: 10px 0;
 }
 
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    position: relative;
-}
-
 nav ul {
     display: flex;
     justify-content: center;
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 nav ul li {
@@ -57,7 +51,7 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
-/* 🔹 Mobile Navbar Fix - Hamburger Menu */
+/* 🔹 Mobile Navbar Fix */
 .menu-toggle {
     display: none;
     background: none;
@@ -96,11 +90,12 @@ nav ul li a:hover {
 /* 🔹 Profile Section */
 #profile {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
     height: auto;
     min-height: 90vh;
-    text-align: center;
     padding: 40px 20px;
 }
 
@@ -149,6 +144,31 @@ nav ul li a:hover {
     box-shadow: 0 0 10px #007bff;
 }
 
+/* 🔹 Skills Section */
+#skills {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+    max-width: 90%;
+    margin: auto;
+}
+
+.skill-box {
+    background: #1b263b;
+    padding: 15px;
+    border-radius: 5px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    min-width: 160px;
+}
+
+.skill-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px white;
+}
+
 /* 🔹 LinkedIn Button */
 .linkedin-container {
     text-align: center;
@@ -173,30 +193,6 @@ nav ul li a:hover {
     transform: scale(1.05);
 }
 
-/* 🔹 Skills Banner */
-#skills {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    gap: 15px;
-    flex-wrap: wrap;
-    max-width: 90%;
-    margin: auto;
-}
-
-.skill-box {
-    background: #1b263b;
-    padding: 15px;
-    border-radius: 5px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-    min-width: 160px;
-}
-
-.skill-box:hover {
-    transform: scale(1.1);
-    box-shadow: 0px 0px 10px white;
-}
 
 
 
