@@ -57,30 +57,166 @@ nav ul li a:hover {
     border-radius: 50%;
 }
 
-/* Centered Sections */
-.my-skills, .contact-me {
+/* My Skills Section */
+.my-skills {
     text-align: center;
-    margin: 0 auto;
+    padding: 50px 0;
     width: 80%;
+    margin: 0 auto;
 }
 
-/* Download Resume Button */
-.button-style {
-    display: inline-block;
-    padding: 12px 18px;
-    font-size: 18px;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 8px;
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    justify-content: center;
+    padding: 50px;
+}
+
+.progress-bar {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.progress-bar span {
+    display: block;
+    height: 20px;
+    background: #ffffff;
+    transition: width 1s ease-in-out;
+}
+
+/* Projects Section */
+.my-projects {
+    text-align: center;
+    padding: 50px;
+}
+
+.filter-bar {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filter-bar button {
     background: linear-gradient(135deg, #111, #222);
     color: white;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    text-align: center;
     border: none;
+    padding: 10px 20px;
+    margin: 5px;
     cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    border-radius: 10px;
 }
 
-.button-style:hover {
+.filter-bar button:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+}
+
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-items: center;
+    padding: 50px;
+}
+
+.project-card {
+    width: 250px;
+    height: 250px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.5s, box-shadow 0.3s;
+    text-align: center;
+}
+
+.project-card:hover {
+    box-shadow: 0 0 15px white;
+    transform: scale(1.05);
+}
+
+.project-card .project-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.project-card .project-description {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 80%;
+    font-size: 14px;
+}
+
+.project-card:hover .project-title {
+    display: none;
+}
+
+.project-card:hover .project-description {
+    display: block;
+}
+
+.project-card .details-btn {
+    position: absolute;
+    bottom: 10px;
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.project-card .details-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+}
+
+/* Contact Me Section */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    background: linear-gradient(135deg, #111, #222);
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+}
+
+.contact-form button {
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.contact-form button:hover {
     background: white;
     color: black;
     box-shadow: 0 0 10px white;
@@ -114,83 +250,6 @@ nav ul li a:hover {
     transform: scale(1.05);
 }
 
-/* Smooth Scrolling Fix */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Project Card Hover Glow Effect */
-.project-card {
-    width: 200px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: transform 0.5s, box-shadow 0.3s;
-}
-
-.project-card:hover {
-    box-shadow: 0 0 15px white;
-    transform: scale(1.05);
-}
-
-.project-card .details-btn {
-    position: absolute;
-    bottom: 10px;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-
-.project-card .details-btn:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-/* Contact Me Button Update */
-.contact-form button {
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.contact-form button:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-/* Contact Form */
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 50px;
-    background: linear-gradient(135deg, #111, #222);
-    border-radius: 10px;
-    margin: 0 auto;
-}
-
-.contact-form input, .contact-form textarea {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: none;
 }
 
 
