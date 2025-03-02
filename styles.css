@@ -17,6 +17,7 @@ header {
     padding: 15px 0;
     transition: background 0.3s ease;
     box-shadow: none;
+    z-index: 1000;
 }
 
 header.scrolled {
@@ -54,6 +55,7 @@ nav ul li a:hover {
     justify-content: center;
     height: 100vh;
     text-align: center;
+    padding: 20px;
 }
 
 .profile-container {
@@ -104,6 +106,7 @@ nav ul li a:hover {
     justify-content: center;
     padding: 20px;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .skill-box {
@@ -111,6 +114,7 @@ nav ul li a:hover {
     padding: 15px;
     border-radius: 5px;
     transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
 }
 
 .skill-box:hover {
@@ -118,7 +122,7 @@ nav ul li a:hover {
     box-shadow: 0px 0px 10px white;
 }
 
-/* 🔹 Updated Flip Card Styles */
+/* 🔹 Flip Card Styles */
 #projects-preview {
     display: flex;
     justify-content: center;
@@ -131,7 +135,6 @@ nav ul li a:hover {
     width: 320px;
     height: 400px;
     perspective: 1200px;
-    background: none;
 }
 
 .flip-card-inner {
@@ -165,22 +168,8 @@ nav ul li a:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.flip-card-front {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.flip-card-front h3 {
-    font-size: 22px;
-    font-weight: bold;
-}
-
 .flip-card-back {
     transform: rotateY(180deg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
 .flip-card-back p {
@@ -205,7 +194,7 @@ nav ul li a:hover {
     box-shadow: 0px 0px 10px white;
 }
 
-/* 🔹 LinkedIn Button - Proper Styling */
+/* 🔹 LinkedIn Button - Restore Styling */
 .linkedin-container {
     text-align: center;
     margin-top: 20px;
@@ -229,6 +218,45 @@ nav ul li a:hover {
     transform: scale(1.05);
 }
 
+/* 🔹 Responsive Design Fixes (Mobile-Friendly) */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    #profile {
+        height: auto;
+        padding: 50px 20px;
+    }
+
+    .profile-pic {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    #typewriter {
+        font-size: 32px;
+    }
+
+    .static-title {
+        font-size: 26px;
+    }
+
+    #skills {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .flip-card {
+        max-width: 100%;
+        height: auto;
+    }
+}
 
 
 
