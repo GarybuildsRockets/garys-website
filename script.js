@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+ddocument.addEventListener("DOMContentLoaded", function() {
     // Typewriter Effect for Headers
     function typeWriterEffect(elementId, text, speed = 100) {
         let index = 0;
@@ -18,15 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
 
-    // Dark Mode Toggle with Icon
-    const darkModeToggle = document.getElementById("darkMode");
-    darkModeToggle.addEventListener("change", function() {
-        document.body.classList.toggle("dark-mode");
-        document.querySelectorAll(".progress-bar span").forEach(bar => {
-            bar.style.background = document.body.classList.contains("dark-mode") ? "#ffffff" : "#007bff";
-        });
-    });
-
     // Project Filter System
     const filters = document.querySelectorAll(".filter");
     const projects = document.querySelectorAll(".project-card");
@@ -41,18 +32,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     project.style.display = "none";
                 }
             });
-        });
-    });
-
-    // Animated Skill Progress Bars
-    const skillBars = document.querySelectorAll(".progress-bar span");
-    window.addEventListener("scroll", function() {
-        skillBars.forEach(bar => {
-            const position = bar.getBoundingClientRect().top;
-            const screenPosition = window.innerHeight / 1.5;
-            if (position < screenPosition) {
-                bar.style.width = bar.getAttribute("style").split(":")[1];
-            }
         });
     });
 
@@ -75,4 +54,5 @@ document.addEventListener("DOMContentLoaded", function() {
         contactForm.reset();
     });
 });
+
 
