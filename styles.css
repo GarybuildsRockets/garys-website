@@ -232,6 +232,7 @@ nav ul li a:hover {
     box-shadow: 0 0 10px white;
 }
 .contact-me {
+    font-size: 52px;
     display: flex;
     flex-direction: column;
     align-items: center;
