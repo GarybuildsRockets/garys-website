@@ -1,235 +1,143 @@
-/* General Styles */
-body {
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #000000, #0d0d0d, #1a1a1a);
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    scroll-behavior: smooth;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gary Kanyuh | Engineering Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <header id="navbar" class="curved-navbar">
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#skills">My Skills</a></li>
+                <li><a href="#projects">My Projects</a></li>
+                <li><a href="#contact">Contact Me</a></li>
+            </ul>
+        </nav>
+    </header>
 
-/* Navbar */
-.curved-navbar {
-    position: fixed;
-    width: 90%;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 30px;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-}
+    <!-- Profile Section -->
+    <section id="home" class="profile">
+        <div class="profile-container">
+            <img src="profile.jpg" alt="Profile Picture" class="profile-pic">
+            <h1 id="typewriter">Hello, I'm Gary Kanyuh</h1>
+            <p class="static-title">Mechanical Engineer</p>
+        </div>
+    </section>
 
-nav ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
+    <!-- About Me Section -->
+    <section id="about" class="about-me">
+        <div class="about-container">
+            <div class="about-image">
+                <img src="collage.jpg" alt="About Me Image" class="circular-image">
+            </div>
+            <div class="about-text">
+                <h2 id="aboutTypewriter">About Me</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+                <a href="resume.pdf" download class="button-style">Download My Resume</a>
+            </div>
+        </div>
+    </section>
 
-nav ul li {
-    margin: 0 15px;
-}
+    <!-- My Skills Section -->
+    <section id="skills" class="my-skills">
+        <h2 id="skillsTypewriter">My Skills</h2>
+        <div class="skills-container">
+            <div class="skill" data-description="Expert in CAD modeling">
+                <p>CAD Design</p>
+                <div class="progress-bar"><span style="width: 90%"></span></div>
+            </div>
+            <div class="skill" data-description="Experience in AI-driven applications">
+                <p>AI Integration</p>
+                <div class="progress-bar"><span style="width: 80%"></span></div>
+            </div>
+            <div class="skill" data-description="Strong knowledge in robotics development">
+                <p>Robotics</p>
+                <div class="progress-bar"><span style="width: 85%"></span></div>
+            </div>
+            <div class="skill" data-description="Hands-on experience with electronic circuits">
+                <p>Electronics</p>
+                <div class="progress-bar"><span style="width: 75%"></span></div>
+            </div>
+            <div class="skill" data-description="Deep research experience in ML">
+                <p>Machine Learning & Research</p>
+                <div class="progress-bar"><span style="width: 70%"></span></div>
+            </div>
+            <div class="skill" data-description="Practical mechanical engineering skills">
+                <p>Mechanical Engineering</p>
+                <div class="progress-bar"><span style="width: 85%"></span></div>
+            </div>
+            <div class="skill" data-description="Expertise in sustainability systems">
+                <p>Sustainability Engineering</p>
+                <div class="progress-bar"><span style="width: 80%"></span></div>
+            </div>
+            <div class="skill" data-description="Programming knowledge for automation">
+                <p>Programming & Automation</p>
+                <div class="progress-bar"><span style="width: 75%"></span></div>
+            </div>
+        </div>
+    </section>
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s;
-    scroll-behavior: smooth;
-}
+    <!-- My Projects Section -->
+    <section id="projects" class="my-projects">
+        <h2 id="projectsTypewriter">My Projects</h2>
+        <div class="filter-bar">
+            <button class="filter" data-category="all">All</button>
+            <button class="filter" data-category="ai">AI</button>
+            <button class="filter" data-category="robotics">Robotics</button>
+            <button class="filter" data-category="electronics">Electronics</button>
+            <button class="filter" data-category="cad">CAD</button>
+            <button class="filter" data-category="research">Research</button>
+        </div>
+        <div class="projects-container">
+            <div class="project-card ai" data-project="ai-project">
+                AI Sustainability Project
+                <button class="details-btn">Details</button>
+            </div>
+            <div class="project-card robotics" data-project="robotics-project">
+                Midas MK5 Avionics
+                <button class="details-btn">Details</button>
+            </div>
+            <div class="project-card electronics" data-project="sensor-network">
+                Smart Sensor Network
+                <button class="details-btn">Details</button>
+            </div>
+            <div class="project-card cad" data-project="engine-model">
+                3D Printed Engine Model
+                <button class="details-btn">Details</button>
+            </div>
+            <div class="project-card research" data-project="carbon-analysis">
+                AI-Based Carbon Footprint Analysis
+                <button class="details-btn">Details</button>
+            </div>
+            <div class="project-card sustainability" data-project="renewable-energy">
+                Renewable Energy Optimization
+                <button class="details-btn">Details</button>
+            </div>
+        </div>
+    </section>
 
-nav ul li a:hover {
-    color: #007bff;
-}
-
-/* Profile Section */
-.profile {
-    text-align: center;
-    padding: 100px 0;
-}
-
-.profile-pic {
-    width: 200px;
-    border-radius: 50%;
-}
-
-/* About Me Section */
-.about-me {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-    padding: 50px;
-    text-align: left;
-}
-
-.about-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 80%;
-    margin: 0 auto;
-}
-
-.about-image img {
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-}
-
-.about-text {
-    max-width: 50%;
-}
-
-.button-style {
-    display: inline-block;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-
-.button-style:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-/* My Skills Section */
-.my-skills {
-    text-align: center;
-    padding: 50px 0;
-    width: 80%;
-    margin: 0 auto;
-}
-
-.skills-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    justify-content: center;
-    padding: 50px;
-}
-
-.progress-bar {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-.progress-bar span {
-    display: block;
-    height: 20px;
-    background: #ffffff;
-    transition: width 1s ease-in-out;
-}
-
-/* My Projects Section */
-.my-projects {
-    text-align: center;
-    padding: 50px;
-}
-
-.filter-bar {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.filter-bar button {
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
-}
-
-.filter-bar button:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-.projects-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    justify-items: center;
-    padding: 50px;
-}
-
-.project-card {
-    width: 250px;
-    height: 250px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: transform 0.5s, box-shadow 0.3s;
-    text-align: center;
-}
-
-.project-card:hover {
-    box-shadow: 0 0 15px white;
-    transform: scale(1.05);
-}
-
-.project-card .project-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.project-card .project-description {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 80%;
-    font-size: 14px;
-}
-
-.project-card:hover .project-title {
-    display: none;
-}
-
-.project-card:hover .project-description {
-    display: block;
-}
-
-.project-card .details-btn {
-    position: absolute;
-    bottom: 10px;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-
-.project-card .details-btn:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
+    <!-- Contact Me Section -->
+    <section id="contact" class="contact-me">
+        <h2 id="contactTypewriter">Contact Me</h2>
+        <form class="contact-form">
+            <input type="text" placeholder="First Name" required>
+            <input type="text" placeholder="Last Name" required>
+            <input type="email" placeholder="Email" required>
+            <textarea placeholder="Your Message"></textarea>
+            <button type="submit" class="button-style">Send Message</button>
+        </form>
+        <div class="linkedin-container">
+            <a href="https://linkedin.com" class="button-style linkedin-btn">Connect on LinkedIn</a>
+        </div>
+    </section>
+</body>
+</html>
 
 
 
