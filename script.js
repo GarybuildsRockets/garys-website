@@ -18,6 +18,17 @@ document.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
 
+    // Smooth Scrolling for Navbar Links
+    document.querySelectorAll("nav ul li a").forEach(anchor => {
+        anchor.addEventListener("click", function(event) {
+            event.preventDefault();
+            const targetId = this.getAttribute("href").substring(1);
+            document.getElementById(targetId).scrollIntoView({
+                behavior: "smooth"
+            });
+        });
+    });
+
     // Project Filter System - Fixing Issue
     const filters = document.querySelectorAll(".filter");
     const projects = document.querySelectorAll(".project-card");
@@ -65,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
         contactForm.reset();
     });
 });
+
 
 
 
