@@ -294,13 +294,13 @@ nav ul li a:hover {
     width: 100%;
     max-width: 400px;
     padding: 12px;
+    font-color: white;
     font-size: 18px;
-    font-color: #FFFFFF;
     margin-top: 15px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background: linear-gradient(135deg, #000000, #000000);
+    background: linear-gradient(135deg, #000000, #FFFFFF);
     color: black;
     transition: background 0.3s ease-in-out, box-shadow 0.3s;
 }
