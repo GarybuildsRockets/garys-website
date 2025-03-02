@@ -134,103 +134,39 @@ nav ul li a:hover {
     transition: width 1s ease-in-out;
 }
 
-/* Projects Section */
-.my-projects {
+/* Contact Me Section */
+.contact-me {
     text-align: center;
-    padding: 50px;
+    padding: 50px 0 150px; /* Increased bottom padding for more space */
+    width: 80%;
+    margin: 0 auto;
 }
 
-.filter-bar {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.filter-bar button {
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
-}
-
-.filter-bar button:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-.projects-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    justify-items: center;
-    padding: 50px;
-}
-
-.project-card {
-    width: 250px;
-    height: 250px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
+.contact-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: transform 0.5s, box-shadow 0.3s;
-    text-align: center;
+    gap: 15px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.project-card:hover {
-    box-shadow: 0 0 15px white;
-    transform: scale(1.05);
-}
-
-.project-card .project-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.project-card .project-description {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 80%;
-    font-size: 14px;
-}
-
-.project-card:hover .project-title {
-    display: none;
-}
-
-.project-card:hover .project-description {
-    display: block;
-}
-
-.project-card .details-btn {
-    position: absolute;
-    bottom: 10px;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 8px 16px;
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
     border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
-.project-card .details-btn:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
+.contact-form button {
+    margin-top: 20px;
 }
 
+.linkedin-container {
+    margin-top: 30px;
+}
 
 
 
