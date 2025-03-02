@@ -8,7 +8,7 @@ body {
     scroll-behavior: smooth;
 }
 
-/* Curved Navbar */
+/* Navbar */
 .curved-navbar {
     position: fixed;
     width: 90%;
@@ -43,19 +43,6 @@ nav ul li a {
 
 nav ul li a:hover {
     color: #007bff;
-}
-
-/* Dark Mode Toggle */
-.dark-mode-toggle {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-
-.dark-mode-toggle label {
-    cursor: pointer;
-    font-size: 20px;
-    color: white;
 }
 
 /* Profile Section */
@@ -126,6 +113,14 @@ nav ul li a:hover {
     background: #007bff;
 }
 
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-items: center;
+    padding: 50px;
+}
+
 .project-card {
     width: 200px;
     height: 200px;
@@ -134,12 +129,30 @@ nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 20px;
     transition: transform 0.5s;
 }
 
 .project-card:hover {
     transform: rotateY(180deg);
+}
+
+/* Button Styles */
+.button-style {
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.button-style:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
 }
 
 /* Contact Form */
@@ -161,20 +174,7 @@ nav ul li a:hover {
 }
 
 .contact-form button {
-    background: #007bff;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.contact-form button:hover {
-    background: #0056b3;
-    box-shadow: 0 0 10px white;
+    composes: button-style;
 }
 
 /* LinkedIn Button */
@@ -184,20 +184,7 @@ nav ul li a:hover {
 }
 
 .linkedin-btn {
-    display: inline-block;
-    padding: 12px 18px;
-    font-size: 18px;
-    font-weight: 500;
-    color: #ffffff;
-    background-color: #0077b5;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.linkedin-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+    composes: button-style;
 }
 
 
