@@ -31,6 +31,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    position: relative;
 }
 
 nav ul {
@@ -87,7 +88,7 @@ nav ul li a:hover {
         padding: 10px 0;
     }
     
-    .menu-toggle.active + ul {
+    nav ul.show {
         display: flex;
     }
 }
@@ -97,9 +98,10 @@ nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 90vh;
+    height: auto;
+    min-height: 90vh;
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
 .profile-container {
@@ -110,7 +112,7 @@ nav ul li a:hover {
 
 .profile-pic {
     width: 100%;
-    max-width: 320px;
+    max-width: 280px;
     border-radius: 50%;
     transition: opacity 0.5s;
 }
@@ -120,12 +122,12 @@ nav ul li a:hover {
 }
 
 #typewriter {
-    font-size: 40px;
+    font-size: 36px;
     font-weight: bold;
 }
 
 .static-title {
-    font-size: 35px;
+    font-size: 30px;
     color: #ddd;
 }
 
@@ -145,6 +147,30 @@ nav ul li a:hover {
     background: #007bff;
     color: white;
     box-shadow: 0 0 10px #007bff;
+}
+
+/* 🔹 LinkedIn Button */
+.linkedin-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.linkedin-btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #0077b5;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+    text-align: center;
+}
+
+.linkedin-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
 /* 🔹 Skills Banner */
@@ -244,30 +270,6 @@ nav ul li a:hover {
     background: white;
     color: black;
     box-shadow: 0px 0px 10px white;
-}
-
-/* 🔹 LinkedIn Button - Restore Styling */
-.linkedin-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.linkedin-btn {
-    display: inline-block;
-    padding: 12px 18px;
-    font-size: 18px;
-    font-weight: 500;
-    color: #ffffff;
-    background-color: #0077b5;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
-    text-align: center;
-}
-
-.linkedin-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
 }
 
 
