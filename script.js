@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let index = 0;
         function type() {
             if (index < text.length) {
-                document.getElementById(elementId).innerHTML += text.charAt(index);
+                document.getElementById(elementId).innerHTML = text.substring(0, index + 1);
                 index++;
                 setTimeout(type, speed);
             }
@@ -18,10 +18,13 @@ document.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
 
-    // Dark Mode Toggle
+    // Dark Mode Toggle with Icon
     const darkModeToggle = document.getElementById("darkMode");
     darkModeToggle.addEventListener("change", function() {
         document.body.classList.toggle("dark-mode");
+        document.querySelectorAll(".progress-bar span").forEach(bar => {
+            bar.style.background = document.body.classList.contains("dark-mode") ? "#ffffff" : "#007bff";
+        });
     });
 
     // Project Filter System
@@ -50,6 +53,17 @@ document.addEventListener("DOMContentLoaded", function() {
             if (position < screenPosition) {
                 bar.style.width = bar.getAttribute("style").split(":")[1];
             }
+        });
+    });
+
+    // Flip Animation for Project Cards
+    const projectCards = document.querySelectorAll(".project-card");
+    projectCards.forEach(card => {
+        card.addEventListener("mouseenter", function() {
+            this.style.transform = "rotateY(180deg)";
+        });
+        card.addEventListener("mouseleave", function() {
+            this.style.transform = "rotateY(0deg)";
         });
     });
 
