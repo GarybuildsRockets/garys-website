@@ -9,9 +9,6 @@ body {
     height: auto;
     overflow-y: scroll;
 }
-
-}
-
 /* Navbar */
 .curved-navbar {
     position: fixed;
