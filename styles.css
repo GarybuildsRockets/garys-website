@@ -119,17 +119,28 @@ nav ul li a:hover {
 }
 
 /* 🔹 Flip Cards */
+#projects-preview {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 50px 0;
+    gap: 20px;
+}
+
 .flip-card {
-    width: 200px;
-    height: 250px;
-    perspective: 1000px;
+    width: 300px;
+    height: 400px;
+    perspective: 1200px;
 }
 
 .flip-card-inner {
+    position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.6s;
+    transition: transform 0.8s;
     transform-style: preserve-3d;
+    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 .flip-card:hover .flip-card-inner {
@@ -144,25 +155,40 @@ nav ul li a:hover {
     background: rgba(255, 255, 255, 0.1);
     backface-visibility: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    padding: 20px;
+    text-align: center;
 }
 
 .flip-card-back {
     transform: rotateY(180deg);
 }
 
+.flip-card-back p {
+    font-size: 16px;
+    padding: 10px;
+}
+
 .see-more-btn {
+    display: inline-block;
     color: white;
     text-decoration: none;
-    border: 1px solid white;
-    padding: 5px 10px;
+    border: 2px solid white;
+    padding: 10px 15px;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s;
+    border-radius: 5px;
 }
 
 .see-more-btn:hover {
     background: white;
     color: black;
+    box-shadow: 0px 0px 10px white;
 }
 
 /* 🔹 LinkedIn Button - Proper Styling */
@@ -188,6 +214,7 @@ nav ul li a:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
+
 
 
 
