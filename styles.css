@@ -39,6 +39,7 @@ nav ul li a {
     text-decoration: none;
     font-size: 18px;
     transition: color 0.3s;
+    scroll-behavior: smooth;
 }
 
 nav ul li a:hover {
@@ -63,66 +64,62 @@ nav ul li a:hover {
     width: 80%;
 }
 
-/* Skills Section */
-.skills-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    justify-content: center;
-    padding: 50px;
-}
-
-.progress-bar {
-    width: 80%;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-.progress-bar span {
-    display: block;
-    height: 20px;
-    background: #ffffff;
-    transition: width 1s ease-in-out;
-}
-
-/* Projects Section */
-.my-projects {
-    text-align: center;
-    padding: 50px;
-}
-
-.filter-bar {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.filter-bar button {
+/* Download Resume Button */
+.button-style {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
     background: linear-gradient(135deg, #111, #222);
     color: white;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    text-align: center;
     border: none;
-    padding: 10px 20px;
-    margin: 5px;
     cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
 }
 
-.filter-bar button:hover {
+.button-style:hover {
     background: white;
     color: black;
     box-shadow: 0 0 10px white;
 }
 
-.projects-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    justify-items: center;
-    padding: 50px;
+/* LinkedIn Button */
+.linkedin-container {
+    text-align: center;
+    margin-top: 30px;
 }
 
+.linkedin-btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+}
+
+.linkedin-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+    transform: scale(1.05);
+}
+
+/* Smooth Scrolling Fix */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Project Card Hover Glow Effect */
 .project-card {
     width: 200px;
     height: 200px;
@@ -136,8 +133,8 @@ nav ul li a:hover {
 }
 
 .project-card:hover {
-    transform: rotateY(180deg);
     box-shadow: 0 0 15px white;
+    transform: scale(1.05);
 }
 
 .project-card .details-btn {
@@ -153,6 +150,25 @@ nav ul li a:hover {
 }
 
 .project-card .details-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+}
+
+/* Contact Me Button Update */
+.contact-form button {
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.contact-form button:hover {
     background: white;
     color: black;
     box-shadow: 0 0 10px white;
@@ -176,48 +192,6 @@ nav ul li a:hover {
     border-radius: 5px;
     border: none;
 }
-
-.contact-form button {
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.contact-form button:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-/* LinkedIn Button */
-.linkedin-container {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.linkedin-btn {
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 12px 18px;
-    font-size: 18px;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.2s;
-    margin-top: -10px;
-}
-
-.linkedin-btn:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-    transform: scale(1.05);
 }
 
 
