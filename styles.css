@@ -272,7 +272,7 @@ nav ul li a:hover {
 .contact-form textarea:hover,
 .contact-form input:focus,
 .contact-form textarea:focus {
-    border-color: #007bff;
+    border-color: #FFFFFF;
     background: rgba(255, 255, 255, 0.2);
 }
 
@@ -291,6 +291,7 @@ nav ul li a:hover {
 
 /* Button Styling */
 .contact-form button {
+    color: #FFFFFF;
     width: 100%;
     max-width: 400px;
     padding: 12px;
