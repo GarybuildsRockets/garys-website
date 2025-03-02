@@ -10,6 +10,7 @@ body {
 
 /* Navbar */
 .curved-navbar {
+    text-align:center;
     position: fixed;
     width: 90%;
     top: 10px;
