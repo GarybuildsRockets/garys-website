@@ -305,7 +305,7 @@ nav ul li a:hover {
 }
 
 .contact-form button:hover {
-    background: linear-gradient(135deg, #0056b3, #004494);
+    background: linear-gradient(135deg, #000000, #000000);
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
