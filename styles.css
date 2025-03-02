@@ -49,6 +49,31 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
+/* 🔹 Mobile Navbar Fix - Hamburger Menu */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        display: none;
+    }
+    
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+    }
+    
+    .menu-toggle.active + ul {
+        display: flex;
+    }
+}
+
 /* 🔹 Profile Section */
 #profile {
     display: flex;
@@ -87,12 +112,14 @@ nav ul li a:hover {
 
 .resume-btn {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border: 2px solid #007bff;
     color: #007bff;
     text-decoration: none;
-    margin-top: 10px;
+    margin-top: 15px;
     transition: all 0.3s;
+    text-align: center;
+    border-radius: 5px;
 }
 
 .resume-btn:hover {
@@ -106,7 +133,7 @@ nav ul li a:hover {
     display: flex;
     justify-content: center;
     padding: 20px;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
@@ -116,6 +143,7 @@ nav ul li a:hover {
     border-radius: 5px;
     transition: transform 0.3s, box-shadow 0.3s;
     text-align: center;
+    min-width: 160px;
 }
 
 .skill-box:hover {
@@ -218,58 +246,6 @@ nav ul li a:hover {
     background-color: #0056b3;
     transform: scale(1.05);
 }
-
-/* 🔹 Responsive Design Fixes (Mobile-Friendly) */
-@media (max-width: 768px) {
-    nav ul {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    nav ul li {
-        margin: 10px 0;
-    }
-
-    #profile {
-        height: auto;
-        padding: 50px 20px;
-    }
-
-    .profile-pic {
-        width: 100%;
-        max-width: 280px;
-    }
-
-    #typewriter {
-        font-size: 32px;
-    }
-
-    .static-title {
-        font-size: 26px;
-    }
-
-    #skills {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #projects-preview {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .flip-card {
-        max-width: 100%;
-        height: auto;
-    }
-
-    header.scrolled {
-        padding: 8px 0;
-    }
-}
-
-
 
 
 
