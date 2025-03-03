@@ -78,6 +78,33 @@ document.addEventListener("DOMContentLoaded", function() {
         contactForm.reset();
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
+
+    document.querySelector(".contact-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Collect form data
+        const formData = {
+            to_name: "Gary Kanyuh", // Replace with your name
+            from_name: document.querySelector("input[name='First Name']").value + " " +
+                       document.querySelector("input[name='Last Name']").value,
+            from_email: document.querySelector("input[name='Email']").value,
+            message: document.querySelector("textarea[name='Message']").value
+        };
+
+        // Send email
+        emailjs.send("service_bno468q", "template_2eeil47", formData)
+            .then(function () {
+                alert("Message sent successfully!");
+                document.querySelector(".contact-form").reset();
+            })
+            .catch(function (error) {
+                console.error("Error sending email:", error);
+                alert("Failed to send message. Please try again.");
+            });
+    });
+});
 
 
 
