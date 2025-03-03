@@ -70,14 +70,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Contact Form Submission Animation
-    const contactForm = document.querySelector(".contact-form");
-    contactForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        alert("Message sent successfully!");
-        contactForm.reset();
-    });
-});
 document.addEventListener("DOMContentLoaded", function () {
     emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
 
