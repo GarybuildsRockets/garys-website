@@ -86,12 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Collect form data
         const formData = {
-            to_name: "Gary Kanyuh", // Replace with your name
-            from_name: document.querySelector("input[name='First Name']").value + " " +
-                       document.querySelector("input[name='Last Name']").value,
-            from_email: document.querySelector("input[name='Email']").value,
-            message: document.querySelector("textarea[name='Message']").value
-        };
+    to_name: "Gary", // Your name
+    from_name: document.querySelector("input[name='First Name']").value + " " +
+               document.querySelector("input[name='Last Name']").value,
+    from_email: document.querySelector("input[name='Email']").value,
+    message: document.querySelector("textarea[name='Message']").value
+};
 
         // Send email
         emailjs.send("service_bno468q", "template_2eeil47", formData)
