@@ -80,24 +80,32 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // EmailJS Contact Form
-    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
+    // EmailJS Contact Form Fix
+    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your actual Public Key
 
     document.querySelector(".contact-form").addEventListener("submit", function(event) {
         event.preventDefault();
 
-        // Collect form data
+        // Get form values
+        const firstName = document.querySelector("input:nth-of-type(1)").value;
+        const lastName = document.querySelector("input:nth-of-type(2)").value;
+        const email = document.querySelector("input:nth-of-type(3)").value;
+        const message = document.querySelector("textarea").value;
+
+        if (!firstName || !lastName || !email || !message) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
         const formData = {
             to_name: "Gary",
-            from_name: document.querySelector("input[name='First Name']").value + " " +
-                       document.querySelector("input[name='Last Name']").value,
-            from_email: document.querySelector("input[name='Email']").value,
-            message: document.querySelector("textarea[name='Message']").value
+            from_name: `${firstName} ${lastName}`,
+            from_email: email,
+            message: message
         };
 
-        // Send email
         emailjs.send("service_bno468q", "template_2eeil47", formData)
-            .then(function() {
+            .then(function(response) {
                 alert("Message sent successfully!");
                 document.querySelector(".contact-form").reset();
             })
