@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Ensure EmailJS is available
+    if (typeof emailjs === "undefined") {
+        console.error("❌ EmailJS library failed to load. Make sure to include the script in index.html");
+        return;
+    }
+
+    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your actual Public Key
+
     // Typewriter Effect for Headers
     function typeWriterEffect(elementId, text, speed = 100) {
         let index = 0;
@@ -44,47 +52,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
             projects.forEach(project => {
                 if (category === "all" || project.classList.contains(category)) {
-                    project.style.display = "flex"; // Ensure it's shown correctly
+                    project.style.display = "flex";
                 } else {
                     project.style.display = "none";
                 }
             });
 
-            // Remove active state from all filters and add to the clicked one
             filters.forEach(f => f.classList.remove("active"));
             this.classList.add("active");
         });
     });
 
-    // Flip Animation for Project Cards
-    const projectCards = document.querySelectorAll(".project-card");
-    projectCards.forEach(card => {
-        card.addEventListener("mouseenter", function() {
-            this.querySelector(".project-title").style.display = "none";
-            this.querySelector(".project-description").style.display = "block";
-            this.style.boxShadow = "0 0 15px white";
-        });
-        card.addEventListener("mouseleave", function() {
-            this.querySelector(".project-title").style.display = "block";
-            this.querySelector(".project-description").style.display = "none";
-            this.style.boxShadow = "none";
-        });
-    });
-
-    // Navigate to Project Details Page
-    const detailButtons = document.querySelectorAll(".details-btn");
-    detailButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            const projectName = this.closest(".project-card").getAttribute("data-project");
-            window.location.href = `projects/${projectName}.html`;
-        });
-    });
-
     // EmailJS Contact Form Fix
-    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your actual Public Key
-
     document.querySelector(".contact-form").addEventListener("submit", function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission
 
         // Get form values
         const firstName = document.querySelector("input:nth-of-type(1)").value;
@@ -100,21 +81,24 @@ document.addEventListener("DOMContentLoaded", function() {
         const formData = {
             to_name: "Gary",
             from_name: `${firstName} ${lastName}`,
-            from_email: email,
             message: message
         };
 
-        emailjs.send("service_bno468q", "template_2eeil47", formData)
+        console.log("🚀 Sending Email with data:", formData);
+
+        emailjs.send("service_bno468q", "template_9bicqod", formData)
             .then(function(response) {
+                console.log("✅ Email sent successfully:", response);
                 alert("Message sent successfully!");
                 document.querySelector(".contact-form").reset();
             })
             .catch(function(error) {
-                console.error("Error sending email:", error);
-                alert("Failed to send message. Please try again.");
+                console.error("❌ Error sending email:", error);
+                alert("Failed to send message. Check console for errors.");
             });
     });
 });
+
 
 
 
