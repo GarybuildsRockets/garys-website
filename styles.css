@@ -69,124 +69,85 @@ nav ul li a:hover {
     color: #FFFFFF;
 }
 
-/* Dark Mode Toggle Button */
-#theme-toggle {
-    cursor: pointer;
-    padding: 10px 15px;
-    border-radius: 8px;
+/* Button Styles */
+.button-style {
+    display: inline-block;
+    padding: 12px 20px;
     background: linear-gradient(135deg, #111, #222);
     color: white;
-    border: none;
-    font-size: 16px;
-    transition: background 0.3s, color 0.3s;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s ease-in-out;
 }
 
-#theme-toggle:hover {
+.button-style:hover {
     background: white;
     color: black;
     box-shadow: 0 0 10px white;
+    transform: scale(1.05);
 }
 
-/* Light Mode Button */
-.light-mode #theme-toggle {
+/* Light Mode Buttons */
+.light-mode .button-style {
     background: linear-gradient(135deg, #ddd, #ccc);
     color: black;
 }
 
-.light-mode #theme-toggle:hover {
+.light-mode .button-style:hover {
     background: black;
     color: white;
 }
 
-/* Profile Section */
-.profile {
-    text-align: center;
-    padding: 100px 0;
-}
-
-.profile-pic {
-    width: 400px;
-    border-radius: 50%;
-}
-
-/* About Me Section */
-.about-me {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-    padding: 50px;
-    text-align: left;
-}
-
-.about-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 80%;
-    margin: 0 auto;
-}
-
-.about-image img {
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-}
-
-.about-text {
-    max-width: 50%;
-}
-
-/* My Skills Section */
-.my-skills {
-    text-align: center;
-    padding: 50px 0;
-    width: 80%;
-    margin: 0 auto;
-}
-
-.skills-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    justify-content: center;
-    padding: 50px;
-}
-
-.skill {
-    text-align: center;
-}
-
-.progress-bar {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 10px 0;
-}
-
-.progress-bar span {
-    display: block;
-    height: 20px;
-    background: #ffffff;
-    transition: width 1s ease-in-out;
-}
-
-/* Light Mode Fix for Progress Bar */
-.light-mode .progress-bar {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.light-mode .progress-bar span {
-    background: black;
+/* Fix Hire Me Button */
+.about-text .button-style {
+    display: inline-block;
+    margin-top: 20px;
 }
 
 /* My Projects Section */
 .my-projects {
     text-align: center;
     padding: 50px;
+}
+
+/* Project Filter Buttons */
+.filter-bar {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filter-bar button {
+    background: black;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s ease-in-out;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* Fix Light Mode for Filter Buttons */
+.light-mode .filter-bar button {
+    background: white;
+    color: black;
+    border: 2px solid black;
+}
+
+/* Hover Effect */
+.filter-bar button:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+    transform: scale(1.1);
+}
+
+/* Light Mode Hover */
+.light-mode .filter-bar button:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px black;
 }
 
 /* Fix Project Grid Layout */
@@ -213,8 +174,8 @@ nav ul li a:hover {
 
 /* Project Card */
 .project-card {
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
@@ -225,7 +186,7 @@ nav ul li a:hover {
     color: white;
     padding: 20px;
     position: relative;
-    transition: transform 0.4s, box-shadow 0.3s;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s;
 }
 
 /* Light Mode Project Cards */
@@ -234,17 +195,23 @@ nav ul li a:hover {
     color: black;
 }
 
+/* Project Card Hover Effect */
+.project-card:hover {
+    box-shadow: 0 0 15px white;
+    transform: scale(1.05);
+}
+
 /* Fix the Details Button Alignment */
 .project-card .details-btn {
     position: absolute;
-    bottom: 15px;
+    bottom: 20px;
     background: white;
     color: black;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s ease-in-out;
 }
 
 /* Button Hover */
@@ -252,6 +219,7 @@ nav ul li a:hover {
     background: black;
     color: white;
     box-shadow: 0 0 10px white;
+    transform: scale(1.1);
 }
 
 /* Contact Me Section */
@@ -275,7 +243,7 @@ nav ul li a:hover {
     border-radius: 8px;
     text-decoration: none;
     font-size: 18px;
-    transition: background 0.3s, color 0.3s;
+    transition: background 0.3s, color 0.3s, transform 0.2s ease-in-out;
     border: 2px solid white;
 }
 
@@ -291,6 +259,7 @@ nav ul li a:hover {
     background: white;
     color: black;
     box-shadow: 0 0 10px white;
+    transform: scale(1.1);
 }
 
 /* LinkedIn Button Hover - Light Mode */
@@ -298,6 +267,7 @@ nav ul li a:hover {
     background: black;
     color: white;
     box-shadow: 0 0 10px black;
+    transform: scale(1.1);
 }
 
 
