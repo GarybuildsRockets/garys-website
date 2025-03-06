@@ -18,14 +18,19 @@ document.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
 
-    // Smooth Scrolling for Navbar Links
+    // Smooth Scrolling Fix
     document.querySelectorAll("nav ul li a").forEach(anchor => {
         anchor.addEventListener("click", function(event) {
             event.preventDefault();
             const targetId = this.getAttribute("href").substring(1);
-            document.getElementById(targetId).scrollIntoView({
-                behavior: "smooth"
-            });
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
         });
     });
 
@@ -36,13 +41,18 @@ document.addEventListener("DOMContentLoaded", function() {
     filters.forEach(filter => {
         filter.addEventListener("click", function() {
             const category = this.getAttribute("data-category");
+
             projects.forEach(project => {
-                if (project.classList.contains(category) || category === "all") {
-                    project.style.display = "flex";
+                if (category === "all" || project.classList.contains(category)) {
+                    project.style.display = "flex"; // Ensure it's shown correctly
                 } else {
                     project.style.display = "none";
                 }
             });
+
+            // Remove active state from all filters and add to the clicked one
+            filters.forEach(f => f.classList.remove("active"));
+            this.classList.add("active");
         });
     });
 
@@ -70,28 +80,28 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-document.addEventListener("DOMContentLoaded", function () {
+    // EmailJS Contact Form
     emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
 
-    document.querySelector(".contact-form").addEventListener("submit", function (event) {
+    document.querySelector(".contact-form").addEventListener("submit", function(event) {
         event.preventDefault();
 
         // Collect form data
         const formData = {
-    to_name: "Gary", // Your name
-    from_name: document.querySelector("input[name='First Name']").value + " " +
-               document.querySelector("input[name='Last Name']").value,
-    from_email: document.querySelector("input[name='Email']").value,
-    message: document.querySelector("textarea[name='Message']").value
-};
+            to_name: "Gary",
+            from_name: document.querySelector("input[name='First Name']").value + " " +
+                       document.querySelector("input[name='Last Name']").value,
+            from_email: document.querySelector("input[name='Email']").value,
+            message: document.querySelector("textarea[name='Message']").value
+        };
 
         // Send email
         emailjs.send("service_bno468q", "template_2eeil47", formData)
-            .then(function () {
+            .then(function() {
                 alert("Message sent successfully!");
                 document.querySelector(".contact-form").reset();
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.error("Error sending email:", error);
                 alert("Failed to send message. Please try again.");
             });
