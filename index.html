@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gary Kanyuh | Engineering Portfolio</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script defer src="script.js"></script>
 </head>
 <body>
@@ -20,8 +19,6 @@
                 <li><a href="#contact">Contact Me</a></li>
             </ul>
         </nav>
-        <!-- Dark Mode Toggle Button -->
-        <button id="theme-toggle" class="button-style">🌞 Toggle Theme</button>
     </header>
 
     <!-- Profile Section -->
@@ -74,36 +71,12 @@
             <button class="filter" data-category="research">Research</button>
         </div>
         <div class="projects-container">
-            <div class="project-card ai">
-                <p class="project-title">AI Sustainability Project</p>
-                <p class="project-description">Using AI to optimize sustainability metrics.</p>
-                <button class="details-btn">Details</button>
-            </div>
-            <div class="project-card robotics">
-                <p class="project-title">Midas MK5 Avionics</p>
-                <p class="project-description">A high-performance avionics system.</p>
-                <button class="details-btn">Details</button>
-            </div>
-            <div class="project-card electronics">
-                <p class="project-title">Smart Sensor Network</p>
-                <p class="project-description">Real-time environmental data collection.</p>
-                <button class="details-btn">Details</button>
-            </div>
-            <div class="project-card cad">
-                <p class="project-title">3D Printed Engine Model</p>
-                <p class="project-description">Precision engineering for automotive applications.</p>
-                <button class="details-btn">Details</button>
-            </div>
-            <div class="project-card research">
-                <p class="project-title">Rocket Filter (FEA)</p>
-                <p class="project-description">Conducted Finite element analysis on a rocket filter to observe the affects of random vibration while encased and propelled.</p>
-                <button class="details-btn">Details</button>
-            </div>
-            <div class="project-card sustainability">
-                <p class="project-title">Interactive Website Portfolio</p>
-                <p class="project-description">Developing a website, to show off my projects and apply skills learn in class.</p>
-                <button class="details-btn">Details</button>
-            </div>
+            <div class="project-card ai"><p class="project-title">AI Sustainability Project</p><p class="project-description">Using AI to optimize sustainability metrics.</p><button class="details-btn">Details</button></div>
+            <div class="project-card robotics"><p class="project-title">Midas MK5 Avionics</p><p class="project-description">A high-performance avionics system.</p><button class="details-btn">Details</button></div>
+            <div class="project-card electronics"><p class="project-title">Smart Sensor Network</p><p class="project-description">Real-time environmental data collection.</p><button class="details-btn">Details</button></div>
+            <div class="project-card cad"><p class="project-title">3D Printed Engine Model</p><p class="project-description">Precision engineering for automotive applications.</p><button class="details-btn">Details</button></div>
+            <div class="project-card research"><p class="project-title">Rocket Filter (FEA)</p><p class="project-description">Conducted Finite element analysis on a rocket filter to observe the affects of random vibration while encased and propelled. </p><button class="details-btn">Details</button></div>
+            <div class="project-card sustainability"><p class="project-title">Interactive Website Portfolio</p><p class="project-description">Developing a website, to show off my projects and apply skills learn in class.</p><button class="details-btn">Details</button></div>
         </div>
     </section>
 
@@ -111,10 +84,10 @@
     <section id="contact" class="contact-me">
         <h2 id="contactTypewriter" class="centered">Contact Me</h2>
         <form class="contact-form">
-            <input type="text" name="first_name" placeholder="First Name" required>
-            <input type="text" name="last_name" placeholder="Last Name" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <textarea name="message" placeholder="Your Message" required></textarea>
+            <input type="text" placeholder="First Name" required>
+            <input type="text" placeholder="Last Name" required>
+            <input type="email" placeholder="Email" required>
+            <textarea placeholder="Your Message"></textarea>
             <button type="submit" class="button-style">Send Message</button>
         </form>
         <div class="linkedin-container centered">
@@ -123,7 +96,6 @@
     </section>
 </body>
 </html>
-
 
 
 
