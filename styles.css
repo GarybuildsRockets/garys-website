@@ -213,58 +213,89 @@ nav ul li a:hover {
     padding: 50px;
 }
 
-.projects-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    justify-items: center;
-    padding: 50px;
-}
-
+/* Project Card Fixes */
 .project-card {
-    width: 250px;
-    height: 250px;
+    width: 280px;
+    height: 280px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    transition: transform 0.5s, box-shadow 0.3s;
     text-align: center;
+    color: white;
+    padding: 20px;
+    position: relative;
+    transition: transform 0.4s, box-shadow 0.3s;
 }
 
 /* Light Mode Project Cards */
 .light-mode .project-card {
     background: rgba(0, 0, 0, 0.1);
+    color: black;
+}
+
+/* Project Card Hover Effect */
+.project-card:hover {
+    box-shadow: 0 0 12px white;
+    transform: scale(1.05);
+}
+
+/* Project Title */
+.project-card .project-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Project Description */
+.project-card .project-description {
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 0 15px;
+}
+
+/* Project Button Fix */
+.project-card .details-btn {
+    position: absolute;
+    bottom: 15px;
+    background: white;
+    color: black;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+/* Project Button Hover */
+.project-card .details-btn:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px white;
 }
 
 /* Contact Me Section */
 .contact-me {
-    font-size: 52px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     text-align: center;
-    padding: 100px 20px;
-    background: linear-gradient(135deg, #111, #222);
-    border-radius: 20px;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-}
-
-/* Light Mode Contact */
-.light-mode .contact-me {
-    background: linear-gradient(135deg, #ddd, #eee);
+    padding: 80px 20px;
 }
 
 /* Contact Form */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+/* Contact Form Fields */
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    max-width: 400px;
     padding: 12px;
     margin: 10px 0;
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -276,27 +307,20 @@ nav ul li a:hover {
     transition: border-color 0.3s, background 0.3s;
 }
 
-/* Light Mode Contact Form */
-.light-mode .contact-form input,
-.light-mode .contact-form textarea {
-    background: rgba(0, 0, 0, 0.1);
-    color: black;
+/* Restore Hover Effects */
+.contact-form input:hover,
+.contact-form textarea:hover,
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.2);
 }
 
-/* Placeholder Styling */
-.contact-form input::placeholder,
-.contact-form textarea::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.light-mode .contact-form input::placeholder,
-.light-mode .contact-form textarea::placeholder {
-    color: rgba(0, 0, 0, 0.5);
-}
-
-/* LinkedIn Button */
-.linkedin-container {
-    margin-top: 30px;
+/* Send Message Button */
+.contact-form button:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px white;
 }
 
 
