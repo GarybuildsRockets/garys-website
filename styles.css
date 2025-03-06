@@ -167,113 +167,71 @@ nav ul li a:hover {
     color: white;
 }
 
-/* My Skills Section */
-.my-skills {
-    text-align: center;
-    padding: 50px 0;
-    width: 80%;
-    margin: 0 auto;
-}
-
-.skills-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    justify-content: center;
-    padding: 50px;
-}
-
-.progress-bar {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-.progress-bar span {
-    display: block;
-    height: 20px;
-    background: #ffffff;
-    transition: width 1s ease-in-out;
-}
-
-/* Light Mode Progress Bar */
-.light-mode .progress-bar {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.light-mode .progress-bar span {
-    background: black;
-}
-
 /* My Projects Section */
 .my-projects {
     text-align: center;
     padding: 50px;
 }
 
-/* Project Card Fixes */
-.project-card {
-    width: 280px;
-    height: 280px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+/* Project Filter Buttons */
+.filter-bar {
     text-align: center;
-    color: white;
-    padding: 20px;
-    position: relative;
-    transition: transform 0.4s, box-shadow 0.3s;
+    margin-bottom: 20px;
 }
 
-/* Light Mode Project Cards */
-.light-mode .project-card {
-    background: rgba(0, 0, 0, 0.1);
-    color: black;
-}
-
-/* Project Card Hover Effect */
-.project-card:hover {
-    box-shadow: 0 0 12px white;
-    transform: scale(1.05);
-}
-
-/* Project Title */
-.project-card .project-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-/* Project Description */
-.project-card .project-description {
-    font-size: 14px;
-    line-height: 1.4;
-    padding: 0 15px;
-}
-
-/* Project Button Fix */
-.project-card .details-btn {
-    position: absolute;
-    bottom: 15px;
-    background: white;
-    color: black;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-
-/* Project Button Hover */
-.project-card .details-btn:hover {
+.filter-bar button {
     background: black;
     color: white;
+    border: 2px solid black;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* Fix Light Mode for Filter Buttons */
+.light-mode .filter-bar button {
+    background: white;
+    color: black;
+    border: 2px solid black;
+}
+
+/* Hover Effect */
+.filter-bar button:hover {
+    background: white;
+    color: black;
     box-shadow: 0 0 10px white;
+}
+
+/* Light Mode Hover */
+.light-mode .filter-bar button:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px black;
+}
+
+/* Fix Project Grid Layout */
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-items: center;
+    padding: 50px;
+}
+
+/* Responsive Grid for Smaller Screens */
+@media screen and (max-width: 900px) {
+    .projects-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .projects-container {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 /* Contact Me Section */
@@ -307,13 +265,21 @@ nav ul li a:hover {
     transition: border-color 0.3s, background 0.3s;
 }
 
-/* Restore Hover Effects */
-.contact-form input:hover,
-.contact-form textarea:hover,
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-color: white;
-    background: rgba(255, 255, 255, 0.2);
+/* Light Mode Contact Form */
+.light-mode .contact-form input,
+.light-mode .contact-form textarea {
+    background: rgba(0, 0, 0, 0.05);
+    color: black;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Light Mode Hover Effects */
+.light-mode .contact-form input:hover,
+.light-mode .contact-form textarea:hover,
+.light-mode .contact-form input:focus,
+.light-mode .contact-form textarea:focus {
+    border-color: black;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 /* Send Message Button */
@@ -323,6 +289,58 @@ nav ul li a:hover {
     box-shadow: 0 0 10px white;
 }
 
+/* Light Mode Send Message Button */
+.light-mode .contact-form button {
+    background: white;
+    color: black;
+    border: 2px solid black;
+}
+
+/* Light Mode Hover */
+.light-mode .contact-form button:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px black;
+}
+/* LinkedIn Button */
+.linkedin-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.linkedin-container a {
+    display: inline-block;
+    padding: 12px 20px;
+    text-align: center;
+    background: black;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background 0.3s, color 0.3s;
+    border: 2px solid white;
+}
+
+/* Light Mode LinkedIn Button */
+.light-mode .linkedin-container a {
+    background: white;
+    color: black;
+    border: 2px solid black;
+}
+
+/* LinkedIn Button Hover */
+.linkedin-container a:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+}
+
+/* LinkedIn Button Hover - Light Mode */
+.light-mode .linkedin-container a:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px black;
+}
 
 
 
