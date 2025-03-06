@@ -7,28 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your actual Public Key
 
-    // Dark Mode Toggle
-    const themeToggle = document.getElementById("theme-toggle");
-    const currentTheme = localStorage.getItem("theme");
-
-    // Apply saved theme if available
-    if (currentTheme === "light") {
-        document.body.classList.add("light-mode");
-        themeToggle.textContent = "🌙 Dark Mode";
-    }
-
-    themeToggle.addEventListener("click", function() {
-        document.body.classList.toggle("light-mode");
-
-        if (document.body.classList.contains("light-mode")) {
-            localStorage.setItem("theme", "light");
-            themeToggle.textContent = "🌙 Dark Mode";
-        } else {
-            localStorage.setItem("theme", "dark");
-            themeToggle.textContent = "🌞 Light Mode";
-        }
-    });
-
     // Typewriter Effect for Headers
     function typeWriterEffect(elementId, text, speed = 100) {
         let index = 0;
@@ -87,8 +65,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // EmailJS Contact Form Fix
     document.querySelector(".contact-form").addEventListener("submit", function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission
 
+        // Get form values
         const firstName = document.querySelector("input:nth-of-type(1)").value;
         const lastName = document.querySelector("input:nth-of-type(2)").value;
         const email = document.querySelector("input:nth-of-type(3)").value;
@@ -119,8 +98,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     });
 });
-
-
 
 
 
