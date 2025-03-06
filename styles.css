@@ -69,6 +69,83 @@ nav ul li a:hover {
     color: #FFFFFF;
 }
 
+/* Dark Mode Toggle Button */
+#theme-toggle {
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    border: none;
+    font-size: 16px;
+    transition: background 0.3s, color 0.3s, transform 0.2s ease-in-out;
+}
+
+#theme-toggle:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+    transform: scale(1.05);
+}
+
+/* Light Mode Button */
+.light-mode #theme-toggle {
+    background: linear-gradient(135deg, #ddd, #ccc);
+    color: black;
+}
+
+.light-mode #theme-toggle:hover {
+    background: black;
+    color: white;
+}
+
+/* Profile Section */
+.profile {
+    text-align: center;
+    padding: 100px 0;
+}
+
+.profile-pic {
+    width: 400px;
+    border-radius: 50%;
+}
+
+/* About Me Section */
+.about-me {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    padding: 50px;
+    text-align: left;
+}
+
+.about-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.about-image img {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+.about-text {
+    max-width: 50%;
+}
+
+/* Fix Hire Me Button */
+.about-text .button-style {
+    display: inline-block;
+    margin-top: 20px;
+}
+
 /* Button Styles */
 .button-style {
     display: inline-block;
@@ -98,12 +175,6 @@ nav ul li a:hover {
     color: white;
 }
 
-/* Fix Hire Me Button */
-.about-text .button-style {
-    display: inline-block;
-    margin-top: 20px;
-}
-
 /* My Projects Section */
 .my-projects {
     text-align: center;
@@ -128,14 +199,14 @@ nav ul li a:hover {
     font-size: 16px;
 }
 
-/* Fix Light Mode for Filter Buttons */
+/* Light Mode for Filter Buttons */
 .light-mode .filter-bar button {
     background: white;
     color: black;
     border: 2px solid black;
 }
 
-/* Hover Effect */
+/* Filter Button Hover Effect */
 .filter-bar button:hover {
     background: white;
     color: black;
@@ -220,12 +291,6 @@ nav ul li a:hover {
     color: white;
     box-shadow: 0 0 10px white;
     transform: scale(1.1);
-}
-
-/* Contact Me Section */
-.contact-me {
-    text-align: center;
-    padding: 80px 20px;
 }
 
 /* LinkedIn Button */
