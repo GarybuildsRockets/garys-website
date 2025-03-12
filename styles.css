@@ -1,317 +1,147 @@
-Styles.css                                                                                                                                /* General Styles */
+/* General Styles */
 body {
     font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #000000, #0d0d0d, #1a1a1a);
-    color: #000000;
+    background: #000000; /* Ensures full black background */
+    color: white; /* Ensures all text is white */
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
     height: auto;
     overflow-y: scroll;
 }
+
 /* Navbar */
 .curved-navbar {
-    position: fixed;
-    width: 90%;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 30px;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    margin: 0 15px;
+    background: rgba(0, 0, 0, 0.9); /* Dark navbar */
 }
 
 nav ul li a {
     color: white;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s;
-    scroll-behavior: smooth;
 }
 
 nav ul li a:hover {
-    color: #FFFFFF;
+    color: #cccccc;
 }
 
 /* Profile Section */
 .profile {
     text-align: center;
     padding: 100px 0;
+    color: white;
 }
 
 .profile-pic {
     width: 400px;
     border-radius: 50%;
+    border: 2px solid white;
 }
 
 /* About Me Section */
 .about-me {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-    padding: 50px;
-    text-align: left;
-}
-
-.about-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 80%;
-    margin: 0 auto;
+    color: white;
 }
 
 .about-image img {
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-}
-
-.about-text {
-    max-width: 50%;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.4);
 }
 
 .button-style {
-    display: inline-block;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
 }
 
 .button-style:hover {
-    background: white;
-    color: black;
+    background: black;
+    color: white;
     box-shadow: 0 0 10px white;
 }
 
-/* My Skills Section */
+/* Skills Section */
 .my-skills {
     text-align: center;
-    padding: 50px 0;
-    width: 80%;
-    margin: 0 auto;
+    color: white;
 }
 
 .skills-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
     padding: 50px;
 }
 
-.progress-bar {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-.progress-bar span {
-    display: block;
-    height: 20px;
-    background: #ffffff;
-    transition: width 1s ease-in-out;
-}
-
-/* My Projects Section */
+/* Projects Section */
 .my-projects {
     text-align: center;
-    padding: 50px;
-}
-
-.filter-bar {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.filter-bar button {
-    background: linear-gradient(135deg, #111, #222);
     color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    border-radius: 10px;
-}
-
-.filter-bar button:hover {
-    background: white;
-    color: black;
-    box-shadow: 0 0 10px white;
-}
-
-.projects-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    justify-items: center;
-    padding: 50px;
 }
 
 .project-card {
-    width: 250px;
-    height: 250px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: transform 0.5s, box-shadow 0.3s;
-    text-align: center;
+    color: white;
+    border-radius: 10px;
+    padding: 15px;
+    transition: transform 0.3s ease-in-out;
 }
 
 .project-card:hover {
-    box-shadow: 0 0 15px white;
     transform: scale(1.05);
+    box-shadow: 0 0 15px white;
 }
 
-.project-card .project-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.project-card .project-description {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 80%;
-    font-size: 14px;
-}
-
-.project-card:hover .project-title {
-    display: none;
-}
-
-.project-card:hover .project-description {
-    display: block;
-}
-
-.project-card .details-btn {
-    position: absolute;
-    bottom: 10px;
-    background: linear-gradient(135deg, #111, #222);
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-
-.project-card .details-btn:hover {
+.details-btn {
     background: white;
     color: black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.details-btn:hover {
+    background: black;
+    color: white;
     box-shadow: 0 0 10px white;
 }
+
+/* Contact Section */
 .contact-me {
-    font-size: 52px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* Makes it take up the full viewport height */
+    background: black;
+    color: white;
+    padding: 50px;
     text-align: center;
-    padding: 100px 20px; /* Adds space inside */
-    background: linear-gradient(135deg, #111, #222);
-    border-radius: 20px;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-    .contact-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 500px; /* Ensures form is not too wide */
-    margin-top: 20px;
 }
 
 .contact-form input,
 .contact-form textarea {
-    width: 100%; /* Makes inputs full width within form */
-    max-width: 400px; /* Limits width for better readability */
-    padding: 12px;
-    margin: 10px 0; /* Adds spacing between inputs */
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s ease-in-out, background 0.3s;
+    border: 1px solid white;
 }
 
-/* Hover & Focus Effects */
-.contact-form input:hover,
-.contact-form textarea:hover,
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Placeholder Text Styling */
-.contact-form input::placeholder,
-.contact-form textarea::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-}
-
-/* Textarea Specific Styling */
-.contact-form textarea {
-    height: 120px; /* Adjust text area height */
-    resize: none; /* Prevent resizing */
-}
-
-/* Add spacing below the Send Message button */
 .contact-form button {
-    background: linear-gradient(135deg, #111, #222); /* Match other buttons */
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    display: block;
-    margin: 10px auto 20px; /* Added bottom margin for spacing */
-}
-
-/* Hover effect */
-.contact-form button:hover {
     background: white;
     color: black;
+    padding: 12px;
+    border-radius: 5px;
+}
+
+.contact-form button:hover {
+    background: black;
+    color: white;
     box-shadow: 0 0 10px white;
 }
 
-/* Move the LinkedIn button down */
-.linkedin-container {
-    margin-top: 30px; /* Adjust space between Send Message and LinkedIn button */
+/* LinkedIn Button */
+.linkedin-container a {
+    background: white;
+    color: black;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.linkedin-container a:hover {
+    background: black;
+    color: white;
+    box-shadow: 0 0 10px white;
 }
 
 
