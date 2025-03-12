@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Ensure EmailJS is available
-    if (typeof emailjs === "undefined") {
-        console.error("❌ EmailJS library failed to load. Make sure to include the script in index.html");
-        return;
-    }
-
-    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your actual Public Key
-
     // Typewriter Effect for Headers
     function typeWriterEffect(elementId, text, speed = 100) {
         let index = 0;
@@ -26,19 +18,14 @@ document.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
 
-    // Smooth Scrolling Fix
+    // Smooth Scrolling for Navbar Links
     document.querySelectorAll("nav ul li a").forEach(anchor => {
         anchor.addEventListener("click", function(event) {
             event.preventDefault();
             const targetId = this.getAttribute("href").substring(1);
-            const targetElement = document.getElementById(targetId);
-
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            }
+            document.getElementById(targetId).scrollIntoView({
+                behavior: "smooth"
+            });
         });
     });
 
@@ -49,56 +36,66 @@ document.addEventListener("DOMContentLoaded", function() {
     filters.forEach(filter => {
         filter.addEventListener("click", function() {
             const category = this.getAttribute("data-category");
-
             projects.forEach(project => {
-                if (category === "all" || project.classList.contains(category)) {
+                if (project.classList.contains(category) || category === "all") {
                     project.style.display = "flex";
                 } else {
                     project.style.display = "none";
                 }
             });
-
-            filters.forEach(f => f.classList.remove("active"));
-            this.classList.add("active");
         });
     });
 
-    // EmailJS Contact Form Fix
-    document.querySelector(".contact-form").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent default form submission
+    // Flip Animation for Project Cards
+    const projectCards = document.querySelectorAll(".project-card");
+    projectCards.forEach(card => {
+        card.addEventListener("mouseenter", function() {
+            this.querySelector(".project-title").style.display = "none";
+            this.querySelector(".project-description").style.display = "block";
+            this.style.boxShadow = "0 0 15px white";
+        });
+        card.addEventListener("mouseleave", function() {
+            this.querySelector(".project-title").style.display = "block";
+            this.querySelector(".project-description").style.display = "none";
+            this.style.boxShadow = "none";
+        });
+    });
 
-        // Get form values
-        const firstName = document.querySelector("input:nth-of-type(1)").value;
-        const lastName = document.querySelector("input:nth-of-type(2)").value;
-        const email = document.querySelector("input:nth-of-type(3)").value;
-        const message = document.querySelector("textarea").value;
+    // Navigate to Project Details Page
+    const detailButtons = document.querySelectorAll(".details-btn");
+    detailButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            const projectName = this.closest(".project-card").getAttribute("data-project");
+            window.location.href = projects/${projectName}.html;
+        });
+    });
 
-        if (!firstName || !lastName || !email || !message) {
-            alert("Please fill in all fields.");
-            return;
-        }
+document.addEventListener("DOMContentLoaded", function () {
+    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
 
+    document.querySelector(".contact-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Collect form data
         const formData = {
-            to_name: "Gary",
-            from_name: `${firstName} ${lastName}`,
-            message: message
-        };
+    to_name: "Gary", // Your name
+    from_name: document.querySelector("input[name='First Name']").value + " " +
+               document.querySelector("input[name='Last Name']").value,
+    from_email: document.querySelector("input[name='Email']").value,
+    message: document.querySelector("textarea[name='Message']").value
+};
 
-        console.log("🚀 Sending Email with data:", formData);
-
+        // Send email
         emailjs.send("service_bno468q", "template_2eeil47", formData)
-            .then(function(response) {
-                console.log("✅ Email sent successfully:", response);
+            .then(function () {
                 alert("Message sent successfully!");
                 document.querySelector(".contact-form").reset();
             })
-            .catch(function(error) {
-                console.error("❌ Error sending email:", error);
-                alert("Failed to send message. Check console for errors.");
+            .catch(function (error) {
+                console.error("Error sending email:", error);
+                alert("Failed to send message. Please try again.");
             });
     });
-});
-
 
 
 
