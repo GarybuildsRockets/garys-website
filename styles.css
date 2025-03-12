@@ -1,4 +1,7 @@
 /* General Styles */
+html {
+    scroll-behavior: smooth;
+}
 body {
     font-family: 'Courier New', monospace;
     background: linear-gradient(135deg, #000000, #0d0d0d, #1a1a1a);
