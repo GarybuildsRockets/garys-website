@@ -72,33 +72,31 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-   // Initialize EmailJS and setup contact form submission
-emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your real public key
+    // Initialize EmailJS and setup contact form submission
+    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
 
-document.querySelector(".contact-form").addEventListener("submit", function (event) {
-  event.preventDefault();
+    document.querySelector(".contact-form").addEventListener("submit", function (event) {
+        event.preventDefault();
 
-  // Collect form data using placeholder attributes
-  const formData = {
-    to_name: "Gary", // Your name
-    from_name:
-      document.querySelector("input[placeholder='First Name']").value +
-      " " +
-      document.querySelector("input[placeholder='Last Name']").value,
-    from_email: document.querySelector("input[placeholder='Email']").value,
-    message: document.querySelector("textarea[placeholder='Your Message']").value,
-  };
+        // Collect form data using placeholder attributes
+        const formData = {
+            to_name: "Gary", // Your name
+            from_name: document.querySelector("input[placeholder='First Name']").value + " " +
+                       document.querySelector("input[placeholder='Last Name']").value,
+            from_email: document.querySelector("input[placeholder='Email']").value,
+            message: document.querySelector("textarea[placeholder='Your Message']").value
+        };
 
-  // Send email using EmailJS
-  emailjs
-    .send("service_bno468q", "template_9bicqod", formData)
-    .then(function () {
-      alert("Message sent successfully!");
-      document.querySelector(".contact-form").reset();
-    })
-    .catch(function (error) {
-      console.error("Error sending email:", error);
-      alert("Failed to send message. Please try again.");
+        // Send email using EmailJS
+        emailjs.send("service_bno468q", "template_9bicqod", formData)
+            .then(function () {
+                alert("Message sent successfully!");
+                document.querySelector(".contact-form").reset();
+            })
+            .catch(function (error) {
+                console.error("Error sending email:", error);
+                alert("Failed to send message. Please try again.");
+            });
     });
 });
 
