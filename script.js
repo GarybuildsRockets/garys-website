@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
 
         // Send email using EmailJS
-        emailjs.send("service_bno468q", "template_9bicqod", formData)
+        emailjs.send("service_bno468q", "template_grfkhha", formData)
             .then(function () {
                 alert("Message sent successfully!");
                 document.querySelector(".contact-form").reset();
