@@ -139,12 +139,40 @@ nav ul li a:hover {
 }
 
 /* My Projects Section */
+.my-projects {
+    text-align: center;
+    padding: 50px;
+}
+
+.filter-bar {
+    text-align: center;
+    margin: 0 auto 20px; /* Center the filter bar */
+}
+
+.filter-bar button {
+    background: linear-gradient(135deg, #111, #222);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    border-radius: 10px;
+}
+
+.filter-bar button:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 10px white;
+}
+
 .projects-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
     justify-items: center;
     padding: 50px;
+    margin: 0 auto;  /* Center the grid container */
 }
 
 .project-card {
@@ -190,14 +218,15 @@ nav ul li a:hover {
     display: block;
 }
 
+/* Details button updated to match filter button styling */
 .project-card .details-btn {
     position: absolute;
     bottom: 10px;
     background: linear-gradient(135deg, #111, #222);
     color: white;
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
