@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function() {
     typeWriterEffect("projectsTypewriter", "My Projects", 100);
     typeWriterEffect("contactTypewriter", "Contact Me", 100);
     
-
     // Smooth Scrolling for Navbar Links
     document.querySelectorAll("nav ul li a").forEach(anchor => {
         anchor.addEventListener("click", function(event) {
@@ -66,27 +65,29 @@ document.addEventListener("DOMContentLoaded", function() {
     const detailButtons = document.querySelectorAll(".details-btn");
     detailButtons.forEach(button => {
         button.addEventListener("click", function() {
-            const projectName = this.closest(".project-card").getAttribute("data-project");
-            window.location.href = projects/${projectName}.html;
+            // Use the project title to generate a URL-friendly name
+            const title = this.closest(".project-card").querySelector(".project-title").innerText;
+            const projectName = title.toLowerCase().replace(/\s+/g, '-');
+            window.location.href = `${projectName}.html`;
         });
     });
 
-document.addEventListener("DOMContentLoaded", function () {
+    // Initialize EmailJS and setup contact form submission
     emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
 
     document.querySelector(".contact-form").addEventListener("submit", function (event) {
         event.preventDefault();
 
-        // Collect form data
+        // Collect form data using placeholder attributes
         const formData = {
-    to_name: "Gary", // Your name
-    from_name: document.querySelector("input[name='First Name']").value + " " +
-               document.querySelector("input[name='Last Name']").value,
-    from_email: document.querySelector("input[name='Email']").value,
-    message: document.querySelector("textarea[name='Message']").value
-};
+            to_name: "Gary", // Your name
+            from_name: document.querySelector("input[placeholder='First Name']").value + " " +
+                       document.querySelector("input[placeholder='Last Name']").value,
+            from_email: document.querySelector("input[placeholder='Email']").value,
+            message: document.querySelector("textarea[placeholder='Your Message']").value
+        };
 
-        // Send email
+        // Send email using EmailJS
         emailjs.send("service_bno468q", "template_9bicqod", formData)
             .then(function () {
                 alert("Message sent successfully!");
@@ -97,6 +98,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Failed to send message. Please try again.");
             });
     });
-
+});
 
 
