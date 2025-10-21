@@ -13,8 +13,17 @@
 </head>
 <body>
     <!-- Navbar -->
-    <header id="navbar" class="curved-navbar">
-        <nav>
+    <!-- Navbar -->
+<header id="navbar" class="curved-navbar">
+    <div class="nav-container">
+        <div class="logo">Gary Kanyuh</div>
+
+        <!-- Hamburger button (mobile only) -->
+        <button class="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+
+        <nav class="desktop-nav">
             <ul>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Me</a></li>
@@ -23,7 +32,20 @@
                 <li><a href="#contact">Contact Me</a></li>
             </ul>
         </nav>
-    </header>
+    </div>
+
+    <!-- FULL-SCREEN OVERLAY NAV (for mobile) -->
+    <div class="mobile-nav-overlay">
+        <ul class="mobile-nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About Me</a></li>
+            <li><a href="#skills">My Skills</a></li>
+            <li><a href="#projects">My Projects</a></li>
+            <li><a href="#contact">Contact Me</a></li>
+        </ul>
+    </div>
+</header>
+
 
     <!-- Profile Section -->
     <section id="home" class="profile">
