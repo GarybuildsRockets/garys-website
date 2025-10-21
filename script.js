@@ -98,6 +98,29 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert("Failed to send message. Please try again.");
             });
     });
+        // -----------------------------
+    // MOBILE NAV HAMBURGER TOGGLE
+    // -----------------------------
+    const hamburger = document.querySelector(".hamburger");
+    const mobileOverlay = document.querySelector(".mobile-nav-overlay");
+    const mobileLinks = document.querySelectorAll(".mobile-nav-links a");
+    const body = document.body;
+
+    hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("open");
+        mobileOverlay.classList.toggle("active");
+        body.style.overflow = mobileOverlay.classList.contains("active") ? "hidden" : "";
+    });
+
+    // Close overlay when clicking a link
+    mobileLinks.forEach(link => {
+        link.addEventListener("click", () => {
+            hamburger.classList.remove("open");
+            mobileOverlay.classList.remove("active");
+            body.style.overflow = "";
+        });
+    });
+
 });
 
 
