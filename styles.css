@@ -319,6 +319,174 @@ nav ul li a:hover {
     margin-top: 30px; /* Adjust space between Send Message and LinkedIn button */
 }
 
+/* ------------------------------------------- */
+/* MOBILE NAVIGATION (FULL-SCREEN OVERLAY)     */
+/* ------------------------------------------- */
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1100;
+}
+
+.hamburger span {
+    /* Hamburger -> "X" animation */
+.hamburger.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+    display: block;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+    transition: 0.3s ease;
+}
+
+/* Full-screen overlay base */
+.mobile-nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.6); /* Dark glass style */
+    display: flex;
+    align-items: center;       /* Center vertically */
+    justify-content: center;   /* Center horizontally */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 1050;
+}
+
+.mobile-nav-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Mobile overlay links */
+.mobile-nav-links {
+    list-style: none;
+    text-align: center;
+    padding: 0;
+}
+
+.mobile-nav-links li {
+    margin: 20px 0;
+}
+
+.mobile-nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.mobile-nav-links a:hover {
+    color: #dddddd;
+}
+/* ------------------------------------------- */
+/* RESPONSIVE LAYOUT FOR PROFILE + ABOUT       */
+/* ------------------------------------------- */
+@media (max-width: 900px) {
+
+    /* PROFILE SECTION (stack + shrink image) */
+    .profile {
+        padding: 120px 20px 60px;  /* reduce vertical space */
+    }
+
+    .profile-pic {
+        width: 200px;  /* fits phones */
+    }
+
+    /* ABOUT SECTION (switch to column layout) */
+    .about-me {
+        flex-direction: column;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .about-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        max-width: 100%;
+    }
+
+    .about-image img {
+        width: 220px;
+        height: 220px;
+    }
+
+    .about-text {
+        max-width: 90%;
+        text-align: center;
+    }
+}
+/* ------------------------------------------- */
+/* RESPONSIVE: SKILLS + PROJECTS + CONTACT     */
+/* ------------------------------------------- */
+@media (max-width: 900px) {
+
+    /* SKILLS GRID: Switch to single column on smaller screens */
+    .skills-container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        width: 100%;
+    }
+
+    /* PROJECTS: 2-column layout on tablets/phones */
+    .projects-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 30px;
+    }
+
+    .project-card {
+        width: 200px;
+        height: 200px;
+    }
+
+    /* CONTACT SECTION: Remove forced full-height on mobile */
+    .contact-me {
+        height: auto;
+        padding: 60px 20px;
+        font-size: 32px;
+    }
+}
+
+/* ------------------------------------------- */
+/*  RESPONSIVE BREAKPOINT: MOBILE ACTIVATION   */
+/* ------------------------------------------- */
+@media (max-width: 900px) {
+
+    /* Show hamburger, hide desktop nav */
+    .hamburger {
+        display: flex;
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    .curved-navbar {
+        width: 95%;
+        padding: 10px 15px;
+    }
+}
 
 
 
