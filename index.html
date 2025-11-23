@@ -5,124 +5,326 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gary Kanyuh | Engineering Portfolio</title>
 
-    <!-- Include EmailJS from a CDN (ADDED) -->
+    <!-- EmailJS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
-    
+
+    <!-- Styles & Scripts -->
     <link rel="stylesheet" href="styles.css">
     <script defer src="script.js"></script>
 </head>
 <body>
-    <!-- Navbar -->
-    <!-- Navbar -->
-<header id="navbar" class="curved-navbar">
-    <div class="nav-container">
-        <div class="logo">Gary Kanyuh</div>
+    <!-- NAVBAR -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">Aerospace Engineering Student</span>
+            </div>
 
-        <!-- Hamburger button (mobile only) -->
-        <button class="hamburger" aria-label="Menu">
-            <span></span><span></span><span></span>
-        </button>
+            <!-- Desktop Nav -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Me</a></li>
+                    <li><a href="#skills">My Skills</a></li>
+                    <li><a href="#projects">My Projects</a></li>
+                    <li><a href="#contact">Contact Me</a></li>
+                </ul>
+            </nav>
 
-        <nav class="desktop-nav">
-            <ul>
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Fullscreen Overlay Nav -->
+        <div class="mobile-nav-overlay">
+            <ul class="mobile-nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Me</a></li>
                 <li><a href="#skills">My Skills</a></li>
                 <li><a href="#projects">My Projects</a></li>
                 <li><a href="#contact">Contact Me</a></li>
             </ul>
-        </nav>
-    </div>
-
-    <!-- FULL-SCREEN OVERLAY NAV (for mobile) -->
-    <div class="mobile-nav-overlay">
-        <ul class="mobile-nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About Me</a></li>
-            <li><a href="#skills">My Skills</a></li>
-            <li><a href="#projects">My Projects</a></li>
-            <li><a href="#contact">Contact Me</a></li>
-        </ul>
-    </div>
-</header>
-
-
-    <!-- Profile Section -->
-    <section id="home" class="profile">
-        <div class="profile-container">
-            <img src="profile.jpg" alt="Profile Picture" class="profile-pic">
-            <h1 id="typewriter">Hello, I'm Gary Kanyuh</h1>
-            <p class="static-title">Aerospace Engineer</p>
         </div>
-    </section>
+    </header>
 
-    <!-- About Me Section -->
-    <section id="about" class="about-me">
-        <div class="about-container">
-            <div class="about-image">
-                <img src="collage.jpg" alt="About Me Image" class="circular-image">
+    <main>
+        <!-- HERO / PROFILE -->
+        <section id="home" class="section hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 id="typewriter" class="hero-title">Hello, I'm Gary Kanyuh</h1>
+                    <p class="hero-subtitle">Aerospace Engineer • Systems Thinker • Builder</p>
+                    <p class="hero-body">
+                        Focused on engineering solutions that connect real-world hardware, data, and automation.
+                    </p>
+                    <a href="#projects" class="primary-btn">View My Projects</a>
+                </div>
+                <div class="hero-image">
+                    <div class="profile-ring">
+                        <img src="profile.jpg" alt="Profile picture of Gary Kanyuh" class="profile-pic">
+                    </div>
+                </div>
             </div>
-            <div class="about-text">
-                <h2 id="aboutTypewriter">About Me</h2>
-                <p>I am a student at the University of Illinois at Urbana-Champaign with a strong passion for innovation and problem-solving. From a young age, I have been driven by a desire to improve the world around me, which has led me to develop hands-on skills in engineering. This passion has manifested in projects such as repairing my own car, working to purchase my first computer and 3D printer to enhance my technical abilities, and engaging in complex engineering challenges. Since arriving at the university, my aspirations have expanded into new areas, including designing and launching two-stage rockets with my RSO and developing this website to showcase my work. My time at UIUC has further solidified my passion for engineering, and I am eager to continue exploring, learning, and creating solutions that make a meaningful impact.</p>
-                <a href="resume.pdf" download class="button-style">Resume</a>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="section about">
+            <div class="section-header">
+                <h2 id="aboutTypewriter" class="section-title">About Me</h2>
+                <div class="section-accent-line"></div>
             </div>
-        </div>
-    </section>
 
-    <!-- My Skills Section -->
-    <section id="skills" class="my-skills">
-        <h2 id="skillsTypewriter">My Skills</h2>
-        <div class="skills-container">
-            <div class="skill"><p>CAD Design</p><div class="progress-bar"><span style="width: 50%"></span></div></div>
-            <div class="skill"><p>AI Integration</p><div class="progress-bar"><span style="width: 50%"></span></div></div>
-            <div class="skill"><p>Robotics</p><div class="progress-bar"><span style="width: 50%"></span></div></div>
-            <div class="skill"><p>Electronics</p><div class="progress-bar"><span style="width: 55%"></span></div></div>
-            <div class="skill"><p>Research</p><div class="progress-bar"><span style="width: 60%"></span></div></div>
-            <div class="skill"><p>Finite Element Analysis</p><div class="progress-bar"><span style="width: 50%"></span></div></div>
-            <div class="skill"><p>Sustainability Design</p><div class="progress-bar"><span style="width: 45%"></span></div></div>
-            <div class="skill"><p>Programming & Automation</p><div class="progress-bar"><span style="width: 40%"></span></div></div>
-        </div>
-    </section>
+            <div class="about-grid">
+                <div class="about-image">
+                    <div class="about-ring">
+                        <img src="collage.jpg" alt="Collage of engineering-related images" class="about-img">
+                    </div>
+                </div>
+                <div class="about-text">
+                    <p>
+                        I am a student at the University of Illinois at Urbana-Champaign with a strong passion
+                        for innovation and problem-solving. From a young age, I have been driven to improve the
+                        world around me, building hands-on skills through projects like repairing my car,
+                        funding my first computer and 3D printer, and experimenting with engineering tools.
+                    </p>
+                    <p>
+                        At UIUC, I’ve expanded into new areas including two-stage rocketry, avionics, and
+                        engineering design projects. This portfolio is a place to highlight my work and
+                        document the skills I’m developing in CAD, electronics, AI integration, and more.
+                        I am excited to keep exploring, learning, and contributing to impactful engineering solutions.
+                    </p>
+                    <a href="resume.pdf" download class="secondary-btn">Download Resume</a>
+                </div>
+            </div>
+        </section>
 
-    <!-- My Projects Section -->
-    <section id="projects" class="my-projects">
-        <h2 id="projectsTypewriter">My Projects</h2>
-        <div class="filter-bar">
-            <button class="filter" data-category="all">All</button>
-            <button class="filter" data-category="ai">AI</button>
-            <button class="filter" data-category="robotics">Robotics</button>
-            <button class="filter" data-category="electronics">Electronics</button>
-            <button class="filter" data-category="cad">CAD</button>
-            <button class="filter" data-category="research">Research</button>
-        </div>
-        <div class="projects-container">
-            <div class="project-card ai"><p class="project-title">AI Sustainability Project</p><p class="project-description">Using AI to optimize sustainability metrics.</p><button class="details-btn">Details</button></div>
-            <div class="project-card robotics"><p class="project-title">Midas MK5 Avionics</p><p class="project-description">A high-performance avionics system.</p><button class="details-btn">Details</button></div>
-            <div class="project-card electronics"><p class="project-title">Smart Sensor Network</p><p class="project-description">Real-time environmental data collection.</p><button class="details-btn">Details</button></div>
-            <div class="project-card cad"><p class="project-title">3D Printed Engine Model</p><p class="project-description">Precision engineering for automotive applications.</p><button class="details-btn">Details</button></div>
-            <div class="project-card research"><p class="project-title">Rocket Filter (FEA)</p><p class="project-description">Conducted Finite element analysis on a rocket filter to observe the affects of random vibration while encased and propelled.</p><button class="details-btn">Details</button></div>
-            <div class="project-card sustainability"><p class="project-title">Interactive Website Portfolio</p><p class="project-description">Developing a website, to show off my projects and apply skills learn in class.</p><button class="details-btn">Details</button></div>
-        </div>
-    </section>
+        <!-- SKILLS -->
+        <section id="skills" class="section skills">
+            <div class="section-header">
+                <h2 id="skillsTypewriter" class="section-title">My Skills</h2>
+                <div class="section-accent-line"></div>
+            </div>
 
-    <!-- Contact Me Section -->
-    <section id="contact" class="contact-me">
-        <h2 id="contactTypewriter" class="centered">Contact Me</h2>
-        <form class="contact-form">
-            <input type="text" placeholder="First Name" required>
-            <input type="text" placeholder="Last Name" required>
-            <input type="email" placeholder="Email" required>
-            <textarea placeholder="Your Message"></textarea>
-            <button type="submit" class="button-style">Send Message</button>
-        </form>
-        <div class="linkedin-container centered">
-            <a href="https://linkedin.com" class="button-style linkedin-btn">Connect on LinkedIn</a>
-        </div>
-    </section>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>CAD Design</span>
+                        <span class="skill-percent">50%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 50%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>AI Integration</span>
+                        <span class="skill-percent">50%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 50%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>Robotics</span>
+                        <span class="skill-percent">50%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 50%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>Electronics</span>
+                        <span class="skill-percent">55%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 55%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>Research</span>
+                        <span class="skill-percent">60%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 60%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>Finite Element Analysis</span>
+                        <span class="skill-percent">50%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 50%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>Sustainability Design</span>
+                        <span class="skill-percent">45%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 45%"></span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span>Programming & Automation</span>
+                        <span class="skill-percent">40%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <span style="width: 40%"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="section projects">
+            <div class="section-header">
+                <h2 id="projectsTypewriter" class="section-title">My Projects</h2>
+                <div class="section-accent-line"></div>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter active" data-category="all">All</button>
+                <button class="filter" data-category="ai">AI</button>
+                <button class="filter" data-category="robotics">Robotics</button>
+                <button class="filter" data-category="electronics">Electronics</button>
+                <button class="filter" data-category="cad">CAD</button>
+                <button class="filter" data-category="research">Research</button>
+                <button class="filter" data-category="sustainability">Sustainability</button>
+            </div>
+
+            <div class="projects-grid">
+                <article class="project-card ai">
+                    <div class="project-body">
+                        <h3 class="project-title">AI Sustainability Project</h3>
+                        <p class="project-description">
+                            Applying AI tools to optimize sustainability metrics and inform engineering decisions.
+                        </p>
+                    </div>
+                    <div class="project-footer">
+                        <button class="ghost-btn details-btn">Details</button>
+                    </div>
+                </article>
+
+                <article class="project-card robotics">
+                    <div class="project-body">
+                        <h3 class="project-title">Midas MK5 Avionics</h3>
+                        <p class="project-description">
+                            Avionics and systems work for a high-performance rocket platform, focused on reliability and data.
+                        </p>
+                    </div>
+                    <div class="project-footer">
+                        <button class="ghost-btn details-btn">Details</button>
+                    </div>
+                </article>
+
+                <article class="project-card electronics">
+                    <div class="project-body">
+                        <h3 class="project-title">Smart Sensor Network</h3>
+                        <p class="project-description">
+                            A distributed sensor network for real-time environmental monitoring and data logging.
+                        </p>
+                    </div>
+                    <div class="project-footer">
+                        <button class="ghost-btn details-btn">Details</button>
+                    </div>
+                </article>
+
+                <article class="project-card cad">
+                    <div class="project-body">
+                        <h3 class="project-title">3D Printed Engine Model</h3>
+                        <p class="project-description">
+                            Precision 3D-modeled engine components used for visualization and design exploration.
+                        </p>
+                    </div>
+                    <div class="project-footer">
+                        <button class="ghost-btn details-btn">Details</button>
+                    </div>
+                </article>
+
+                <article class="project-card research">
+                    <div class="project-body">
+                        <h3 class="project-title">Rocket Filter (FEA)</h3>
+                        <p class="project-description">
+                            Finite element analysis on a rocket filter to study random vibration behavior during flight.
+                        </p>
+                    </div>
+                    <div class="project-footer">
+                        <button class="ghost-btn details-btn">Details</button>
+                    </div>
+                </article>
+
+                <article class="project-card sustainability">
+                    <div class="project-body">
+                        <h3 class="project-title">Interactive Website Portfolio</h3>
+                        <p class="project-description">
+                            This portfolio, built to document my work and practice applying engineering and web tools.
+                        </p>
+                    </div>
+                    <div class="project-footer">
+                        <button class="ghost-btn details-btn">Details</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="section contact">
+            <div class="section-header">
+                <h2 id="contactTypewriter" class="section-title">Contact Me</h2>
+                <div class="section-accent-line"></div>
+            </div>
+
+            <div class="contact-layout">
+                <form class="contact-form">
+                    <div class="form-row">
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-row">
+                        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="primary-btn">Send Message</button>
+                </form>
+
+                <div class="contact-side">
+                    <p>
+                        If you’re interested in my work, have questions, or would like to discuss a project,
+                        feel free to reach out. I’m always open to learning opportunities and collaboration.
+                    </p>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" class="secondary-btn">
+                        Connect on LinkedIn
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
+    </footer>
 </body>
 </html>
-
 
 
 
