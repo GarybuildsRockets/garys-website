@@ -1,10 +1,15 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Typewriter Effect for Headers
-    function typeWriterEffect(elementId, text, speed = 100) {
+document.addEventListener("DOMContentLoaded", function () {
+    /* ===========================
+       TYPEWRITER EFFECT
+       =========================== */
+    function typeWriterEffect(elementId, text, speed = 75) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+
         let index = 0;
         function type() {
-            if (index < text.length) {
-                document.getElementById(elementId).innerHTML = text.substring(0, index + 1);
+            if (index <= text.length) {
+                element.textContent = text.slice(0, index);
                 index++;
                 setTimeout(type, speed);
             }
@@ -12,32 +17,42 @@ document.addEventListener("DOMContentLoaded", function() {
         type();
     }
 
-    typeWriterEffect("typewriter", "Hello, I'm Gary Kanyuh", 100);
-    typeWriterEffect("aboutTypewriter", "About Me", 100);
-    typeWriterEffect("skillsTypewriter", "My Skills", 100);
-    typeWriterEffect("projectsTypewriter", "My Projects", 100);
-    typeWriterEffect("contactTypewriter", "Contact Me", 100);
-    
-    // Smooth Scrolling for Navbar Links
-    document.querySelectorAll("nav ul li a").forEach(anchor => {
-        anchor.addEventListener("click", function(event) {
+    typeWriterEffect("typewriter", "Hello, I'm Gary Kanyuh", 70);
+    typeWriterEffect("aboutTypewriter", "About Me", 80);
+    typeWriterEffect("skillsTypewriter", "My Skills", 80);
+    typeWriterEffect("projectsTypewriter", "My Projects", 80);
+    typeWriterEffect("contactTypewriter", "Contact Me", 80);
+
+    /* ===========================
+       SMOOTH SCROLLING
+       =========================== */
+    const navLinks = document.querySelectorAll("a[href^='#']");
+    navLinks.forEach(anchor => {
+        anchor.addEventListener("click", function (event) {
+            const targetId = this.getAttribute("href").slice(1);
+            const target = document.getElementById(targetId);
+            if (!target) return;
+
             event.preventDefault();
-            const targetId = this.getAttribute("href").substring(1);
-            document.getElementById(targetId).scrollIntoView({
-                behavior: "smooth"
-            });
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
         });
     });
 
-    // Project Filter System Fix
+    /* ===========================
+       PROJECT FILTERING
+       =========================== */
     const filters = document.querySelectorAll(".filter");
     const projects = document.querySelectorAll(".project-card");
 
     filters.forEach(filter => {
-        filter.addEventListener("click", function() {
+        filter.addEventListener("click", function () {
             const category = this.getAttribute("data-category");
+
+            filters.forEach(btn => btn.classList.remove("active"));
+            this.classList.add("active");
+
             projects.forEach(project => {
-                if (project.classList.contains(category) || category === "all") {
+                if (category === "all" || project.classList.contains(category)) {
                     project.style.display = "flex";
                 } else {
                     project.style.display = "none";
@@ -46,81 +61,100 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Flip Animation for Project Cards
-    const projectCards = document.querySelectorAll(".project-card");
-    projectCards.forEach(card => {
-        card.addEventListener("mouseenter", function() {
-            this.querySelector(".project-title").style.display = "none";
-            this.querySelector(".project-description").style.display = "block";
-            this.style.boxShadow = "0 0 15px white";
-        });
-        card.addEventListener("mouseleave", function() {
-            this.querySelector(".project-title").style.display = "block";
-            this.querySelector(".project-description").style.display = "none";
-            this.style.boxShadow = "none";
-        });
-    });
-
-    // Navigate to Project Details Page
+    /* ===========================
+       PROJECT DETAILS NAVIGATION
+       =========================== */
     const detailButtons = document.querySelectorAll(".details-btn");
     detailButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            // Use the project title to generate a URL-friendly name
-            const title = this.closest(".project-card").querySelector(".project-title").innerText;
-            const projectName = title.toLowerCase().replace(/\s+/g, '-');
+        button.addEventListener("click", function () {
+            const card = this.closest(".project-card");
+            if (!card) return;
+            const titleEl = card.querySelector(".project-title");
+            if (!titleEl) return;
+
+            const title = titleEl.textContent.trim();
+            const projectName = title.toLowerCase().replace(/\s+/g, "-");
             window.location.href = `${projectName}.html`;
         });
     });
 
-    // Initialize EmailJS and setup contact form submission
-    emailjs.init("RJjkCv0cGDLXCi-70"); // Replace with your EmailJS Public Key
+    /* ===========================
+       EMAILJS CONTACT FORM
+       =========================== */
+    if (window.emailjs) {
+        emailjs.init("RJjkCv0cGDLXCi-70"); // keep your existing public key
 
-    document.querySelector(".contact-form").addEventListener("submit", function (event) {
-        event.preventDefault();
+        const form = document.querySelector(".contact-form");
+        if (form) {
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
 
-        // Collect form data using placeholder attributes
-        const formData = {
-            to_name: "Gary", // Your name
-            from_name: document.querySelector("input[placeholder='First Name']").value + " " +
-                       document.querySelector("input[placeholder='Last Name']").value,
-            from_email: document.querySelector("input[placeholder='Email']").value,
-            message: document.querySelector("textarea[placeholder='Your Message']").value
-        };
+                const firstName = document.getElementById("firstName")?.value.trim() || "";
+                const lastName = document.getElementById("lastName")?.value.trim() || "";
+                const email = document.getElementById("email")?.value.trim() || "";
+                const message = document.getElementById("message")?.value.trim() || "";
 
-        // Send email using EmailJS
-        emailjs.send("service_bno468q", "template_9bicqod", formData)
-            .then(function () {
-                alert("Message sent successfully!");
-                document.querySelector(".contact-form").reset();
-            })
-            .catch(function (error) {
-                console.error("Error sending email:", error);
-                alert("Failed to send message. Please try again.");
+                if (!firstName || !lastName || !email || !message) {
+                    alert("Please fill out all fields before sending.");
+                    return;
+                }
+
+                const formData = {
+                    to_name: "Gary",
+                    from_name: `${firstName} ${lastName}`,
+                    from_email: email,
+                    message: message
+                };
+
+                emailjs
+                    .send("service_bno468q", "template_9bicqod", formData)
+                    .then(function () {
+                        alert("Message sent successfully!");
+                        form.reset();
+                    })
+                    .catch(function (error) {
+                        console.error("Error sending email:", error);
+                        alert("Failed to send message. Please try again.");
+                    });
             });
-    });
-        // -----------------------------
-    // MOBILE NAV HAMBURGER TOGGLE
-    // -----------------------------
+        }
+    } else {
+        console.warn("EmailJS library not found. Contact form will not send emails.");
+    }
+
+    /* ===========================
+       MOBILE NAV TOGGLE
+       =========================== */
     const hamburger = document.querySelector(".hamburger");
     const mobileOverlay = document.querySelector(".mobile-nav-overlay");
     const mobileLinks = document.querySelectorAll(".mobile-nav-links a");
     const body = document.body;
 
-    hamburger.addEventListener("click", () => {
-        hamburger.classList.toggle("open");
-        mobileOverlay.classList.toggle("active");
-        body.style.overflow = mobileOverlay.classList.contains("active") ? "hidden" : "";
-    });
+    if (hamburger && mobileOverlay) {
+        const toggleNav = () => {
+            hamburger.classList.toggle("open");
+            mobileOverlay.classList.toggle("active");
+            body.style.overflow = mobileOverlay.classList.contains("active") ? "hidden" : "";
+        };
 
-    // Close overlay when clicking a link
-    mobileLinks.forEach(link => {
-        link.addEventListener("click", () => {
-            hamburger.classList.remove("open");
-            mobileOverlay.classList.remove("active");
-            body.style.overflow = "";
+        hamburger.addEventListener("click", toggleNav);
+
+        mobileLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                hamburger.classList.remove("open");
+                mobileOverlay.classList.remove("active");
+                body.style.overflow = "";
+            });
         });
-    });
+    }
 
+    /* ===========================
+       FOOTER YEAR
+       =========================== */
+    const yearSpan = document.getElementById("year");
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
 });
 
 
