@@ -22,6 +22,19 @@ document.addEventListener("DOMContentLoaded", function () {
     typeWriterEffect("skillsTypewriter", "My Skills", 80);
     typeWriterEffect("projectsTypewriter", "My Projects", 80);
     typeWriterEffect("contactTypewriter", "Contact Me", 80);
+    /* ===========================
+   SKILL WHY? DROPDOWNS
+=========================== */
+const whyButtons = document.querySelectorAll(".why-btn");
+
+whyButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        const content = btn.nextElementSibling;
+        content.classList.toggle("open");
+        btn.textContent = content.classList.contains("open") ? "Hide" : "Why?";
+    });
+});
+
 
     /* ===========================
        SMOOTH SCROLLING
