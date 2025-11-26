@@ -679,6 +679,45 @@ textarea:focus {
         font-size: 32px;
     }
 }
+/* WHY DROPDOWN */
+
+.why-btn {
+    margin-top: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background var(--transition-med), border-color var(--transition-med);
+}
+
+.why-btn:hover {
+    background: rgba(58,163,255,0.15);
+    border-color: var(--accent);
+    color: var(--text-main);
+}
+
+.why-content {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: var(--bg-elevated-soft);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border-subtle);
+    display: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.why-content.open {
+    display: block;
+    opacity: 1;
+}
+
 
 
 
