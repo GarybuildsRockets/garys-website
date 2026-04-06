@@ -3,48 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects | Gary Kanyuh</title>
+    <title>Solidworks Certification</title>
+
+    <!-- Styles & Scripts -->
     <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
 <body>
-    <header id="navbar">
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="projects-section">
-        <h2>Projects</h2>
-        <div class="project-list">
-            <div class="flip-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <h3>Project 1</h3>
-                    </div>
-                    <div class="flip-card-back">
-                        <p>...</p>
-                        <a href="project1.html" class="see-more-btn">See More</a>
-                    </div>
-                </div>
+    <!-- NAVBAR -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">Mechanical Engineering Student</span>
             </div>
 
-            <div class="flip-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <h3>Project 2</h3>
-                    </div>
-                    <div class="flip-card-back">
-                        <p>...</p>
-                        <a href="project2.html" class="see-more-btn">See More</a>
-                    </div>
-                </div>
-            </div>
+            <!-- Desktop Nav -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </section>
-</body>
-</html>
+
+        <!-- Mobile Fullscreen Overlay Nav -->
+        <div class="mobile-nav-overlay">
+            <ul class="mobile-nav-links">
+                <li><a href="#home">Home</a></li>
+            </ul>
+        </div>
+    </header>
