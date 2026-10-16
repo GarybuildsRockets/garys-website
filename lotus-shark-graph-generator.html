@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotus Shark Graph Generator | Gary Kanyuh</title>
+
+    <!-- Tailwind CSS for modern layout styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for high-performance canvas graphing -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- External stylesheet fallback for theme parity -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Glassmorphism Dark Cards */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Custom accent highlights matching vehicle dynamics motif */
+        .accent-gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .accent-border-glow {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        /* Form Inputs Custom Focus */
+        textarea, select, input {
+            background-color: #111827 !important;
+            border-color: #374151 !important;
+            color: #f9fafb !important;
+        }
+        textarea:focus, select:focus, input:focus {
+            border-color: #38bdf8 !important;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2) !important;
+        }
+
+        /* Canvas Container Scaling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 480px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- NAVBAR HEADER -->
+    <header class="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-white">Gary Kanyuh</span>
+                    <span class="text-xs text-sky-400 font-medium">Mechanical Engineering • Systems & Motorsport</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="index.html#home" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
+                <a href="index.html#about" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">About</a>
+                <a href="index.html#projects" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Projects</a>
+                <a href="index.html#skills" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Skills</a>
+                <a href="index.html#contact" class="px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-500 rounded-lg transition-all shadow-md shadow-sky-900/20">Contact Me</a>
+            </nav>
+
+            <a href="index.html#projects" class="md:hidden text-xs font-medium text-sky-400 hover:underline">← Back to Portfolio</a>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
+        
+        <!-- HEADER HERO -->
+        <div class="mb-10 text-center md:text-left flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-gray-800 pb-8">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-950/80 border border-sky-800/50 text-sky-300 text-xs font-semibold mb-3">
+                    <span>🏎️ Motorsport & Kinematics Automation Tool</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Lotus Shark Data Graph Generator
+                </h1>
+                <p class="mt-2 text-base text-gray-400 max-w-2xl">
+                    Convert raw suspension sweeps (Lotus Suspension Analysis / Excel) into report-ready, high-resolution kinematic graphs directly in your browser.
+                </p>
+            </div>
+            <div>
+                <a href="index.html#projects" class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium transition-colors border border-gray-700">
+                    ← Back to Projects
+                </a>
+            </div>
+        </div>
+
+        <!-- APP GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: CONTROLS & INPUT -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+                
+                <!-- INPUT CARD -->
+                <div class="glass-card rounded-2xl p-6 border border-gray-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+                            1. Paste Lotus/Excel Data
+                        </h2>
+                        <button id="demoBtn" class="text-xs text-sky-400 hover:text-sky-300 font-medium underline">
+                            Load Sample Data
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-gray-400 mb-3">
+                        Copy your columns directly from Lotus Shark or Microsoft Excel (include header titles in the first row):
+                    </p>
+
+                    <textarea id="dataInput" rows="7" 
+                        class="w-full p-3 rounded-xl text-xs font-mono border transition-all resize-y"
+                        placeholder="Bump(mm)&#119967;Camber(deg)&#119967;Toe(deg)&#10;-30.0&#119967;1.85&#119967;-0.42&#10;-15.0&#119967;0.92&#119967;-0.21&#10;0.0&#119967;0.00&#119967;0.00&#10;15.0&#119967;-0.98&#119967;0.25&#10;30.0&#119967;-2.05&#119967;0.51"></textarea>
+
+                    <button id="parseBtn" class="mt-4 w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-sky-600/20 flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Parse & Load Columns
+                    </button>
+                    <div id="parseStatus" class="mt-2 text-xs text-emerald-400 hidden font-medium"></div>
+                </div>
+
+                <!-- AXIS CONFIG CARD -->
+                <div class="glass-card rounded-2xl p-6 border border-gray-800">
+                    <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                        2. Configure Graph Parameters
+                    </h2>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">X-Axis Column</label>
+                            <select id="xAxisSelect" class="w-full p-2.5 rounded-xl text-xs border border-gray-700 disabled:opacity-50" disabled>
+                                <option>Paste data first...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">Y-Axis Column</label>
+                            <select id="yAxisSelect" class="w-full p-2.5 rounded-xl text-xs border border-gray-700 disabled:opacity-50" disabled>
+                                <option>Paste data first...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- DISPLAY OPTIONS -->
+                    <div class="mt-5 pt-4 border-t border-gray-800/80 space-y-3">
+                        <label class="block text-xs font-semibold text-gray-300">Display Options</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="inline-flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
+                                <input type="checkbox" id="showZeroLines" checked class="rounded border-gray-700 text-sky-500 focus:ring-sky-500">
+                                Zero Axis Crosshairs
+                            </label>
+                            <label class="inline-flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
+                                <input type="checkbox" id="smoothCurve" checked class="rounded border-gray-700 text-sky-500 focus:ring-sky-500">
+                                Smooth Spline Curve
+                            </label>
+                            <label class="inline-flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
+                                <input type="checkbox" id="showPoints" checked class="rounded border-gray-700 text-sky-500 focus:ring-sky-500">
+                                Plot Data Markers
+                            </label>
+                            <label class="inline-flex items-center gap-2 text-xs text-gray-300 cursor-pointer">
+                                <input type="checkbox" id="showGrid" checked class="rounded border-gray-700 text-sky-500 focus:ring-sky-500">
+                                Engineering Grid
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: GRAPH CANVAS & EXPORT -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                
+                <div class="glass-card rounded-2xl p-6 border border-gray-800 accent-border-glow">
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-gray-800">
+                        <div>
+                            <h2 class="text-lg font-bold text-white" id="chartTitleHeader">Kinematic Plot</h2>
+                            <p class="text-xs text-gray-400" id="chartSubtitle">Interactive preview ready for export</p>
+                        </div>
+
+                        <!-- EXPORT BUTTONS -->
+                        <div class="flex items-center gap-2">
+                            <button id="downloadPngBtn" class="px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Download PNG
+                            </button>
+                            <button id="downloadSvgBtn" class="px-3.5 py-1.5 bg-sky-600/20 hover:bg-sky-600/30 border border-sky-500/40 text-sky-300 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                Export Vector (SVG)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CANVAS AREA -->
+                    <div class="chart-container bg-gray-950/90 rounded-xl p-3 border border-gray-900">
+                        <canvas id="kinematicChart"></canvas>
+                    </div>
+
+                    <!-- METRICS & SUMMARY -->
+                    <div class="mt-6 grid grid-cols-3 gap-3 text-center border-t border-gray-800/80 pt-4">
+                        <div class="p-2.5 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Min Value (Y)</div>
+                            <div id="metricMin" class="text-sm font-semibold text-sky-400 mt-0.5">--</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Max Value (Y)</div>
+                            <div id="metricMax" class="text-sm font-semibold text-blue-400 mt-0.5">--</div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-gray-900/60 border border-gray-800">
+                            <div class="text-[10px] uppercase font-bold text-gray-400">Range / Delta</div>
+                            <div id="metricDelta" class="text-sm font-semibold text-indigo-400 mt-0.5">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT OVERVIEW AND IMPLEMENTATION DETAILS -->
+                <div class="glass-card rounded-2xl p-6 border border-gray-800 space-y-4">
+                    <h3 class="text-base font-bold text-white">Engineering Context & Workflow</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        In Formula SAE / Motorsport suspension tuning, Lotus Shark (LSA) provides detailed kinematic sweeps for hardpoint positioning. This automated tool bypasses the native low-resolution screenshot constraints by taking copied tabular results, auto-detecting delimiters (tabs or commas), and outputting crisp vector graphics optimized for FSAE design reports.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gray-800/60 bg-gray-950/80 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            <p>© <span id="year"></span> Gary Kanyuh • Mechanical Engineering Portfolio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPT LOGIC -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("year").textContent = new Date().getFullYear();
+
+            // DOM Elements
+            const dataInput = document.getElementById("dataInput");
+            const parseBtn = document.getElementById("parseBtn");
+            const demoBtn = document.getElementById("demoBtn");
+            const parseStatus = document.getElementById("parseStatus");
+            const xAxisSelect = document.getElementById("xAxisSelect");
+            const yAxisSelect = document.getElementById("yAxisSelect");
+            const chartTitleHeader = document.getElementById("chartTitleHeader");
+            const chartSubtitle = document.getElementById("chartSubtitle");
+
+            const showZeroLines = document.getElementById("showZeroLines");
+            const smoothCurve = document.getElementById("smoothCurve");
+            const showPoints = document.getElementById("showPoints");
+            const showGrid = document.getElementById("showGrid");
+
+            const metricMin = document.getElementById("metricMin");
+            const metricMax = document.getElementById("metricMax");
+            const metricDelta = document.getElementById("metricDelta");
+
+            const downloadPngBtn = document.getElementById("downloadPngBtn");
+            const downloadSvgBtn = document.getElementById("downloadSvgBtn");
+
+            let parsedColumns = {};
+            let chartInstance = null;
+
+            // Sample Lotus Shark Kinematics Data (Bump Travel vs Camber & Toe)
+            const sampleLotusData = 
+`Bump_mm\tCamber_deg\tToe_deg\tRoll_Center_Height_mm
+-30.0\t1.85\t-0.42\t32.1
+-25.0\t1.51\t-0.34\t33.4
+-20.0\t1.18\t-0.26\t34.8
+-15.0\t0.86\t-0.18\t36.2
+-10.0\t0.56\t-0.11\t37.5
+-5.0\t0.27\t-0.05\t38.8
+0.0\t0.00\t0.00\t40.0
+5.0\t-0.25\t0.04\t41.1
+10.0\t-0.49\t0.09\t42.3
+15.0\t-0.71\t0.13\t43.4
+20.0\t-0.92\t0.17\t44.5
+25.0\t-1.11\t0.20\t45.5
+30.0\t-1.29\t0.23\t46.6`;
+
+            // Custom Zero Axis Crosshair Plugin for Chart.js
+            const zeroLinePlugin = {
+                id: 'zeroLinePlugin',
+                beforeDraw(chart) {
+                    if (!showZeroLines.checked) return;
+                    const { ctx, chartArea: { top, bottom, left, right }, scales: { x, y } } = chart;
+                    
+                    ctx.save();
+                    ctx.lineWidth = 1.2;
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeStyle = 'rgba(156, 163, 175, 0.6)'; // Grey crosshair
+
+                    // Y = 0 Line
+                    if (y.getPixelForValue(0) >= top && y.getPixelForValue(0) <= bottom) {
+                        const yZero = y.getPixelForValue(0);
+                        ctx.beginPath();
+                        ctx.moveTo(left, yZero);
+                        ctx.lineTo(right, yZero);
+                        ctx.stroke();
+                    }
+
+                    // X = 0 Line
+                    if (x.getPixelForValue(0) >= left && x.getPixelForValue(0) <= right) {
+                        const xZero = x.getPixelForValue(0);
+                        ctx.beginPath();
+                        ctx.moveTo(xZero, top);
+                        ctx.lineTo(xZero, bottom);
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+            };
+
+            // Parse Table Data (Handles Tabs from Excel or Commas)
+            function parseData() {
+                const rawText = dataInput.value.trim();
+                if (!rawText) {
+                    alert("Please paste tabular data into the text box first.");
+                    return;
+                }
+
+                const lines = rawText.split(/\r?\n/).filter(line => line.trim() !== "");
+                if (lines.length < 2) {
+                    alert("Data must include at least one header row and one row of numbers.");
+                    return;
+                }
+
+                // Auto-detect delimiter (Tab vs CSV)
+                const firstLine = lines[0];
+                const delimiter = firstLine.includes("\t") ? "\t" : (firstLine.includes(",") ? "," : /\s+/);
+
+                const headers = firstLine.split(delimiter).map(h => h.trim().replace(/^['"]|['"]$/g, ''));
+                parsedColumns = {};
+                headers.forEach(h => parsedColumns[h] = []);
+
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i].split(delimiter).map(cell => cell.trim());
+                    if (row.length === headers.length) {
+                        headers.forEach((h, idx) => {
+                            const val = parseFloat(row[idx]);
+                            parsedColumns[h].push(isNaN(val) ? null : val);
+                        });
+                    }
+                }
+
+                // Populate Dropdowns
+                xAxisSelect.innerHTML = "";
+                yAxisSelect.innerHTML = "";
+                
+                headers.forEach((h, idx) => {
+                    const optionX = new Option(h, h);
+                    const optionY = new Option(h, h);
+                    xAxisSelect.add(optionX);
+                    yAxisSelect.add(optionY);
+                });
+
+                xAxisSelect.disabled = false;
+                yAxisSelect.disabled = false;
+
+                // Select default indices (Col 0 = X, Col 1 = Y if available)
+                if (headers.length > 1) {
+                    yAxisSelect.selectedIndex = 1;
+                }
+
+                parseStatus.textContent = `✓ Successfully loaded ${lines.length - 1} data rows across ${headers.length} columns.`;
+                parseStatus.classList.remove("hidden");
+
+                renderChart();
+            }
+
+            // Render Chart using Chart.js
+            function renderChart() {
+                const xKey = xAxisSelect.value;
+                const yKey = yAxisSelect.value;
+
+                if (!xKey || !yKey || !parsedColumns[xKey] || !parsedColumns[yKey]) return;
+
+                const xData = parsedColumns[xKey];
+                const yData = parsedColumns[yKey];
+
+                // Formulate coordinate pairs
+                const scatterPoints = xData.map((x, i) => ({ x: x, y: yData[i] })).filter(p => p.x !== null && p.y !== null);
+
+                // Update Metrics
+                const yValues = scatterPoints.map(p => p.y);
+                if (yValues.length > 0) {
+                    const min = Math.min(...yValues);
+                    const max = Math.max(...yValues);
+                    const delta = max - min;
+
+                    metricMin.textContent = min.toFixed(3);
+                    metricMax.textContent = max.toFixed(3);
+                    metricDelta.textContent = delta.toFixed(3);
+                }
+
+                chartTitleHeader.textContent = `${yKey} vs. ${xKey}`;
+                chartSubtitle.textContent = `Lotus Shark Kinematic Analysis Sweep (${scatterPoints.length} points)`;
+
+                const ctx = document.getElementById("kinematicChart").getContext("2d");
+
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                chartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: `${yKey} vs ${xKey}`,
+                            data: scatterPoints,
+                            showLine: true,
+                            borderColor: '#38bdf8', // Vibrant Sky Blue
+                            backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                            borderWidth: 2.5,
+                            tension: smoothCurve.checked ? 0.35 : 0,
+                            pointRadius: showPoints.checked ? 4 : 0,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#0284c7',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 1.5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 400 },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                title: {
+                                    display: true,
+                                    text: xKey,
+                                    color: '#f3f4f6',
+                                    font: { family: 'Inter', size: 12, weight: '600' }
+                                },
+                                grid: {
+                                    display: showGrid.checked,
+                                    color: 'rgba(255, 255, 255, 0.07)'
+                                },
+                                ticks: { color: '#9ca3af' }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: yKey,
+                                    color: '#f3f4f6',
+                                    font: { family: 'Inter', size: 12, weight: '600' }
+                                },
+                                grid: {
+                                    display: showGrid.checked,
+                                    color: 'rgba(255, 255, 255, 0.07)'
+                                },
+                                ticks: { color: '#9ca3af' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: '#e5e7eb', font: { family: 'Inter', size: 11 } }
+                            },
+                            tooltip: {
+                                backgroundColor: '#111827',
+                                titleColor: '#38bdf8',
+                                bodyColor: '#f9fafb',
+                                borderColor: '#374151',
+                                borderWidth: 1,
+                                padding: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: (ctx) => `${xKey}: ${ctx.parsed.x}, ${yKey}: ${ctx.parsed.y}`
+                                }
+                            }
+                        }
+                    },
+                    plugins: [zeroLinePlugin]
+                });
+            }
+
+            // Export PNG
+            downloadPngBtn.addEventListener("click", () => {
+                if (!chartInstance) return;
+                const link = document.createElement('a');
+                link.download = `${yAxisSelect.value}_vs_${xAxisSelect.value}_LotusPlot.png`;
+                link.href = chartInstance.toBase64Image('image/png', 1.0);
+                link.click();
+            });
+
+            // Export Vector SVG Generator
+            downloadSvgBtn.addEventListener("click", () => {
+                const xKey = xAxisSelect.value;
+                const yKey = yAxisSelect.value;
+                if (!xKey || !yKey || !parsedColumns[xKey]) return;
+
+                const xData = parsedColumns[xKey];
+                const yData = parsedColumns[yKey];
+                const points = xData.map((x, i) => ({ x: x, y: yData[i] })).filter(p => p.x !== null && p.y !== null);
+
+                if (points.length === 0) return;
+
+                const width = 800;
+                const height = 500;
+                const pad = 60;
+
+                const xVals = points.map(p => p.x);
+                const yVals = points.map(p => p.y);
+                const xMin = Math.min(...xVals), xMax = Math.max(...xVals);
+                const yMin = Math.min(...yVals), yMax = Math.max(...yVals);
+
+                const mapX = (val) => pad + ((val - xMin) / (xMax - xMin || 1)) * (width - 2 * pad);
+                const mapY = (val) => height - pad - ((val - yMin) / (yMax - yMin || 1)) * (height - 2 * pad);
+
+                let svgPath = "";
+                points.forEach((p, idx) => {
+                    const sx = mapX(p.x);
+                    const sy = mapY(p.y);
+                    svgPath += (idx === 0 ? `M ${sx} ${sy}` : ` L ${sx} ${sy}`);
+                });
+
+                const svgContent = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="background-color: #0b0f19; font-family: sans-serif;">
+    <text x="${width/2}" y="30" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">${yKey} vs. ${xKey}</text>
+    <line x1="${pad}" y1="${height-pad}" x2="${width-pad}" y2="${height-pad}" stroke="#4b5563" stroke-width="2"/>
+    <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${height-pad}" stroke="#4b5563" stroke-width="2"/>
+    <text x="${width/2}" y="${height-15}" fill="#9ca3af" font-size="12" text-anchor="middle">${xKey}</text>
+    <text x="20" y="${height/2}" fill="#9ca3af" font-size="12" text-anchor="middle" transform="rotate(-90 20 ${height/2})">${yKey}</text>
+    <path d="${svgPath}" fill="none" stroke="#38bdf8" stroke-width="3"/>
+</svg>`.trim();
+
+                const blob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${yKey}_vs_${xKey}_VectorPlot.svg`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+
+            // Event Listeners
+            parseBtn.addEventListener("click", parseData);
+            
+            demoBtn.addEventListener("click", () => {
+                dataInput.value = sampleLotusData;
+                parseData();
+            });
+
+            xAxisSelect.addEventListener("change", renderChart);
+            yAxisSelect.addEventListener("change", renderChart);
+
+            showZeroLines.addEventListener("change", renderChart);
+            smoothCurve.addEventListener("change", renderChart);
+            showPoints.addEventListener("change", renderChart);
+            showGrid.addEventListener("change", renderChart);
+
+            // Load Demo Data on Startup for Immediate Interaction
+            dataInput.value = sampleLotusData;
+            parseData();
+        });
+    </script>
+</body>
+</html>
