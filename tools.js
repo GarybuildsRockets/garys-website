@@ -96,13 +96,31 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function drawDataValuesPlugin(chartInstance) {
+        if (!showDataValuesToggle.checked) return;
+        const ctx = chartInstance.ctx;
+        ctx.save();
+        ctx.font = "bold 11px sans-serif";
+        ctx.fillStyle = chartInstance.options.scales.x.grid.color === '#ffffff' ? '#111111' : '#a4afc3';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+
+        chartInstance.data.datasets.forEach((dataset, i) => {
+            const meta = chartInstance.getDatasetMeta(i);
+            meta.data.forEach((point, index) => {
+                const dataVal = dataset.data[index];
+                ctx.fillText(dataVal, point.x, point.y - 8);
+            });
+        });
+        ctx.restore();
+    }
+
     function updateGraph() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return;
 
         initColorPickers(parsed.seriesNames);
         const isColor = colorModeToggle.checked;
-        const showValues = showDataValuesToggle.checked;
 
         const datasets = parsed.seriesNames.map((name, idx) => {
             const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
@@ -157,37 +175,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         grid: { color: 'rgba(255, 255, 255, 0.08)' },
                         ticks: { color: '#a4afc3' }
                     }
-                },
-                animation: {
-                    onComplete: function() {
-                        if (!showValues) return;
-                        const ci = this;
-                        const c = ci.ctx;
-                        c.font = "11px sans-serif";
-                        c.fillStyle = "#a4afc3";
-                        c.textAlign = "center";
-                        c.textBaseline = "bottom";
-
-                        ci.data.datasets.forEach((ds, i) => {
-                            const meta = ci.getDatasetMeta(i);
-                            meta.data.forEach((pt, index) => {
-                                c.fillText(ds.data[index], pt.x, pt.y - 8);
-                            });
-                        });
-                    }
                 }
-            }
+            },
+            plugins: [{
+                id: 'customDataLabels',
+                afterDatasetsDraw: (chart) => {
+                    drawDataValuesPlugin(chart);
+                }
+            }]
         });
     }
 
-    // High-Resolution White-Background Export for PNG & PDF
-    function exportFile(format) {
+    // High-Resolution Export Generator for PNG & PDF
+    function generateExportCanvas() {
         const parsed = parseCSV(csvInput.value);
-        if (!parsed) return;
+        if (!parsed) return null;
 
         const offCanvas = document.createElement("canvas");
-        offCanvas.width = 1600;
-        offCanvas.height = 900; // Balanced 16:9 ratio to prevent squeezing
+        offCanvas.width = 2000;
+        offCanvas.height = 1125; // Clean 16:9 widescreen ratio
         const offCtx = offCanvas.getContext("2d");
 
         const isColor = colorModeToggle.checked;
@@ -200,10 +206,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 data: parsed.seriesData[name],
                 borderColor: color,
                 backgroundColor: color,
-                borderWidth: 3,
+                borderWidth: 3.5,
                 borderDash: isColor ? [] : bwLineStyles[idx % bwLineStyles.length],
                 pointStyle: pointStyles[idx % pointStyles.length],
-                pointRadius: 7,
+                pointRadius: 8,
                 pointBackgroundColor: color,
                 tension: 0.1
             };
@@ -219,59 +225,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: false,
                 responsive: false,
                 devicePixelRatio: 2,
-                layout: { padding: 30 },
+                layout: { padding: 40 },
                 plugins: {
                     title: {
                         display: true,
                         text: chartTitleInput.value,
                         color: '#111111',
-                        font: { size: 22, weight: 'bold' },
-                        padding: { bottom: 15 }
+                        font: { size: 26, weight: 'bold' },
+                        padding: { bottom: 20 }
                     },
                     legend: {
                         position: 'top',
                         labels: {
                             color: '#111111',
-                            font: { size: 14, weight: '600' },
-                            boxWidth: 20,
-                            padding: 15,
+                            font: { size: 16, weight: '600' },
+                            boxWidth: 24,
+                            padding: 20,
                             usePointStyle: true
                         }
                     }
                 },
                 scales: {
                     x: {
-                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 14, weight: '600' } },
-                        grid: { color: '#e2e8f0', lineWidth: 1 },
-                        ticks: { color: '#111111', font: { size: 12 } }
+                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: '600' } },
+                        grid: { color: '#e2e8f0', lineWidth: 1.5 },
+                        ticks: { color: '#111111', font: { size: 14 } }
                     },
                     y: {
-                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 14, weight: '600' } },
-                        grid: { color: '#e2e8f0', lineWidth: 1 },
-                        ticks: { color: '#111111', font: { size: 12 } }
-                    }
-                },
-                animation: {
-                    onComplete: function() {
-                        if (!showValues) return;
-                        const ci = this;
-                        const c = ci.ctx;
-                        c.font = "bold 13px sans-serif";
-                        c.fillStyle = "#111111";
-                        c.textAlign = "center";
-                        c.textBaseline = "bottom";
-
-                        ci.data.datasets.forEach((ds, i) => {
-                            const meta = ci.getDatasetMeta(i);
-                            meta.data.forEach((pt, idx) => {
-                                c.fillText(ds.data[idx], pt.x, pt.y - 10);
-                            });
-                        });
+                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: '600' } },
+                        grid: { color: '#e2e8f0', lineWidth: 1.5 },
+                        ticks: { color: '#111111', font: { size: 14 } }
                     }
                 }
             },
             plugins: [{
-                id: 'pure_white_bg',
+                id: 'pure_white_bg_and_labels',
                 beforeDraw: (chart) => {
                     const ctx = chart.canvas.getContext('2d');
                     ctx.save();
@@ -279,31 +267,68 @@ document.addEventListener("DOMContentLoaded", function () {
                     ctx.fillStyle = '#ffffff';
                     ctx.fillRect(0, 0, chart.width, chart.height);
                     ctx.restore();
+                },
+                afterDatasetsDraw: (chart) => {
+                    if (!showValues) return;
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    ctx.font = "bold 15px sans-serif";
+                    ctx.fillStyle = "#111111";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "bottom";
+
+                    chart.data.datasets.forEach((ds, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((pt, index) => {
+                            ctx.fillText(ds.data[index], pt.x, pt.y - 12);
+                        });
+                    });
+                    ctx.restore();
                 }
             }]
         });
 
+        return { exportChart, offCanvas };
+    }
+
+    function exportPNG() {
+        const generated = generateExportCanvas();
+        if (!generated) return;
         setTimeout(() => {
-            const imgData = offCanvas.toDataURL("image/png", 1.0);
-            if (format === 'png') {
-                const link = document.createElement("a");
-                link.download = "Lotus_Shark_Graph.png";
-                link.href = imgData;
-                link.click();
-            } else if (format === 'pdf') {
-                const container = document.createElement("div");
-                container.innerHTML = `<img src="${imgData}" style="width:100%; display:block;">`;
-                const opt = {
-                    margin: 10,
-                    filename: 'Lotus_Shark_Graph_Report.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                };
-                html2pdf().from(container).set(opt).save();
+            const imgData = generated.offCanvas.toDataURL("image/png", 1.0);
+            const link = document.createElement("a");
+            link.download = "Lotus_Shark_Graph.png";
+            link.href = imgData;
+            link.click();
+            generated.exportChart.destroy();
+        }, 100);
+    }
+
+    function exportPDF() {
+        const generated = generateExportCanvas();
+        if (!generated) return;
+        setTimeout(() => {
+            const imgData = generated.offCanvas.toDataURL("image/jpeg", 0.98);
+            const { jsPDF } = window.jspdf || {};
+            if (jsPDF) {
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                
+                // Scale image cleanly to fit landscape A4 page with margins
+                const imgWidth = pageWidth - 20;
+                const imgHeight = (generated.offCanvas.height * imgWidth) / generated.offCanvas.width;
+                const posY = (pageHeight - imgHeight) / 2;
+
+                pdf.addImage(imgData, 'JPEG', 10, posY > 10 ? posY : 10, imgWidth, imgHeight);
+                pdf.save('Lotus_Shark_Graph_Report.pdf');
             }
-            exportChart.destroy();
-        }, 150);
+            generated.exportChart.destroy();
+        }, 100);
     }
 
     updateBtn.addEventListener("click", updateGraph);
@@ -321,8 +346,8 @@ document.addEventListener("DOMContentLoaded", function () {
         updateGraph();
     });
 
-    exportPngBtn.addEventListener("click", () => exportFile('png'));
-    exportPdfBtn.addEventListener("click", () => exportFile('pdf'));
+    exportPngBtn.addEventListener("click", exportPNG);
+    exportPdfBtn.addEventListener("click", exportPDF);
 
     updateGraph();
 });
