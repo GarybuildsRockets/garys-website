@@ -55,7 +55,7 @@
                 <h2 class="section-title">Lotus Graphing Plotter</h2>
                 <div class="section-accent-line"></div>
                 <p style="color: var(--text-muted); margin-top: 8px;">
-                    Simulate suspension kinematics, toggle black & white or color mode, customize styles, and export instantly.
+                    Simulate kinematics, customize styles, display data point values, and export clean PNG or PDF reports.
                 </p>
             </div>
 
@@ -78,17 +78,24 @@
                         </div>
                     </div>
 
-                    <!-- COLOR TOGGLE & SELECTOR PANEL -->
+                    <!-- COLOR & DATA LABELS PANEL -->
                     <div class="control-group highlight-selector-panel">
                         <div class="panel-header-flex">
                             <div>
-                                <span class="control-label-bold">🎨 Series Style & Colors</span>
-                                <span class="panel-subtitle">Customize lines or switch to color mode</span>
+                                <span class="control-label-bold">🎨 Series Style & Options</span>
+                                <span class="panel-subtitle">Customize colors and data point visibility</span>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" id="colorModeToggle">
+                                <input type="checkbox" id="colorModeToggle" checked>
                                 <span class="toggle-slider"></span>
                                 <span class="toggle-label-text">Color Mode</span>
+                            </label>
+                        </div>
+                        <div class="panel-header-flex" style="margin-top: 10px; margin-bottom: 6px;">
+                            <span class="toggle-label-text">Show values on data points</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="showDataValuesToggle">
+                                <span class="toggle-slider"></span>
                             </label>
                         </div>
                         <div class="color-pickers-grid" id="colorPickersContainer"></div>
@@ -96,14 +103,14 @@
 
                     <div class="control-group">
                         <label for="csvDataInput" class="control-label">Data Input (CSV Format: X, Series1, Series2...)</label>
-                        <textarea id="csvDataInput" rows="5" class="custom-scrollbar" placeholder="X, Series1, Series2..."></textarea>
+                        <textarea id="csvDataInput" rows="5" class="custom-scrollbar wide-textarea" placeholder="X, Series1, Series2..."></textarea>
                     </div>
 
                     <div class="plotter-actions">
-                        <button id="updateChartBtn" class="primary-btn">Update Graph</button>
-                        <button id="loadSampleBtn" class="secondary-btn">Load Sample</button>
-                        <button id="exportPngBtn" class="secondary-btn">📷 Export PNG</button>
-                        <button id="exportPdfBtn" class="primary-btn export-pdf-btn">📄 Export PDF</button>
+                        <button id="updateChartBtn" class="uniform-btn">Update Graph</button>
+                        <button id="loadSampleBtn" class="uniform-btn">Load Sample</button>
+                        <button id="exportPngBtn" class="uniform-btn">Export PNG</button>
+                        <button id="exportPdfBtn" class="uniform-btn">Export PDF</button>
                     </div>
                 </div>
 
