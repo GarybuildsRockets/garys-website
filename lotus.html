@@ -55,7 +55,7 @@
                 <h2 class="section-title">Lotus Graphing Plotter</h2>
                 <div class="section-accent-line"></div>
                 <p style="color: var(--text-muted); margin-top: 8px;">
-                    Customize titles, axis labels, and series colors in full color, and export a clean PDF report.
+                    Simulate suspension kinematics, toggle black & white or color mode, customize styles, and export instantly.
                 </p>
             </div>
 
@@ -78,28 +78,36 @@
                         </div>
                     </div>
 
-                    <!-- COLOR SELECTOR PANEL -->
+                    <!-- COLOR TOGGLE & SELECTOR PANEL -->
                     <div class="control-group highlight-selector-panel">
-                        <div class="panel-header">
-                            <span class="control-label-bold">🎨 Data Series Colors</span>
-                            <span class="panel-subtitle">Click swatches to customize series colors</span>
+                        <div class="panel-header-flex">
+                            <div>
+                                <span class="control-label-bold">🎨 Series Style & Colors</span>
+                                <span class="panel-subtitle">Customize lines or switch to color mode</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="colorModeToggle">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label-text">Color Mode</span>
+                            </label>
                         </div>
                         <div class="color-pickers-grid" id="colorPickersContainer"></div>
                     </div>
 
                     <div class="control-group">
-                        <label for="csvDataInput" class="control-label">Data Input (CSV Format)</label>
-                        <textarea id="csvDataInput" rows="6" placeholder="X, Series1, Series2..."></textarea>
+                        <label for="csvDataInput" class="control-label">Data Input (CSV Format: X, Series1, Series2...)</label>
+                        <textarea id="csvDataInput" rows="5" class="custom-scrollbar" placeholder="X, Series1, Series2..."></textarea>
                     </div>
 
                     <div class="plotter-actions">
                         <button id="updateChartBtn" class="primary-btn">Update Graph</button>
                         <button id="loadSampleBtn" class="secondary-btn">Load Sample</button>
-                        <button id="exportPdfBtn" class="primary-btn export-pdf-btn">📄 Export Color PDF</button>
+                        <button id="exportPngBtn" class="secondary-btn">📷 Export PNG</button>
+                        <button id="exportPdfBtn" class="primary-btn export-pdf-btn">📄 Export PDF</button>
                     </div>
                 </div>
 
-                <!-- Graph Viewport (Target for clean PDF export) -->
+                <!-- Graph Viewport (Target for exports) -->
                 <div class="plotter-viewport" id="pdf-export-area">
                     <div class="canvas-wrapper">
                         <canvas id="lotusChart"></canvas>
