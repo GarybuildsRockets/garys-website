@@ -783,18 +783,11 @@ textarea:focus {
     height: 400px;
 }
 
-.active-nav {
-    color: var(--text-main) !important;
-    background: rgba(255, 255, 255, 0.05);
-}
-
 @media (max-width: 900px) {
     .plotter-container {
         grid-template-columns: 1fr;
     }
 }
-
-
 
 
 
