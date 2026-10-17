@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotus Graphing Plotter | Gary Kanyuh</title>
+
+    <!-- Chart.js & html2pdf CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Styles & Scripts -->
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <script defer src="tools.js"></script>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">Mechanical Engineering Student</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#tools">Back to Tools</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Fullscreen Overlay Nav -->
+        <div class="mobile-nav-overlay">
+            <ul class="mobile-nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#tools">Back to Tools</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- PLOTTER SECTION -->
+        <section class="section hero" style="padding-top: 140px;">
+            <div class="section-header">
+                <h2 class="section-title">Lotus Graphing Plotter</h2>
+                <div class="section-accent-line"></div>
+                <p style="color: var(--text-muted); margin-top: 8px;">
+                    Customize chart titles, axis labels, and data series colors, then export your graph report instantly to PDF.
+                </p>
+            </div>
+
+            <div class="plotter-container" id="pdf-export-area">
+                <!-- Controls Panel -->
+                <div class="plotter-controls">
+                    <div class="control-group">
+                        <label for="chartTitleInput">Chart Title</label>
+                        <input type="text" id="chartTitleInput" value="Anti Dive (%) - Lotus Shark Kinematics">
+                    </div>
+
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label for="xAxisLabelInput">X-Axis Label</label>
+                            <input type="text" id="xAxisLabelInput" value="X (Travel / Variation)">
+                        </div>
+                        <div class="control-group">
+                            <label for="yAxisLabelInput">Y-Axis Label</label>
+                            <input type="text" id="yAxisLabelInput" value="Anti Dive (%)">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Series Color Customization</label>
+                        <div class="color-pickers-grid" id="colorPickersContainer">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="csvDataInput">Data Input (CSV Format: X, Series1, Series2...)</label>
+                        <textarea id="csvDataInput" rows="7"></textarea>
+                    </div>
+
+                    <div class="plotter-actions">
+                        <button id="updateChartBtn" class="primary-btn">Update Graph</button>
+                        <button id="loadSampleBtn" class="secondary-btn">Load Anti-Dive Sample</button>
+                        <button id="exportPdfBtn" class="secondary-btn" style="border-color: var(--accent); color: var(--accent);">Export PDF</button>
+                    </div>
+                </div>
+
+                <!-- Graph Viewport -->
+                <div class="plotter-viewport">
+                    <div class="canvas-wrapper">
+                        <canvas id="lotusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
+    </footer>
+</body>
+</html>
