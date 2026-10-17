@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotus Graphing Plotter | Gary Kanyuh</title>
 
-    <!-- Chart.js & html2pdf CDN -->
+    <!-- Chart.js & jsPDF CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- Styles & Scripts -->
     <link rel="stylesheet" href="styles.css">
@@ -114,7 +114,7 @@
                     </div>
                 </div>
 
-                <!-- Graph Viewport (Target for exports) -->
+                <!-- Graph Viewport -->
                 <div class="plotter-viewport" id="pdf-export-area">
                     <div class="canvas-wrapper">
                         <canvas id="lotusChart"></canvas>
