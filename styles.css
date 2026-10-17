@@ -719,19 +719,20 @@ textarea:focus {
 }
 
 /* ===========================
-   LOTUS PLOTTER & COLOR SELECTOR
+   CLEANED LOTUS PLOTTER LAYOUT
    =========================== */
 
 .plotter-container {
-    max-width: var(--max-width);
+    max-width: 1240px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 24px;
+    grid-template-columns: 420px 1fr;
+    gap: 30px;
+    align-items: start;
     background: var(--bg-elevated);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-large);
-    padding: 24px;
+    padding: 30px;
     box-shadow: var(--shadow-soft);
 }
 
@@ -748,48 +749,48 @@ textarea:focus {
 }
 
 .control-label-bold {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-main);
     font-weight: 600;
 }
 
 .highlight-selector-panel {
-    background: rgba(58, 163, 255, 0.06);
-    border: 1px solid rgba(58, 163, 255, 0.3);
+    background: rgba(58, 163, 255, 0.04);
+    border: 1px solid rgba(58, 163, 255, 0.2);
     border-radius: var(--radius-medium);
-    padding: 14px;
+    padding: 12px;
 }
 
 .panel-header {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .panel-subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-muted);
 }
 
 .color-pickers-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 }
 
 .color-picker-card {
     background: var(--bg-elevated-soft);
     border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    padding: 8px 10px;
+    border-radius: 8px;
+    padding: 6px 8px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
 }
 
 .series-name {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-main);
     font-weight: 500;
     white-space: nowrap;
@@ -800,15 +801,15 @@ textarea:focus {
 .picker-control-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .prominent-color-input {
     -webkit-appearance: none;
     border: none;
-    width: 32px;
-    height: 28px;
-    border-radius: 6px;
+    width: 26px;
+    height: 22px;
+    border-radius: 4px;
     cursor: pointer;
     background: transparent;
     padding: 0;
@@ -820,44 +821,44 @@ textarea:focus {
 
 .prominent-color-input::-webkit-color-swatch {
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 .hex-label {
-    font-size: 11px;
+    font-size: 10px;
     font-family: monospace;
     color: var(--accent);
 }
 
 .export-pdf-btn {
-    background: #ffffff !important;
+    background: var(--accent) !important;
     color: #020308 !important;
-    border-color: #ffffff !important;
+    border-color: var(--accent) !important;
     font-weight: 600 !important;
 }
 
 .export-pdf-btn:hover {
-    background: #e2e8f0 !important;
+    filter: brightness(1.1);
 }
 
 .plotter-viewport {
     background: var(--bg-elevated-soft);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-medium);
-    padding: 16px;
+    padding: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 440px;
+    min-height: 520px;
 }
 
 .canvas-wrapper {
     position: relative;
     width: 100%;
-    height: 420px;
+    height: 480px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .plotter-container {
         grid-template-columns: 1fr;
     }
