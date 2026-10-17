@@ -7,18 +7,18 @@
 
     <!-- Styles & Scripts -->
     <link rel="stylesheet" href="styles.css">
-    <!-- Chart.js CDN for interactive high-performance plotting -->
+    <!-- Chart.js for high-performance interactive graphing -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="script.js"></script>
 
     <style>
-        .generator-container {
-            max-width: 1000px;
+        .generator-wrapper {
+            max-width: 900px;
             margin: 40px auto;
             padding: 30px;
             background: #1e1e1e;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             color: #e0e0e0;
         }
         .form-grid {
@@ -50,7 +50,7 @@
         }
         textarea {
             resize: vertical;
-            height: 120px;
+            height: 130px;
             font-family: monospace;
             font-size: 13px;
         }
@@ -69,8 +69,9 @@
             gap: 6px;
             cursor: pointer;
             font-weight: normal;
+            color: #ddd;
         }
-        .chart-wrapper {
+        .chart-container {
             position: relative;
             background: #ffffff;
             padding: 20px;
@@ -78,10 +79,10 @@
             margin-top: 30px;
             height: 450px;
         }
-        .action-bar {
+        .action-row {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -109,202 +110,189 @@
         <div class="container">
             <h1>Lotus Shark Graph Generator</h1>
             <p class="project-subtitle">
-                Advanced multi-series kinematic plotting tool tailored for Formula SAE suspension exports
+                Automated web tool for plotting suspension kinematics and vehicle dynamics data
             </p>
         </div>
     </section>
 
-    <!-- MAIN GENERATOR INTERFACE -->
+    <!-- MAIN APP INTERFACE -->
     <main>
-        <div class="generator-container">
-            <h2>Paste Lotus Shark Simulation Data</h2>
-            <p style="color: #aaa; margin-bottom: 20px;">
-                Highlight your data straight out of Excel (including the title row and headers like <code>BUMP (mm)</code> and <code>Front +ve Y</code>) and paste it below.
+        <div class="generator-wrapper">
+            <h2>Data Input</h2>
+            <p style="color: #aaa; margin-bottom: 15px; font-size: 14px;">
+                Copy your table directly from Excel (including the top title row and column headers like <code>BUMP (mm)</code> and <code>Front +ve Y</code>) and paste it below[cite: 14].
             </p>
 
             <div class="form-group full-width">
-                <label for="rawPaste">Clipboard Data Input:</label>
+                <label for="rawPaste">Paste Excel Data:</label>
                 <textarea id="rawPaste" placeholder="Castor Angle (deg)&#10;BUMP (mm)	Front +ve Y	Front -ve Y	Rear +ve Y	Rear -ve Y&#10;60	0.580994	0.580994	-2.7806	-2.7806..."></textarea>
             </div>
 
-            <div class="action-bar">
-                <button type="button" class="primary-btn" onclick="processData()">Parse & Load Data</button>
+            <div class="action-row">
+                <button type="button" class="primary-btn" onclick="parseLotusData()">1. Parse Data</button>
             </div>
 
-            <hr style="border: 0; border-top: 1px solid #444; margin: 30px 0;">
+            <hr style="border: 0; border-top: 1px solid #444; margin: 25px 0;">
 
-            <h3>Graph Customization & Overrides</h3>
+            <h2>Graph Customization</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="customTitle">Chart Title (Override):</label>
-                    <input type="text" id="customTitle" placeholder="e.g., Castor Angle vs. Bump Travel">
+                    <label for="chartTitle">Chart Title:</label>
+                    <input type="text" id="chartTitle" placeholder="e.g., Castor Angle vs. Bump">
                 </div>
                 <div class="form-group">
-                    <label for="customXLabel">X-Axis Label (Override):</label>
-                    <input type="text" id="customXLabel" placeholder="e.g., BUMP (mm)">
+                    <label for="xAxisLabelOverride">X-Axis Label:</label>
+                    <input type="text" id="xAxisLabelOverride" placeholder="e.g., BUMP (mm)">
                 </div>
                 <div class="form-group">
-                    <label for="xAxisSelect">Select X-Axis Column:</label>
+                    <label for="xAxisSelect">X-Axis Column:</label>
                     <select id="xAxisSelect"></select>
                 </div>
                 <div class="form-group full-width">
-                    <label>Select Y-Axis Series to Plot (Multi-select):</label>
+                    <label>Y-Axis Series (Select to Plot):</label>
                     <div id="ySeriesCheckboxes" class="checkbox-group">
-                        <span style="color: #888;">Parse data first to populate series...</span>
+                        <span style="color: #888;">Paste and parse data above first...</span>
                     </div>
                 </div>
             </div>
 
-            <div class="action-bar">
-                <button type="button" class="primary-btn" onclick="updateChart()">Generate / Refresh Graph</button>
-                <button type="button" class="secondary-btn" onclick="downloadChart()">Download High-Res PNG</button>
+            <div class="action-row">
+                <button type="button" class="primary-btn" onclick="renderChart()">2. Generate Graph</button>
+                <button type="button" class="secondary-btn" onclick="downloadImage()">Download PNG</button>
             </div>
 
-            <!-- RENDERED CHART CANVAS -->
-            <div class="chart-wrapper">
-                <canvas id="lotusChart"></canvas>
+            <!-- GRAPH DISPLAY AREA -->
+            <div class="chart-container">
+                <canvas id="dynamicsChart"></canvas>
             </div>
 
             <!-- BACK BUTTON -->
-            <div class="project-back" style="margin-top: 40px;">
+            <div class="project-back" style="margin-top: 30px;">
                 <a href="index.html#projects" class="btn">← Back to Projects</a>
             </div>
         </div>
     </main>
 
-    <!-- PARSING & CHART SCRIPT -->
+    <!-- ROBUST PARSING & PLOTTING SCRIPT -->
     <script>
-        let parsedTableData = { headers: [], rows: [] };
-        let myChart = null;
+        let tableData = { headers: [], rows: [] };
+        let activeChart = null;
+        const colorPalette = ['#002b49', '#d9534f', '#f0ad4e', '#5cb85c', '#5bc0de', '#9b59b6', '#e67e22'];
 
-        const palette = [
-            '#002b49', '#d9534f', '#f0ad4e', '#5cb85c', '#5bc0de', '#6f42c1', '#e83e8c'
-        ];
-
-        function processData() {
-            const rawText = document.getElementById('rawPaste').value.trim();
-            if (!rawText) {
-                alert("Please paste data from Excel first.");
+        function parseLotusData() {
+            const raw = document.getElementById('rawPaste').value.trim();
+            if (!raw) {
+                alert("Please paste your Excel data into the text box first.");
                 return;
             }
 
-            const lines = rawText.split('\n').map(l => l.split('\t').map(cell => cell.trim()));
-            
+            const lines = raw.split('\n').map(l => l.split('\t').map(c => c.trim()));
             if (lines.length < 2) {
-                alert("Invalid data structure. Make sure you include header rows.");
+                alert("Data format appears invalid. Ensure it includes headers.");
                 return;
             }
 
-            // Lotus shark format check: Row 0 is often a title like "Castor Angle (deg)"
-            // Row 1 is column headers like "BUMP (mm)", "Front +ve Y", etc.
-            let titleCandidate = lines[0][0];
-            let headerRowIdx = 1;
-
+            let headerIndex = 0;
+            // Handle Lotus 2-tier format: Row 0 is often a title like "Castor Angle (deg)"
             if (lines[0].length === 1 && lines.length > 2) {
-                document.getElementById('customTitle').value = titleCandidate;
-                headerRowIdx = 1;
+                document.getElementById('chartTitle').value = lines[0][0];
+                headerIndex = 1;
             } else {
-                // If row 0 looks like headers directly
-                headerRowIdx = 0;
-                document.getElementById('customTitle').value = "Suspension Kinematics Analysis";
+                document.getElementById('chartTitle').value = "Suspension Kinematics Plot";
+                headerIndex = 0;
             }
 
-            const headers = lines[headerRowIdx].filter(h => h !== "");
-            const dataRows = lines.slice(headerRowIdx + 1).filter(r => r.length >= headers.length);
+            const headers = lines[headerIndex].filter(h => h !== "");
+            const rowsRaw = lines.slice(headerIndex + 1).filter(r => r.length >= headers.length);
 
-            let rows = [];
-            dataRows.forEach(r => {
+            let parsedRows = [];
+            rowsRaw.forEach(r => {
                 let rowObj = {};
                 headers.forEach((h, idx) => {
-                    rowObj[h] = parseFloat(r[idx]) || r[idx];
+                    rowObj[h] = isNaN(r[idx]) ? r[idx] : parseFloat(r[idx]);
                 });
-                rows.push(rowObj);
+                parsedRows.push(rowObj);
             });
 
-            parsedTableData = { headers, rows };
+            tableData = { headers, rows: parsedRows };
 
-            // Populate X-Axis dropdown
+            // Populate X Axis dropdown
             const xSelect = document.getElementById('xAxisSelect');
             xSelect.innerHTML = '';
             headers.forEach((h, idx) => {
                 let opt = document.createElement('option');
                 opt.value = h;
                 opt.textContent = h;
-                if (idx === 0) opt.selected = true; // Default to first column (e.g. Bump)
+                if (idx === 0) opt.selected = true;
                 xSelect.appendChild(opt);
             });
+            document.getElementById('xAxisLabelOverride').value = headers[0] || '';
 
-            if (headers.length > 0) {
-                document.getElementById('customXLabel').value = headers[0];
-            }
-
-            // Populate Y-Series checkboxes
-            const yContainer = document.getElementById('ySeriesCheckboxes');
-            yContainer.innerHTML = '';
+            // Populate Y checkboxes
+            const yBox = document.getElementById('ySeriesCheckboxes');
+            yBox.innerHTML = '';
             headers.forEach((h, idx) => {
-                if (idx === 0) return; // Skip X column for Y options
-                let label = document.createElement('label');
-                label.className = 'checkbox-label';
+                if (idx === 0) return; // Skip X column
+                let lbl = document.createElement('label');
+                lbl.className = 'checkbox-label';
                 
-                let chk = document.createElement('input');
-                chk.type = 'checkbox';
-                chk.name = 'ySeries';
-                chk.value = h;
-                chk.checked = true; // Default check all Y columns
+                let box = document.createElement('input');
+                box.type = 'checkbox';
+                box.name = 'ySeries';
+                box.value = h;
+                box.checked = true;
 
-                label.appendChild(chk);
-                label.appendChild(document.createTextNode(h));
-                yContainer.appendChild(label);
+                lbl.appendChild(box);
+                lbl.appendChild(document.createTextNode(h));
+                yBox.appendChild(lbl);
             });
 
-            alert(`Successfully parsed ${rows.length} rows and ${headers.length} columns!`);
-            updateChart();
+            alert(`Parsed successfully! Found ${parsedRows.length} data rows.`);
+            renderChart();
         }
 
-        function updateChart() {
-            if (parsedTableData.rows.length === 0) {
+        function renderChart() {
+            if (tableData.rows.length === 0) {
+                alert("No parsed data available. Click 'Parse Data' first.");
                 return;
             }
 
             const xCol = document.getElementById('xAxisSelect').value;
-            const customTitle = document.getElementById('customTitle').value || "Simulation Output";
-            const customXLabel = document.getElementById('customXLabel').value || xCol;
+            const titleText = document.getElementById('chartTitle').value || "Simulation Output";
+            const xLabelText = document.getElementById('xAxisLabelOverride').value || xCol;
 
-            // Get selected Y series checkboxes
-            const checkboxes = document.querySelectorAll('input[name="ySeries"]:checked');
-            const selectedYCols = Array.from(checkboxes).map(cb => cb.value);
-
-            if (selectedYCols.length === 0) {
-                alert("Please select at least one Y-axis series to plot.");
+            const selectedY = Array.from(document.querySelectorAll('input[name="ySeries"]:checked')).map(el => el.value);
+            if (selectedY.length === 0) {
+                alert("Please select at least one Y series to plot.");
                 return;
             }
 
-            // Extract X data and sort numerically if possible
-            let sortedRows = [...parsedTableData.rows].sort((a, b) => a[xCol] - b[xCol]);
-            let xData = sortedRows.map(r => r[xCol]);
+            // Sort data by X value for clean line continuity
+            let sorted = [...tableData.rows].sort((a, b) => a[xCol] - b[xCol]);
+            let xValues = sorted.map(r => r[xCol]);
 
-            let datasets = selectedYCols.map((yCol, idx) => {
-                let color = palette[idx % palette.length];
+            let datasets = selectedY.map((yCol, i) => {
+                let colColor = colorPalette[i % colorPalette.length];
                 return {
                     label: yCol,
-                    data: sortedRows.map(r => r[yCol]),
-                    borderColor: color,
-                    backgroundColor: color,
+                    data: sorted.map(r => r[yCol]),
+                    borderColor: colColor,
+                    backgroundColor: colColor,
                     borderWidth: 2,
                     pointRadius: 3,
                     tension: 0.1
                 };
             });
 
-            const ctx = document.getElementById('lotusChart').getContext('2d');
-            if (myChart) {
-                myChart.destroy();
+            const ctx = document.getElementById('dynamicsChart').getContext('2d');
+            if (activeChart) {
+                activeChart.destroy();
             }
 
-            myChart = new Chart(ctx, {
+            activeChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: xData,
+                    labels: xValues,
                     datasets: datasets
                 },
                 options: {
@@ -313,47 +301,35 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: customTitle,
+                            text: titleText,
                             font: { size: 16, weight: 'bold' },
-                            color: '#333'
+                            color: '#222'
                         },
-                        legend: {
-                            position: 'bottom'
-                        }
+                        legend: { position: 'bottom' }
                     },
                     scales: {
                         x: {
-                            title: {
-                                display: true,
-                                text: customXLabel,
-                                font: { weight: 'bold' },
-                                color: '#333'
-                            },
-                            grid: { color: 'rgba(0,0,0,0.08)' }
+                            title: { display: true, text: xLabelText, font: { weight: 'bold' }, color: '#222' },
+                            grid: { color: 'rgba(0,0,0,0.06)' }
                         },
                         y: {
-                            title: {
-                                display: true,
-                                text: 'Value / Output',
-                                font: { weight: 'bold' },
-                                color: '#333'
-                            },
-                            grid: { color: 'rgba(0,0,0,0.08)' }
+                            title: { display: true, text: 'Value', font: { weight: 'bold' }, color: '#222' },
+                            grid: { color: 'rgba(0,0,0,0.06)' }
                         }
                     }
                 }
             });
         }
 
-        function downloadChart() {
-            if (!myChart) {
-                alert("Please generate a chart first.");
+        function downloadImage() {
+            if (!activeChart) {
+                alert("Generate a chart before downloading.");
                 return;
             }
-            const link = document.createElement('a');
-            link.download = 'lotus_suspension_graph.png';
-            link.href = myChart.toBase64Image();
-            link.click();
+            const a = document.createElement('a');
+            a.download = 'lotus_kinematics_graph.png';
+            a.href = activeChart.toBase64Image();
+            a.click();
         }
     </script>
 </body>
