@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     typeWriterEffect("typewriter", "Hello, I'm Gary Kanyuh", 70);
     typeWriterEffect("aboutTypewriter", "About Me", 80);
-    typeWriterEffect("toolsTypewriter", "Tools", 80);
+    typeWriterEffect("toolsTypewriter", "AI Generated Tools", 80);
     typeWriterEffect("projectsTypewriter", "My Projects", 80);
     typeWriterEffect("contactTypewriter", "Contact Me", 80);
     /* ===========================
