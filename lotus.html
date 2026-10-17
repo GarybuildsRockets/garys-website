@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotus Graphing Plotter | Gary Kanyuh</title>
 
-    <!-- Chart.js & html2pdf CDN -->
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- Styles & Scripts -->
     <link rel="stylesheet" href="styles.css">
@@ -55,45 +54,49 @@
                 <h2 class="section-title">Lotus Graphing Plotter</h2>
                 <div class="section-accent-line"></div>
                 <p style="color: var(--text-muted); margin-top: 8px;">
-                    Customize chart titles, axis labels, and data series colors, then export your graph report instantly to PDF.
+                    Customize titles, axis labels, and series colors for web viewing, or export a high-resolution vector Black & White PDF report.
                 </p>
             </div>
 
-            <div class="plotter-container" id="pdf-export-area">
+            <div class="plotter-container">
                 <!-- Controls Panel -->
                 <div class="plotter-controls">
                     <div class="control-group">
-                        <label for="chartTitleInput">Chart Title</label>
+                        <label for="chartTitleInput" class="control-label">Chart Title</label>
                         <input type="text" id="chartTitleInput" value="Anti Dive (%) - Lotus Shark Kinematics">
                     </div>
 
                     <div class="control-row">
                         <div class="control-group">
-                            <label for="xAxisLabelInput">X-Axis Label</label>
-                            <input type="text" id="xAxisLabelInput" value="X (Travel / Variation)">
+                            <label for="xAxisLabelInput" class="control-label">X-Axis Label</label>
+                            <input type="text" id="xAxisLabelInput" value="Bump/Rebound (mm)">
                         </div>
                         <div class="control-group">
-                            <label for="yAxisLabelInput">Y-Axis Label</label>
+                            <label for="yAxisLabelInput" class="control-label">Y-Axis Label</label>
                             <input type="text" id="yAxisLabelInput" value="Anti Dive (%)">
                         </div>
                     </div>
 
-                    <div class="control-group">
-                        <label>Series Color Customization</label>
+                    <!-- PROMINENT COLOR SELECTOR PANEL -->
+                    <div class="control-group highlight-selector-panel">
+                        <div class="panel-header">
+                            <span class="control-label-bold">🎨 Data Series Colors & Style Selector</span>
+                            <span class="panel-subtitle">Pick custom colors for web display</span>
+                        </div>
                         <div class="color-pickers-grid" id="colorPickersContainer">
-                            <!-- Populated dynamically -->
+                            <!-- Populated dynamically with prominent cards -->
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <label for="csvDataInput">Data Input (CSV Format: X, Series1, Series2...)</label>
+                        <label for="csvDataInput" class="control-label">Data Input (CSV Format: X, Series1, Series2...)</label>
                         <textarea id="csvDataInput" rows="7"></textarea>
                     </div>
 
                     <div class="plotter-actions">
                         <button id="updateChartBtn" class="primary-btn">Update Graph</button>
                         <button id="loadSampleBtn" class="secondary-btn">Load Anti-Dive Sample</button>
-                        <button id="exportPdfBtn" class="secondary-btn" style="border-color: var(--accent); color: var(--accent);">Export PDF</button>
+                        <button id="exportPdfBtn" class="primary-btn export-pdf-btn">📄 Export Clean B&W PDF Report</button>
                     </div>
                 </div>
 
