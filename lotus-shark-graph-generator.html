@@ -5,90 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotus Shark Graph Generator | Gary Kanyuh</title>
 
-    <!-- Styles & Scripts -->
+    <!-- Site Theme & Scripts -->
     <link rel="stylesheet" href="styles.css">
-    <!-- Chart.js for high-performance interactive graphing -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="script.js"></script>
 
     <style>
-        .generator-wrapper {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 30px;
-            background: #1e1e1e;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            color: #e0e0e0;
+        .app-container {
+            max-width: 1080px;
+            margin: 40px auto 80px;
+            padding: 0 16px;
         }
+
+        .panel-card {
+            background: var(--bg-elevated-soft);
+            border-radius: var(--radius-large);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-soft);
+            padding: 28px;
+            margin-bottom: 30px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            margin-bottom: 20px;
         }
+
         .form-group {
             display: flex;
             flex-direction: column;
-            margin-bottom: 15px;
+            gap: 8px;
         }
+
         .form-group.full-width {
             grid-column: span 2;
         }
+
         label {
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #fff;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
         }
+
         textarea, input[type="text"], select {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #2a2a2a;
-            color: #fff;
-            font-family: inherit;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(3, 8, 18, 0.9);
+            color: var(--text-main);
+            padding: 12px 14px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color var(--transition-med), box-shadow var(--transition-med);
         }
+
+        textarea:focus, input[type="text"]:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(58, 163, 255, 0.7);
+        }
+
         textarea {
             resize: vertical;
-            height: 130px;
-            font-family: monospace;
+            min-height: 130px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             font-size: 13px;
+            line-height: 1.5;
         }
-        .checkbox-group {
+
+        .checkbox-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            background: #252525;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #444;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(3, 8, 18, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
         }
-        .checkbox-label {
-            display: flex;
+
+        .checkbox-chip {
+            display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 999px;
+            font-size: 13px;
             cursor: pointer;
-            font-weight: normal;
-            color: #ddd;
+            transition: background var(--transition-med), border-color var(--transition-med);
+            user-select: none;
         }
-        .chart-container {
+
+        .checkbox-chip:hover {
+            border-color: var(--accent);
+        }
+
+        .checkbox-chip input {
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .chart-stage {
             position: relative;
-            background: #ffffff;
+            height: 480px;
+            width: 100%;
+            border-radius: var(--radius-medium);
             padding: 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-            height: 450px;
+            transition: background var(--transition-med);
         }
-        .action-row {
+
+        .chart-stage.theme-dark {
+            background: #080d16;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .chart-stage.theme-light {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+        }
+
+        .button-bar {
             display: flex;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
 
 <body>
-
     <!-- NAVBAR -->
     <header id="navbar" class="curved-navbar">
         <div class="nav-inner">
@@ -96,127 +171,159 @@
                 <span class="logo-name">Gary Kanyuh</span>
                 <span class="logo-tagline">Mechanical Engineering Student</span>
             </div>
+
             <nav class="desktop-nav">
                 <ul>
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#projects">Projects</a></li>
+                    <li><a href="index.html#projects">My Projects</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- PROJECT HERO -->
-    <section class="project-hero">
-        <div class="container">
-            <h1>Lotus Shark Graph Generator</h1>
-            <p class="project-subtitle">
-                Automated web tool for plotting suspension kinematics and vehicle dynamics data
+    <main class="app-container" style="padding-top: 100px;">
+        <!-- HERO TITLE -->
+        <div style="margin-bottom: 30px;">
+            <h1 class="section-title">Lotus Shark Graph Generator</h1>
+            <div class="section-accent-line"></div>
+            <p style="color: var(--text-muted); margin-top: 12px; max-width: 700px;">
+                Automated plotting utility for Lotus Suspension Analysis (LSA) tabular exports. Parses multi-tier headers, extracts front/rear curves, and exports presentation-ready graphics.
             </p>
         </div>
-    </section>
 
-    <!-- MAIN APP INTERFACE -->
-    <main>
-        <div class="generator-wrapper">
-            <h2>Data Input</h2>
-            <p style="color: #aaa; margin-bottom: 15px; font-size: 14px;">
-                Copy your table directly from Excel (including the top title row and column headers like <code>BUMP (mm)</code> and <code>Front +ve Y</code>) and paste it below[cite: 14].
-            </p>
+        <!-- DATA INPUT PANEL -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <h2 class="panel-title">1. Simulation Data Input</h2>
+                <button type="button" class="ghost-btn" onclick="loadSampleData()">Load Sample Lotus Data</button>
+            </div>
 
             <div class="form-group full-width">
-                <label for="rawPaste">Paste Excel Data:</label>
-                <textarea id="rawPaste" placeholder="Castor Angle (deg)&#10;BUMP (mm)	Front +ve Y	Front -ve Y	Rear +ve Y	Rear -ve Y&#10;60	0.580994	0.580994	-2.7806	-2.7806..."></textarea>
+                <label for="rawInput">Paste Raw Excel / Lotus Clipboard Data:</label>
+                <textarea id="rawInput" placeholder="Castor Angle (deg)&#10;BUMP (mm)	Front +ve Y	Front -ve Y	Rear +ve Y	Rear -ve Y&#10;60	0.580994	0.580994	-2.7806	-2.7806&#10;40	0.411709	0.411709	-1.99655	-1.99655..."></textarea>
             </div>
 
-            <div class="action-row">
-                <button type="button" class="primary-btn" onclick="parseLotusData()">1. Parse Data</button>
+            <div class="button-bar">
+                <button type="button" class="primary-btn" onclick="parseClipboardData()">Parse & Auto-Configure</button>
+            </div>
+        </section>
+
+        <!-- GRAPH CUSTOMIZATION PANEL -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <h2 class="panel-title">2. Graph Customization & Overrides</h2>
             </div>
 
-            <hr style="border: 0; border-top: 1px solid #444; margin: 25px 0;">
-
-            <h2>Graph Customization</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="chartTitle">Chart Title:</label>
-                    <input type="text" id="chartTitle" placeholder="e.g., Castor Angle vs. Bump">
+                    <label for="chartTitle">Graph Title Override:</label>
+                    <input type="text" id="chartTitle" placeholder="e.g., Castor Angle vs. Bump Travel">
                 </div>
+
                 <div class="form-group">
-                    <label for="xAxisLabelOverride">X-Axis Label:</label>
-                    <input type="text" id="xAxisLabelOverride" placeholder="e.g., BUMP (mm)">
+                    <label for="xLabelOverride">X-Axis Label Override:</label>
+                    <input type="text" id="xLabelOverride" placeholder="e.g., Bump Travel (mm)">
                 </div>
+
                 <div class="form-group">
-                    <label for="xAxisSelect">X-Axis Column:</label>
+                    <label for="xAxisSelect">X-Axis Variable:</label>
                     <select id="xAxisSelect"></select>
                 </div>
+
+                <div class="form-group">
+                    <label for="yLabelOverride">Y-Axis Label Override:</label>
+                    <input type="text" id="yLabelOverride" placeholder="e.g., Angle (deg)">
+                </div>
+
                 <div class="form-group full-width">
-                    <label>Y-Axis Series (Select to Plot):</label>
-                    <div id="ySeriesCheckboxes" class="checkbox-group">
-                        <span style="color: #888;">Paste and parse data above first...</span>
+                    <label>Select Y-Axis Series to Display:</label>
+                    <div id="ySeriesContainer" class="checkbox-container">
+                        <span style="color: var(--text-muted); font-size: 13px;">Parse data above to generate series options...</span>
                     </div>
                 </div>
             </div>
 
-            <div class="action-row">
-                <button type="button" class="primary-btn" onclick="renderChart()">2. Generate Graph</button>
-                <button type="button" class="secondary-btn" onclick="downloadImage()">Download PNG</button>
+            <div class="button-bar" style="margin-top: 20px;">
+                <button type="button" class="primary-btn" onclick="buildGraph()">Generate / Refresh Graph</button>
+                <button type="button" class="secondary-btn" onclick="toggleTheme()">Toggle Dark / Light Mode</button>
+                <button type="button" class="secondary-btn" onclick="exportPNG()">Export High-Res PNG</button>
+            </div>
+        </section>
+
+        <!-- CANVAS STAGE PANEL -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <h2 class="panel-title">3. Rendered Graph Output</h2>
             </div>
 
-            <!-- GRAPH DISPLAY AREA -->
-            <div class="chart-container">
-                <canvas id="dynamicsChart"></canvas>
+            <div id="chartStage" class="chart-stage theme-dark">
+                <canvas id="lotusChart"></canvas>
             </div>
+        </section>
 
-            <!-- BACK BUTTON -->
-            <div class="project-back" style="margin-top: 30px;">
-                <a href="index.html#projects" class="btn">← Back to Projects</a>
-            </div>
+        <!-- BACK LINK -->
+        <div style="margin-top: 20px;">
+            <a href="index.html#projects" class="secondary-btn">← Back to My Projects</a>
         </div>
     </main>
 
-    <!-- ROBUST PARSING & PLOTTING SCRIPT -->
+    <footer class="site-footer">
+        <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
+    </footer>
+
+    <!-- INTERACTIVE ENGINE -->
     <script>
-        let tableData = { headers: [], rows: [] };
-        let activeChart = null;
-        const colorPalette = ['#002b49', '#d9534f', '#f0ad4e', '#5cb85c', '#5bc0de', '#9b59b6', '#e67e22'];
+        let parsedDataset = { headers: [], rows: [] };
+        let activeChartInstance = null;
+        let isDarkMode = true;
 
-        function parseLotusData() {
-            const raw = document.getElementById('rawPaste').value.trim();
-            if (!raw) {
-                alert("Please paste your Excel data into the text box first.");
+        const darkColors = ['#3aa3ff', '#ff4d5a', '#2ecc71', '#f1c40f', '#9b59b6', '#e67e22'];
+        const lightColors = ['#0056b3', '#d9534f', '#198754', '#d97706', '#6f42c1', '#d97706'];
+
+        function loadSampleData() {
+            const sample = "Castor Angle (deg)\nBUMP (mm)\tFront +ve Y\tFront -ve Y\tRear +ve Y\tRear -ve Y\n60\t0.580994\t0.580994\t-2.7806\t-2.7806\n40\t0.411709\t0.411709\t-1.99655\t-1.99655\n20\t0.248439\t0.248439\t-1.22167\t-1.22167\n0\t0.0913\t0.0913\t-0.45561\t-0.45561\n-20\t-0.0596\t-0.0596\t0.301967\t0.301967\n-40\t-0.204\t-0.204\t1.051359\t1.051359\n-60\t-0.34173\t-0.34173\t1.792865\t1.792865";
+            document.getElementById('rawInput').value = sample;
+            parseClipboardData();
+        }
+
+        function parseClipboardData() {
+            const text = document.getElementById('rawInput').value.trim();
+            if (!text) {
+                alert("Please paste data or click 'Load Sample Lotus Data'.");
                 return;
             }
 
-            const lines = raw.split('\n').map(l => l.split('\t').map(c => c.trim()));
+            const lines = text.split('\n').map(l => l.split('\t').map(cell => cell.trim()));
             if (lines.length < 2) {
-                alert("Data format appears invalid. Ensure it includes headers.");
+                alert("Invalid data structure detected.");
                 return;
             }
 
-            let headerIndex = 0;
-            // Handle Lotus 2-tier format: Row 0 is often a title like "Castor Angle (deg)"
+            let headerRowIndex = 0;
             if (lines[0].length === 1 && lines.length > 2) {
                 document.getElementById('chartTitle').value = lines[0][0];
-                headerIndex = 1;
+                headerRowIndex = 1;
             } else {
-                document.getElementById('chartTitle').value = "Suspension Kinematics Plot";
-                headerIndex = 0;
+                document.getElementById('chartTitle').value = "Suspension Kinematics Curve";
+                headerRowIndex = 0;
             }
 
-            const headers = lines[headerIndex].filter(h => h !== "");
-            const rowsRaw = lines.slice(headerIndex + 1).filter(r => r.length >= headers.length);
+            const headers = lines[headerRowIndex].filter(h => h !== "");
+            const rawRows = lines.slice(headerRowIndex + 1).filter(r => r.length >= headers.length);
 
-            let parsedRows = [];
-            rowsRaw.forEach(r => {
+            let rows = [];
+            rawRows.forEach(r => {
                 let rowObj = {};
                 headers.forEach((h, idx) => {
                     rowObj[h] = isNaN(r[idx]) ? r[idx] : parseFloat(r[idx]);
                 });
-                parsedRows.push(rowObj);
+                rows.push(rowObj);
             });
 
-            tableData = { headers, rows: parsedRows };
+            parsedDataset = { headers, rows };
 
-            // Populate X Axis dropdown
+            // Populate X Select
             const xSelect = document.getElementById('xAxisSelect');
             xSelect.innerHTML = '';
             headers.forEach((h, idx) => {
@@ -226,110 +333,122 @@
                 if (idx === 0) opt.selected = true;
                 xSelect.appendChild(opt);
             });
-            document.getElementById('xAxisLabelOverride').value = headers[0] || '';
 
-            // Populate Y checkboxes
-            const yBox = document.getElementById('ySeriesCheckboxes');
-            yBox.innerHTML = '';
+            document.getElementById('xLabelOverride').value = headers[0] || '';
+            document.getElementById('yLabelOverride').value = lines[0][0] || 'Magnitude';
+
+            // Populate Y Checkboxes
+            const container = document.getElementById('ySeriesContainer');
+            container.innerHTML = '';
             headers.forEach((h, idx) => {
-                if (idx === 0) return; // Skip X column
-                let lbl = document.createElement('label');
-                lbl.className = 'checkbox-label';
-                
-                let box = document.createElement('input');
-                box.type = 'checkbox';
-                box.name = 'ySeries';
-                box.value = h;
-                box.checked = true;
+                if (idx === 0) return;
+                let chip = document.createElement('label');
+                chip.className = 'checkbox-chip';
 
-                lbl.appendChild(box);
-                lbl.appendChild(document.createTextNode(h));
-                yBox.appendChild(lbl);
+                let chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.name = 'ySeries';
+                chk.value = h;
+                chk.checked = true;
+
+                chip.appendChild(chk);
+                chip.appendChild(document.createTextNode(h));
+                container.appendChild(chip);
             });
 
-            alert(`Parsed successfully! Found ${parsedRows.length} data rows.`);
-            renderChart();
+            buildGraph();
         }
 
-        function renderChart() {
-            if (tableData.rows.length === 0) {
-                alert("No parsed data available. Click 'Parse Data' first.");
-                return;
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            const stage = document.getElementById('chartStage');
+            if (isDarkMode) {
+                stage.className = 'chart-stage theme-dark';
+            } else {
+                stage.className = 'chart-stage theme-light';
             }
+            buildGraph();
+        }
+
+        function buildGraph() {
+            if (parsedDataset.rows.length === 0) return;
 
             const xCol = document.getElementById('xAxisSelect').value;
-            const titleText = document.getElementById('chartTitle').value || "Simulation Output";
-            const xLabelText = document.getElementById('xAxisLabelOverride').value || xCol;
+            const title = document.getElementById('chartTitle').value || "Lotus Simulation Graph";
+            const xTitle = document.getElementById('xLabelOverride').value || xCol;
+            const yTitle = document.getElementById('yLabelOverride').value || "Output";
 
-            const selectedY = Array.from(document.querySelectorAll('input[name="ySeries"]:checked')).map(el => el.value);
+            const selectedY = Array.from(document.querySelectorAll('input[name="ySeries"]:checked')).map(c => c.value);
             if (selectedY.length === 0) {
-                alert("Please select at least one Y series to plot.");
+                alert("Select at least one Y series to plot.");
                 return;
             }
 
-            // Sort data by X value for clean line continuity
-            let sorted = [...tableData.rows].sort((a, b) => a[xCol] - b[xCol]);
+            let sorted = [...parsedDataset.rows].sort((a, b) => a[xCol] - b[xCol]);
             let xValues = sorted.map(r => r[xCol]);
 
+            const palette = isDarkMode ? darkColors : lightColors;
+            const textColor = isDarkMode ? '#f5f7fb' : '#111827';
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+
             let datasets = selectedY.map((yCol, i) => {
-                let colColor = colorPalette[i % colorPalette.length];
+                let color = palette[i % palette.length];
                 return {
                     label: yCol,
                     data: sorted.map(r => r[yCol]),
-                    borderColor: colColor,
-                    backgroundColor: colColor,
-                    borderWidth: 2,
-                    pointRadius: 3,
-                    tension: 0.1
+                    borderColor: color,
+                    backgroundColor: color,
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.15
                 };
             });
 
-            const ctx = document.getElementById('dynamicsChart').getContext('2d');
-            if (activeChart) {
-                activeChart.destroy();
-            }
+            const ctx = document.getElementById('lotusChart').getContext('2d');
+            if (activeChartInstance) activeChartInstance.destroy();
 
-            activeChart = new Chart(ctx, {
+            activeChartInstance = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: xValues,
-                    datasets: datasets
-                },
+                data: { labels: xValues, datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
-                            text: titleText,
-                            font: { size: 16, weight: 'bold' },
-                            color: '#222'
+                            text: title,
+                            color: textColor,
+                            font: { size: 16, weight: '600', family: 'system-ui' },
+                            padding: { bottom: 20 }
                         },
-                        legend: { position: 'bottom' }
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: textColor, usePointStyle: true, boxWidth: 8 }
+                        }
                     },
                     scales: {
                         x: {
-                            title: { display: true, text: xLabelText, font: { weight: 'bold' }, color: '#222' },
-                            grid: { color: 'rgba(0,0,0,0.06)' }
+                            title: { display: true, text: xTitle, color: textColor, font: { weight: '600' } },
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
                         },
                         y: {
-                            title: { display: true, text: 'Value', font: { weight: 'bold' }, color: '#222' },
-                            grid: { color: 'rgba(0,0,0,0.06)' }
+                            title: { display: true, text: yTitle, color: textColor, font: { weight: '600' } },
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
                         }
                     }
                 }
             });
         }
 
-        function downloadImage() {
-            if (!activeChart) {
-                alert("Generate a chart before downloading.");
-                return;
-            }
-            const a = document.createElement('a');
-            a.download = 'lotus_kinematics_graph.png';
-            a.href = activeChart.toBase64Image();
-            a.click();
+        function exportPNG() {
+            if (!activeChartInstance) return;
+            const link = document.createElement('a');
+            link.download = 'Lotus_Graph_Export.png';
+            link.href = activeChartInstance.toBase64Image();
+            link.click();
         }
     </script>
 </body>
