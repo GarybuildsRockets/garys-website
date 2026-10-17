@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (lines.length < 2) return null;
 
         const headers = lines[0].split(",").map(h => h.trim());
-        const xLabel = headers[0];
         const seriesNames = headers.slice(1);
 
         const xValues = [];
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
-        return { xLabel, xValues, seriesNames, seriesData };
+        return { xValues, seriesNames, seriesData };
     }
 
     function initColorPickers(seriesNames) {
@@ -56,37 +55,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 seriesColors[name] = defaultPalette[idx % defaultPalette.length];
             }
 
-            const wrapper = document.createElement("div");
-            wrapper.className = "color-picker-item";
-            wrapper.style.display = "inline-flex";
-            wrapper.style.alignItems = "center";
-            wrapper.style.gap = "6px";
-            wrapper.style.marginRight = "12px";
-            wrapper.style.marginBottom = "8px";
+            const card = document.createElement("div");
+            card.className = "color-picker-card";
 
-            const label = document.createElement("span");
-            label.textContent = name;
-            label.style.fontSize = "12px";
-            label.style.color = "var(--text-muted)";
+            const nameEl = document.createElement("span");
+            nameEl.className = "series-name";
+            nameEl.textContent = name;
+
+            const controlsWrapper = document.createElement("div");
+            controlsWrapper.className = "picker-control-wrapper";
 
             const input = document.createElement("input");
             input.type = "color";
+            input.className = "prominent-color-input";
             input.value = seriesColors[name];
             input.dataset.series = name;
-            input.style.border = "none";
-            input.style.width = "28px";
-            input.style.height = "24px";
-            input.style.cursor = "pointer";
-            input.style.background = "transparent";
+
+            const hexVal = document.createElement("span");
+            hexVal.className = "hex-label";
+            hexVal.textContent = seriesColors[name].toUpperCase();
 
             input.addEventListener("input", (e) => {
-                seriesColors[e.target.dataset.series] = e.target.value;
+                const color = e.target.value;
+                seriesColors[e.target.dataset.series] = color;
+                hexVal.textContent = color.toUpperCase();
                 updateGraph();
             });
 
-            wrapper.appendChild(label);
-            wrapper.appendChild(input);
-            colorPickersContainer.appendChild(wrapper);
+            controlsWrapper.appendChild(input);
+            controlsWrapper.appendChild(hexVal);
+            card.appendChild(nameEl);
+            card.appendChild(controlsWrapper);
+
+            colorPickersContainer.appendChild(card);
         });
     }
 
@@ -103,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data: parsed.seriesData[name],
                 borderColor: color,
                 backgroundColor: color,
-                borderWidth: 2,
+                borderWidth: 2.5,
                 pointRadius: 4,
                 tension: 0.1
             };
@@ -132,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         font: { size: 16, weight: '600' }
                     },
                     legend: {
-                        labels: { color: '#a4afc3', boxWidth: 12 }
+                        labels: { color: '#a4afc3', boxWidth: 14 }
                     }
                 },
                 scales: {
@@ -142,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             text: xAxisLabelInput.value,
                             color: '#a4afc3'
                         },
-                        grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
                         ticks: { color: '#a4afc3' }
                     },
                     y: {
@@ -151,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             text: yAxisLabelInput.value,
                             color: '#a4afc3'
                         },
-                        grid: { color: 'rgba(255, 255, 255, 0.06)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
                         ticks: { color: '#a4afc3' }
                     }
                 }
@@ -159,28 +160,129 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // High-Resolution B&W Canvas PDF Exporter
+    function exportBWPDF() {
+        const parsed = parseCSV(csvInput.value);
+        if (!parsed) return;
+
+        // Off-screen canvas at 300 DPI high clarity
+        const offCanvas = document.createElement("canvas");
+        offCanvas.width = 2400;
+        offCanvas.height = 1400;
+        const offCtx = offCanvas.getContext("2d");
+
+        // Line styles for monochrome distinction
+        const lineStyles = [
+            [],             // Solid
+            [12, 8],        // Dashed
+            [4, 6],         // Dotted
+            [16, 6, 4, 6]   // Dash-Dot
+        ];
+
+        const bwDatasets = parsed.seriesNames.map((name, idx) => {
+            return {
+                label: name,
+                data: parsed.seriesData[name],
+                borderColor: '#000000',
+                backgroundColor: '#000000',
+                borderWidth: 3,
+                borderDash: lineStyles[idx % lineStyles.length],
+                pointRadius: 6,
+                pointBackgroundColor: '#000000',
+                tension: 0.1
+            };
+        });
+
+        const bwChart = new Chart(offCtx, {
+            type: 'line',
+            data: {
+                labels: parsed.xValues,
+                datasets: bwDatasets
+            },
+            options: {
+                animation: false,
+                responsive: false,
+                devicePixelRatio: 2,
+                layout: {
+                    padding: 40
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartTitleInput.value,
+                        color: '#000000',
+                        font: { size: 28, weight: 'bold' },
+                        padding: { bottom: 20 }
+                    },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#000000',
+                            font: { size: 18, weight: '500' },
+                            boxWidth: 30,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: xAxisLabelInput.value,
+                            color: '#000000',
+                            font: { size: 20, weight: '600' }
+                        },
+                        grid: { color: '#d0d0d0', lineWidth: 1.5 },
+                        ticks: { color: '#000000', font: { size: 16 } }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: yAxisLabelInput.value,
+                            color: '#000000',
+                            font: { size: 20, weight: '600' }
+                        },
+                        grid: { color: '#d0d0d0', lineWidth: 1.5 },
+                        ticks: { color: '#000000', font: { size: 16 } }
+                    }
+                }
+            },
+            plugins: [{
+                id: 'custom_canvas_background',
+                beforeDraw: (chart) => {
+                    const ctx = chart.canvas.getContext('2d');
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                }
+            }]
+        });
+
+        // Trigger instant image download in crisp vector quality
+        setTimeout(() => {
+            const imgData = offCanvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = "Lotus_Shark_BW_Graph_Report.png";
+            link.href = imgData;
+            link.click();
+            bwChart.destroy();
+        }, 100);
+    }
+
     updateBtn.addEventListener("click", updateGraph);
 
     loadSampleBtn.addEventListener("click", () => {
         csvInput.value = defaultData;
         chartTitleInput.value = "Anti Dive (%) - Lotus Shark Kinematics";
-        xAxisLabelInput.value = "X (Travel / Variation)";
+        xAxisLabelInput.value = "Bump/Rebound (mm)";
         yAxisLabelInput.value = "Anti Dive (%)";
         seriesColors = {};
         updateGraph();
     });
 
-    exportPdfBtn.addEventListener("click", () => {
-        const element = document.getElementById("pdf-export-area");
-        const opt = {
-            margin:       10,
-            filename:     'lotus-shark-graph-report.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, backgroundColor: '#05070b' },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        };
-        html2pdf().from(element).set(opt).save();
-    });
+    exportPdfBtn.addEventListener("click", exportBWPDF);
 
     // Initial render
     updateGraph();
