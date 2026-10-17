@@ -372,61 +372,6 @@ body {
 }
 
 /* ===========================
-   SKILLS
-   =========================== */
-
-.skills {
-    padding-top: 40px;
-}
-
-.skills-grid {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px 24px;
-}
-
-.skill-card {
-    background: var(--bg-elevated);
-    border-radius: var(--radius-medium);
-    padding: 12px 16px 14px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-soft);
-}
-
-.skill-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.skill-percent {
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.04);
-    overflow: hidden;
-}
-
-.progress-bar span {
-    display: block;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        var(--accent),
-        rgba(58, 163, 255, 0.3)
-    );
-    border-radius: inherit;
-}
-
-/* ===========================
    PROJECTS
    =========================== */
 
@@ -649,10 +594,6 @@ textarea:focus {
         text-align: left;
     }
 
-    .skills-grid {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
     .projects-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -679,6 +620,7 @@ textarea:focus {
         font-size: 32px;
     }
 }
+
 /* WHY DROPDOWN */
 
 .why-btn {
@@ -722,6 +664,162 @@ textarea:focus {
    LOTUS PLOTTER UNIFORM BUTTONS & LAYOUT
    =========================== */
 
+.plotter-container {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 30px;
+    align-items: start;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-large);
+    padding: 30px;
+    box-shadow: var(--shadow-soft);
+}
+
+.plotter-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.control-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.control-label-bold {
+    font-size: 13px;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.highlight-selector-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+    padding: 14px;
+}
+
+.panel-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.panel-subtitle {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Custom Toggle Switch for Color Mode & Labels */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    transition: background var(--transition-fast);
+}
+
+.toggle-slider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform var(--transition-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--accent);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(16px);
+}
+
+.toggle-label-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    user-select: none;
+}
+
+.color-pickers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.color-picker-card {
+    background: var(--bg-elevated-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.series-name {
+    font-size: 11px;
+    color: var(--text-main);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.picker-control-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.prominent-color-input {
+    -webkit-appearance: none;
+    border: none;
+    width: 26px;
+    height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+}
+
+.prominent-color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.prominent-color-input::-webkit-color-swatch {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.hex-label {
+    font-size: 10px;
+    font-family: monospace;
+    color: var(--accent);
+}
+
 .wide-textarea {
     width: 100%;
     min-width: 100%;
@@ -736,7 +834,6 @@ textarea:focus {
     margin-top: 6px;
 }
 
-/* Uniform, clean buttons that don't stand out too aggressively */
 .uniform-btn {
     display: inline-flex;
     align-items: center;
@@ -784,11 +881,25 @@ textarea:focus {
     background: var(--accent);
 }
 
+.plotter-viewport {
+    background: var(--bg-elevated-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 520px;
+}
 
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 480px;
+}
 
-
-
-
-
-
-
+@media (max-width: 1024px) {
+    .plotter-container {
+        grid-template-columns: 1fr;
+    }
+}
