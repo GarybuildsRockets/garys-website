@@ -719,7 +719,7 @@ textarea:focus {
 }
 
 /* ===========================
-   CLEANED LOTUS PLOTTER LAYOUT
+   CLEAN PLOTTER & DARK SCROLLBAR
    =========================== */
 
 .plotter-container {
@@ -755,22 +755,70 @@ textarea:focus {
 }
 
 .highlight-selector-panel {
-    background: rgba(58, 163, 255, 0.04);
-    border: 1px solid rgba(58, 163, 255, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-medium);
-    padding: 12px;
+    padding: 14px;
 }
 
-.panel-header {
+.panel-header-flex {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
 .panel-subtitle {
+    display: block;
     font-size: 11px;
     color: var(--text-muted);
+}
+
+/* Custom Toggle Switch for Color Mode */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    transition: background var(--transition-fast);
+}
+
+.toggle-slider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform var(--transition-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--accent);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(16px);
+}
+
+.toggle-label-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    user-select: none;
 }
 
 .color-pickers-grid {
@@ -828,6 +876,30 @@ textarea:focus {
     font-size: 10px;
     font-family: monospace;
     color: var(--accent);
+}
+
+/* Custom Dark Scrollbar for Data Input */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(3, 8, 18, 0.9);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(3, 8, 18, 0.9);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
 }
 
 .export-pdf-btn {
