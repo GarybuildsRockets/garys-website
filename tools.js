@@ -186,14 +186,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // High-Resolution Export Generator for PNG & PDF
     function generateExportCanvas() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
 
         const offCanvas = document.createElement("canvas");
         offCanvas.width = 2000;
-        offCanvas.height = 1125; // Clean 16:9 widescreen ratio
+        offCanvas.height = 1125;
         const offCtx = offCanvas.getContext("2d");
 
         const isColor = colorModeToggle.checked;
@@ -319,7 +318,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 
-                // Scale image cleanly to fit landscape A4 page with margins
                 const imgWidth = pageWidth - 20;
                 const imgHeight = (generated.offCanvas.height * imgWidth) / generated.offCanvas.width;
                 const posY = (pageHeight - imgHeight) / 2;
