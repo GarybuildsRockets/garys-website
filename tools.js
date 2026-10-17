@@ -160,115 +160,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // High-Resolution B&W Canvas PDF Exporter
-    function exportBWPDF() {
-        const parsed = parseCSV(csvInput.value);
-        if (!parsed) return;
-
-        // Off-screen canvas at 300 DPI high clarity
-        const offCanvas = document.createElement("canvas");
-        offCanvas.width = 2400;
-        offCanvas.height = 1400;
-        const offCtx = offCanvas.getContext("2d");
-
-        // Line styles for monochrome distinction
-        const lineStyles = [
-            [],             // Solid
-            [12, 8],        // Dashed
-            [4, 6],         // Dotted
-            [16, 6, 4, 6]   // Dash-Dot
-        ];
-
-        const bwDatasets = parsed.seriesNames.map((name, idx) => {
-            return {
-                label: name,
-                data: parsed.seriesData[name],
-                borderColor: '#000000',
-                backgroundColor: '#000000',
-                borderWidth: 3,
-                borderDash: lineStyles[idx % lineStyles.length],
-                pointRadius: 6,
-                pointBackgroundColor: '#000000',
-                tension: 0.1
-            };
-        });
-
-        const bwChart = new Chart(offCtx, {
-            type: 'line',
-            data: {
-                labels: parsed.xValues,
-                datasets: bwDatasets
-            },
-            options: {
-                animation: false,
-                responsive: false,
-                devicePixelRatio: 2,
-                layout: {
-                    padding: 40
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: chartTitleInput.value,
-                        color: '#000000',
-                        font: { size: 28, weight: 'bold' },
-                        padding: { bottom: 20 }
-                    },
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            color: '#000000',
-                            font: { size: 18, weight: '500' },
-                            boxWidth: 30,
-                            padding: 20
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: xAxisLabelInput.value,
-                            color: '#000000',
-                            font: { size: 20, weight: '600' }
-                        },
-                        grid: { color: '#d0d0d0', lineWidth: 1.5 },
-                        ticks: { color: '#000000', font: { size: 16 } }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: yAxisLabelInput.value,
-                            color: '#000000',
-                            font: { size: 20, weight: '600' }
-                        },
-                        grid: { color: '#d0d0d0', lineWidth: 1.5 },
-                        ticks: { color: '#000000', font: { size: 16 } }
-                    }
-                }
-            },
-            plugins: [{
-                id: 'custom_canvas_background',
-                beforeDraw: (chart) => {
-                    const ctx = chart.canvas.getContext('2d');
-                    ctx.save();
-                    ctx.globalCompositeOperation = 'destination-over';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, chart.width, chart.height);
-                    ctx.restore();
-                }
-            }]
-        });
-
-        // Trigger instant image download in crisp vector quality
-        setTimeout(() => {
-            const imgData = offCanvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.download = "Lotus_Shark_BW_Graph_Report.png";
-            link.href = imgData;
-            link.click();
-            bwChart.destroy();
-        }, 100);
+    // PDF Export Function keeping full color and high resolution
+    function exportColorPDF() {
+        const element = document.getElementById("pdf-export-area");
+        const opt = {
+            margin:       10,
+            filename:     'Lotus_Shark_Graph_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, backgroundColor: '#0b1018', useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().from(element).set(opt).save();
     }
 
     updateBtn.addEventListener("click", updateGraph);
@@ -282,8 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateGraph();
     });
 
-    exportPdfBtn.addEventListener("click", exportBWPDF);
+    exportPdfBtn.addEventListener("click", exportColorPDF);
 
-    // Initial render
     updateGraph();
 });
