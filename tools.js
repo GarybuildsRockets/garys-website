@@ -14,8 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const yAxisLabelInput = document.getElementById("yAxisLabelInput");
     const updateBtn = document.getElementById("updateChartBtn");
     const loadSampleBtn = document.getElementById("loadSampleBtn");
+    const exportPngBtn = document.getElementById("exportPngBtn");
     const exportPdfBtn = document.getElementById("exportPdfBtn");
     const colorPickersContainer = document.getElementById("colorPickersContainer");
+    const colorModeToggle = document.getElementById("colorModeToggle");
 
     if (!csvInput) return;
 
@@ -24,6 +26,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let lotusChart = null;
     let seriesColors = {};
     const defaultPalette = ["#3aa3ff", "#ff4d5a", "#2ecc71", "#f1c40f", "#9b59b6", "#e67e22"];
+    const bwLineStyles = [
+        [],             // Solid
+        [8, 6],         // Dashed
+        [3, 5],         // Dotted
+        [12, 4, 3, 4]   // Dash-Dot
+    ];
 
     function parseCSV(text) {
         const lines = text.trim().split("\n").map(l => l.trim()).filter(l => l);
@@ -79,7 +87,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const color = e.target.value;
                 seriesColors[e.target.dataset.series] = color;
                 hexVal.textContent = color.toUpperCase();
-                updateGraph();
+                if (colorModeToggle.checked) {
+                    updateGraph();
+                }
             });
 
             controlsWrapper.appendChild(input);
@@ -96,15 +106,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!parsed) return;
 
         initColorPickers(parsed.seriesNames);
+        const isColor = colorModeToggle.checked;
 
-        const datasets = parsed.seriesNames.map((name) => {
-            const color = seriesColors[name] || "#3aa3ff";
+        const datasets = parsed.seriesNames.map((name, idx) => {
+            const color = isColor ? (seriesColors[name] || "#3aa3ff") : "#111111";
             return {
                 label: name,
                 data: parsed.seriesData[name],
                 borderColor: color,
                 backgroundColor: color,
                 borderWidth: 2.5,
+                borderDash: isColor ? [] : bwLineStyles[idx % bwLineStyles.length],
                 pointRadius: 4,
                 tension: 0.1
             };
@@ -160,8 +172,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // PDF Export Function keeping full color and high resolution
-    function exportColorPDF() {
+    // Export PNG handler
+    function exportPNG() {
+        const canvas = document.getElementById("lotusChart");
+        const link = document.createElement("a");
+        link.download = "Lotus_Shark_Graph.png";
+        link.href = canvas.toDataURL("image/png", 1.0);
+        link.click();
+    }
+
+    // Export PDF handler
+    function exportPDF() {
         const element = document.getElementById("pdf-export-area");
         const opt = {
             margin:       10,
@@ -174,17 +195,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     updateBtn.addEventListener("click", updateGraph);
+    colorModeToggle.addEventListener("change", updateGraph);
 
     loadSampleBtn.addEventListener("click", () => {
         csvInput.value = defaultData;
         chartTitleInput.value = "Anti Dive (%) - Lotus Shark Kinematics";
         xAxisLabelInput.value = "Bump/Rebound (mm)";
         yAxisLabelInput.value = "Anti Dive (%)";
+        colorModeToggle.checked = false;
         seriesColors = {};
         updateGraph();
     });
 
-    exportPdfBtn.addEventListener("click", exportColorPDF);
+    exportPngBtn.addEventListener("click", exportPNG);
+    exportPdfBtn.addEventListener("click", exportPDF);
 
     updateGraph();
 });
