@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotus Graphing Plotter | Gary Kanyuh</title>
 
-    <!-- Chart.js CDN -->
+    <!-- Chart.js & html2pdf CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- Styles & Scripts -->
     <link rel="stylesheet" href="styles.css">
@@ -54,7 +55,7 @@
                 <h2 class="section-title">Lotus Graphing Plotter</h2>
                 <div class="section-accent-line"></div>
                 <p style="color: var(--text-muted); margin-top: 8px;">
-                    Customize titles, axis labels, and series colors for web viewing, or export a high-resolution vector Black & White PDF report.
+                    Customize titles, axis labels, and series colors in full color, and export a clean PDF report.
                 </p>
             </div>
 
@@ -77,31 +78,29 @@
                         </div>
                     </div>
 
-                    <!-- PROMINENT COLOR SELECTOR PANEL -->
+                    <!-- COLOR SELECTOR PANEL -->
                     <div class="control-group highlight-selector-panel">
                         <div class="panel-header">
-                            <span class="control-label-bold">🎨 Data Series Colors & Style Selector</span>
-                            <span class="panel-subtitle">Pick custom colors for web display</span>
+                            <span class="control-label-bold">🎨 Data Series Colors</span>
+                            <span class="panel-subtitle">Click swatches to customize series colors</span>
                         </div>
-                        <div class="color-pickers-grid" id="colorPickersContainer">
-                            <!-- Populated dynamically with prominent cards -->
-                        </div>
+                        <div class="color-pickers-grid" id="colorPickersContainer"></div>
                     </div>
 
                     <div class="control-group">
-                        <label for="csvDataInput" class="control-label">Data Input (CSV Format: X, Series1, Series2...)</label>
-                        <textarea id="csvDataInput" rows="7"></textarea>
+                        <label for="csvDataInput" class="control-label">Data Input (CSV Format)</label>
+                        <textarea id="csvDataInput" rows="6" placeholder="X, Series1, Series2..."></textarea>
                     </div>
 
                     <div class="plotter-actions">
                         <button id="updateChartBtn" class="primary-btn">Update Graph</button>
-                        <button id="loadSampleBtn" class="secondary-btn">Load Anti-Dive Sample</button>
-                        <button id="exportPdfBtn" class="primary-btn export-pdf-btn">📄 Export Clean B&W PDF Report</button>
+                        <button id="loadSampleBtn" class="secondary-btn">Load Sample</button>
+                        <button id="exportPdfBtn" class="primary-btn export-pdf-btn">📄 Export Color PDF</button>
                     </div>
                 </div>
 
-                <!-- Graph Viewport -->
-                <div class="plotter-viewport">
+                <!-- Graph Viewport (Target for clean PDF export) -->
+                <div class="plotter-viewport" id="pdf-export-area">
                     <div class="canvas-wrapper">
                         <canvas id="lotusChart"></canvas>
                     </div>
