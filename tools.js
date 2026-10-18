@@ -31,27 +31,62 @@ document.addEventListener("DOMContentLoaded", function () {
     const bwLineStyles = [[], [8, 6], [3, 5], [12, 4, 3, 4]];
 
     function parseCSV(text) {
-        const lines = text.trim().split("\n").map(l => l.trim()).filter(l => l);
-        if (lines.length < 2) return null;
+    if (!text) return null;
 
-        const headers = lines[0].split(",").map(h => h.trim());
-        const seriesNames = headers.slice(1);
+    // Remove standalone title headers like "Anti Dive (%)" if present at the top
+    let rawText = text.trim();
+    if (rawText.toLowerCase().startsWith("anti dive")) {
+        const firstLineEnd = rawText.indexOf("\n");
+        if (firstLineEnd !== -1) {
+            rawText = rawText.substring(firstLineEnd).trim();
+        }
+    }
 
-        const xValues = [];
-        const seriesData = {};
-        seriesNames.forEach(name => seriesData[name] = []);
+    // Split text into lines (handles both \n and \r\n)
+    let lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l);
 
-        for (let i = 1; i < lines.length; i++) {
-            const cols = lines[i].split(",").map(c => parseFloat(c.trim()));
-            if (cols.length === headers.length) {
-                xValues.push(cols[0]);
-                for (let j = 1; j < headers.length; j++) {
-                    seriesData[headers[j]].push(cols[j]);
+    // If the entire payload pasted on a single line, re-split by pattern matching
+    if (lines.length === 1 && lines[0].includes("Front")) {
+        const headerMatch = lines[0].match(/^(X\s+Front \+ve Y\s+Front -ve Y\s+Rear \+ve Y\s+Rear -ve Y)/i);
+        if (headerMatch) {
+            const headerStr = headerMatch[1];
+            const dataStr = lines[0].substring(headerStr.length).trim();
+            const dataRows = dataStr.match(/(-?\d+(?:\.\d+)?)/g);
+            if (dataRows && dataRows.length % 5 === 0) {
+                lines = [
+                    "X, Front +ve Y, Front -ve Y, Rear +ve Y, Rear -ve Y"
+                ];
+                for (let i = 0; i < dataRows.length; i += 5) {
+                    lines.push(dataRows.slice(i, i + 5).join(", "));
                 }
             }
         }
-        return { xValues, seriesNames, seriesData };
     }
+
+    if (lines.length < 2) return null;
+
+    // Detect delimiter (tab or comma or multiple spaces)
+    const delimiter = lines[0].includes("\t") ? "\t" : (lines[0].includes(",") ? "," : /\s+/);
+
+    const headers = lines[0].split(delimiter).map(h => h.trim()).filter(h => h);
+    const seriesNames = headers.slice(1);
+
+    const xValues = [];
+    const seriesData = {};
+    seriesNames.forEach(name => seriesData[name] = []);
+
+    for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(delimiter).map(c => parseFloat(c.trim())).filter(c => !isNaN(c));
+        if (cols.length === headers.length) {
+            xValues.push(cols[0]);
+            for (let j = 1; j < headers.length; j++) {
+                seriesData[headers[j]].push(cols[j]);
+            }
+        }
+    }
+
+    return { xValues, seriesNames, seriesData };
+}
 
     function initColorPickers(seriesNames) {
         colorPickersContainer.innerHTML = "";
