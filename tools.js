@@ -102,31 +102,30 @@ document.addEventListener("DOMContentLoaded", function () {
     function parseCSV(text) {
     if (!text) return null;
 
-    // Remove standalone title headers like "Anti Dive (%)" if present at the top
     let rawText = text.trim();
-    if (rawText.toLowerCase().startsWith("anti dive")) {
+
+    // Strip out top title headers if pasted (e.g., "Anti Squat (%)" or "Anti Dive (%)")
+    if (/^anti\s+\w+/i.test(rawText)) {
         const firstLineEnd = rawText.indexOf("\n");
         if (firstLineEnd !== -1) {
             rawText = rawText.substring(firstLineEnd).trim();
         }
     }
 
-    // Split text into lines (handles both \n and \r\n)
+    // Split text into individual lines
     let lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l);
 
-    // If the entire payload pasted on a single line, re-split by pattern matching
+    // If pasted as a single concatenated line, handle decimal extraction
     if (lines.length === 1 && lines[0].includes("Front")) {
-        const headerMatch = lines[0].match(/^(X\s+Front \+ve Y\s+Front -ve Y\s+Rear \+ve Y\s+Rear -ve Y)/i);
+        const headerMatch = lines[0].match(/^(X\s*Front \+ve Y\s*Front -ve Y\s*Rear \+ve Y\s*Rear -ve Y)/i);
         if (headerMatch) {
             const headerStr = headerMatch[1];
             const dataStr = lines[0].substring(headerStr.length).trim();
-            const dataRows = dataStr.match(/(-?\d+(?:\.\d+)?)/g);
-            if (dataRows && dataRows.length % 5 === 0) {
-                lines = [
-                    "X, Front +ve Y, Front -ve Y, Rear +ve Y, Rear -ve Y"
-                ];
-                for (let i = 0; i < dataRows.length; i += 5) {
-                    lines.push(dataRows.slice(i, i + 5).join(", "));
+            const numbers = dataStr.match(/(-?\d+(?:\.\d+)?)/g);
+            if (numbers && numbers.length % 5 === 0) {
+                lines = ["X, Front +ve Y, Front -ve Y, Rear +ve Y, Rear -ve Y"];
+                for (let i = 0; i < numbers.length; i += 5) {
+                    lines.push(numbers.slice(i, i + 5).join(", "));
                 }
             }
         }
@@ -134,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (lines.length < 2) return null;
 
-    // Detect delimiter (tab or comma or multiple spaces)
+    // Detect delimiter (tab, comma, or whitespace)
     const delimiter = lines[0].includes("\t") ? "\t" : (lines[0].includes(",") ? "," : /\s+/);
 
     const headers = lines[0].split(delimiter).map(h => h.trim()).filter(h => h);
