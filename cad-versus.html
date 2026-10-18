@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAD Versus | CAD Modeling Challenge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cad-versus.css">
+    <!-- Socket.IO Client CDN -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script defer src="cad-versus.js"></script>
+</head>
+<body>
+    <!-- Shared Curved Navbar -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">CAD Versus Challenge</span>
+            </div>
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#tools">Tools</a></li>
+                    <li><a href="#how-to-play">How to Play</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <!-- Main Menu View -->
+        <section id="menu-view" class="game-card">
+            <div class="game-header">
+                <h1 class="game-title">CAD VERSUS</h1>
+                <p class="game-tagline">Model the part. Find the mass. Beat the clock.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="nickname-input">Player Nickname:</label>
+                <input type="text" id="nickname-input" placeholder="e.g. Machinist_42" maxlength="16">
+            </div>
+
+            <div class="menu-actions">
+                <button id="singleplayer-btn" class="primary-btn">Single Player Practice</button>
+                <button id="multiplayer-btn" class="secondary-btn">Multiplayer Versus</button>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-panel">
+                <h4>Personal Stats</h4>
+                <div class="stats-grid">
+                    <div><span>Games Played:</span> <strong id="stat-played">0</strong></div>
+                    <div><span>Wins:</span> <strong id="stat-wins">0</strong></div>
+                    <div><span>Best Easy:</span> <strong id="stat-best-easy">--:--</strong></div>
+                    <div><span>Best Medium:</span> <strong id="stat-best-medium">--:--</strong></div>
+                </div>
+            </div>
+
+            <!-- How to Play Section -->
+            <div id="how-to-play" class="how-to-play-panel">
+                <h3>How to Play</h3>
+                <ol>
+                    <li>Select Single Player mode or create/join a Multiplayer Lobby.</li>
+                    <li>Open the provided technical drawing schematic on your browser.</li>
+                    <li>Recreate the part in SolidWorks, Fusion 360, or Onshape.</li>
+                    <li>Assign the standard specified material (e.g., 6061-T6 Aluminum).</li>
+                    <li>Open <strong>Mass Properties</strong> in your CAD software and calculate the mass.</li>
+                    <li>Submit your answer before the stopwatch or opponent beats you! (3 attempts max)</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Difficulty Selection Screen -->
+        <section id="difficulty-view" class="game-card hidden">
+            <h2>Select Difficulty</h2>
+            <div class="difficulty-options">
+                <button class="diff-card" data-diff="easy">
+                    <h3>Easy</h3>
+                    <p>3–6 major modeling features. Basic geometric extrusions, cuts, holes, fillets.</p>
+                </button>
+                <button class="diff-card" data-diff="medium">
+                    <h3>Medium</h3>
+                    <p>6–12 major features. Brackets, shafts, multiple sketches, patterns, cuts.</p>
+                </button>
+                <button class="diff-card" data-diff="hard">
+                    <h3>Hard</h3>
+                    <p>10–20 major features. Intersecting geometry, angled cuts, complex profiles.</p>
+                </button>
+            </div>
+            <button id="back-to-menu-1" class="ghost-btn margin-top">Back to Main Menu</button>
+        </section>
+
+        <!-- Multiplayer Lobby Hub -->
+        <section id="lobby-hub-view" class="game-card hidden">
+            <h2>Multiplayer Lobby Hub</h2>
+            <div class="lobby-actions">
+                <div class="lobby-card">
+                    <h3>Create Lobby</h3>
+                    <label>Max Players (2–8):</label>
+                    <input type="number" id="lobby-capacity" value="4" min="2" max="8">
+                    <button id="create-lobby-btn" class="primary-btn">Create Room</button>
+                </div>
+                <div class="lobby-card">
+                    <h3>Join Lobby</h3>
+                    <input type="text" id="join-code-input" placeholder="Enter Room Code (e.g. K7M4QX)">
+                    <button id="join-lobby-btn" class="secondary-btn">Join Room</button>
+                </div>
+            </div>
+            <button id="back-to-menu-2" class="ghost-btn margin-top">Back to Main Menu</button>
+        </section>
+
+        <!-- Waiting Room Screen -->
+        <section id="waiting-room-view" class="game-card hidden">
+            <div class="room-header">
+                <h2>Lobby Code: <span id="display-room-code" class="highlight">------</span></h2>
+                <button id="copy-code-btn" class="ghost-btn">Copy Code</button>
+            </div>
+
+            <div class="players-container">
+                <h3>Connected Players (<span id="player-count">0</span>/<span id="max-capacity">0</span>)</h3>
+                <ul id="player-list"></ul>
+            </div>
+
+            <div id="host-controls" class="host-controls hidden">
+                <label>Match Difficulty:</label>
+                <select id="multi-diff-select">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+                <button id="start-match-btn" class="primary-btn">Start Game</button>
+            </div>
+            <button id="leave-lobby-btn" class="danger-btn margin-top">Leave Lobby</button>
+        </section>
+
+        <!-- Challenge Preview Screen -->
+        <section id="preview-view" class="game-card hidden">
+            <h2 id="preview-title">Challenge Title</h2>
+            <div class="preview-meta">
+                <span>Difficulty: <strong id="preview-diff">Easy</strong></span>
+                <span>Category: <strong id="preview-category">Mechanical</strong></span>
+                <span>Unit: <strong id="preview-unit">Grams (g)</strong></span>
+                <span>Attempts Allowed: <strong>3</strong></span>
+            </div>
+            <p id="preview-description">Part description / feature guide.</p>
+            <button id="start-challenge-btn" class="primary-btn pulse">Start Challenge</button>
+        </section>
+
+        <!-- Main Gameplay Interface (Active Match) -->
+        <section id="gameplay-view" class="gameplay-layout hidden">
+            <!-- Countdown Overlay -->
+            <div id="countdown-overlay" class="countdown-overlay hidden">
+                <span id="countdown-num">3</span>
+            </div>
+
+            <div class="drawing-container">
+                <div class="drawing-header">
+                    <h3 id="drawing-title">Engineering Schematic</h3>
+                    <div id="stopwatch-display" class="stopwatch">00:00.0</div>
+                </div>
+                <div class="drawing-canvas">
+                    <svg id="schematic-svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet"></svg>
+                </div>
+            </div>
+
+            <aside class="sidebar-panel">
+                <div class="match-info">
+                    <h4>Part Details</h4>
+                    <p><strong>Material:</strong> <span id="part-material">6061 Aluminum (2.70 g/cm³)</span></p>
+                    <p><strong>Units:</strong> <span id="part-unit">Grams (g)</span></p>
+                    <p><strong>Attempts Remaining:</strong> <span id="attempts-count">3</span>/3</p>
+                </div>
+
+                <div id="multiplayer-status-panel" class="match-info hidden">
+                    <h4>Rival Status</h4>
+                    <ul id="rival-status-list" class="rival-list"></ul>
+                </div>
+
+                <div class="submission-form">
+                    <label for="mass-input">Enter Calculated Mass:</label>
+                    <div class="input-with-unit">
+                        <input type="number" step="any" id="mass-input" placeholder="0.00">
+                        <span id="submission-unit-label">g</span>
+                    </div>
+                    <button id="submit-mass-btn" class="primary-btn">Submit Answer</button>
+                    <div id="feedback-message" class="feedback-msg"></div>
+                </div>
+            </aside>
+        </section>
+
+        <!-- Results / End Round Screen -->
+        <section id="results-view" class="game-card hidden">
+            <h1 id="result-headline">Victory!</h1>
+            <div class="results-details">
+                <p>Completion Time: <strong id="res-time">--:--</strong></p>
+                <p>Correct Reference Mass: <strong id="res-ref-mass">--</strong></p>
+                <p>Submitted Mass: <strong id="res-sub-mass">--</strong></p>
+                <p>Attempts Used: <strong id="res-attempts">--</strong></p>
+            </div>
+            <div id="results-standings" class="hidden">
+                <h3>Final Match Leaderboard</h3>
+                <ol id="leaderboard-list"></ol>
+            </div>
+            <div class="menu-actions">
+                <button id="play-again-btn" class="primary-btn">Play Another</button>
+                <button id="return-menu-btn" class="secondary-btn">Return to Menu</button>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
