@@ -49,7 +49,7 @@
         <div class="game-card" style="text-align: center;">
             <div class="game-header">
                 <h1 class="game-title">F1 PIT LANE CUP SHUFFLE</h1>
-                <p class="game-tagline">Track the red Solo cup hiding the F1 car through orbital rotations!</p>
+                <p class="game-tagline">Track the red Solo cup hiding the F1 car through real orbital loops!</p>
             </div>
 
             <div class="stats-panel" style="max-width: 600px; margin: 0 auto 24px;">
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Cup Table Area -->
-            <div id="cupTable" style="display: flex; justify-content: center; align-items: flex-end; min-height: 280px; margin-bottom: 30px; position: relative; width: 100%; overflow: visible; padding: 40px 0;">
+            <div id="cupTable" style="display: flex; justify-content: center; align-items: flex-end; min-height: 300px; margin-bottom: 30px; position: relative; width: 100%; overflow: visible; padding: 60px 0;">
                 <!-- Generated via Javascript -->
             </div>
 
@@ -86,9 +86,29 @@
             cursor: pointer;
             position: absolute;
             width: 90px;
-            /* Smooth arc/translation trajectory */
-            transition: left 0.5s cubic-bezier(0.37, 0, 0.63, 1), transform 0.5s cubic-bezier(0.37, 0, 0.63, 1);
+            transition: left 0.5s ease-in-out;
         }
+
+        /* True Orbital Arc Rotation Animation Class */
+        .f1-cup-wrapper.orbiting {
+            animation: cupOrbit 0.5s ease-in-out forwards;
+        }
+
+        @keyframes cupOrbit {
+            0% {
+                transform: translateY(0px) scale(1);
+                z-index: 2;
+            }
+            50% {
+                transform: translateY(-80px) scale(1.12); /* Arcs high and scales up to pass over other cups */
+                z-index: 10; /* Ensures crossing cup passes visually ON TOP */
+            }
+            100% {
+                transform: translateY(0px) scale(1);
+                z-index: 2;
+            }
+        }
+
         /* Realistic Red Solo Cup Design */
         .cup-graphic {
             width: 90px;
@@ -163,13 +183,14 @@
             let carIndex = null; // 0 to 4
             let gameState = "SETUP"; // SETUP, SHUFFLING, GUESSING, REVEALED
             const totalCups = 5;
-            const slotWidth = 110; // Spacing between slots
+            const slotWidth = 110;
 
             let cupsData = [];
 
             function initCups() {
                 cupsData = [];
                 for (let i = 0; i < totalCups; i++) {
+                    cupsData.path = [];
                     cupsData.push({ id: i, currentSlot: i });
                 }
                 renderCups(false);
@@ -181,6 +202,7 @@
                 cupsData.forEach((cup) => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "f1-cup-wrapper";
+                    wrapper.setAttribute("data-cup-id", cup.id);
                     
                     const centerOffset = (cupTable.clientWidth - (totalCups * slotWidth)) / 2;
                     wrapper.style.left = `${Math.max(10, centerOffset + (cup.currentSlot * slotWidth))}px`;
@@ -221,12 +243,12 @@
                 });
             }
 
-            // Orbital Rotation & Crossing Animation
+            // Real Crossing Orbital Shuffle Animation
             async function startShuffle() {
                 if (carIndex === null) return;
                 gameState = "SHUFFLING";
                 actionBtn.style.display = "none";
-                gameStatus.textContent = "🌀 Cups rotating and crossing over... Watch the path!";
+                gameStatus.textContent = "🌀 Cups looping and crossing over each other...";
 
                 let totalSwaps = 9;
                 for (let s = 0; s < totalSwaps; s++) {
@@ -241,33 +263,30 @@
                     let cupA = cupsData.find(c => c.currentSlot === idx1);
                     let cupB = cupsData.find(c => c.currentSlot === idx2);
 
-                    // Add a dynamic vertical arc lift (rotation effect) to simulate cups passing over each other
-                    const wrappers = cupTable.querySelectorAll(".f1-cup-wrapper");
-                    let wrapA = wrappers[cupA.id];
-                    let wrapB = wrappers[cupB.id];
+                    // Grab DOM elements to trigger the CSS Keyframe arc/orbit animation
+                    const wrapperA = cupTable.querySelector(`[data-cup-id="${cupA.id}"]`);
+                    const wrapperB = cupTable.querySelector(`[data-cup-id="${cupB.id}"]`);
 
-                    if (wrapA && wrapB) {
-                        let arcHeight = idx1 < idx2 ? -35 : 35;
-                        wrapA.style.transform = `translateY(${arcHeight}px) scale(1.05)`;
-                        wrapB.style.transform = `translateY(${-arcHeight}px) scale(0.95)`;
+                    if (wrapperA && wrapperB) {
+                        wrapperA.classList.add("orbiting");
+                        wrapperB.classList.add("orbiting");
                     }
 
-                    // Swap slots
+                    // Swap slots in data model
                     let temp = cupA.currentSlot;
                     cupA.currentSlot = cupB.currentSlot;
                     cupB.currentSlot = temp;
 
                     renderCups(false);
 
-                    // Reset arc transform after movement settles
-                    setTimeout(() => {
-                        const updatedWrappers = cupTable.querySelectorAll(".f1-cup-wrapper");
-                        updatedWrappers.forEach(w => w.style.transform = "translateY(0px) scale(1)");
-                    }, 400);
+                    // Clean up animation classes after loop completes
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    const cleanWrappers = cupTable.querySelectorAll(".f1-cup-wrapper");
+                    cleanWrappers.forEach(w => w.classList.remove("orbiting"));
                 }
 
                 gameState = "GUESSING";
-                gameStatus.textContent = "🏁 Rotation complete! Which red Solo cup is the F1 car hiding under?";
+                gameStatus.textContent = "🏁 Orbital shuffle complete! Which red Solo cup is the F1 car hiding under?";
             }
 
             function checkGuess(selectedCupId) {
@@ -277,12 +296,12 @@
                 if (selectedCupId === carIndex) {
                     wins++;
                     scoreWinsEl.textContent = wins;
-                    gameStatus.textContent = `🎉 Spot on! You successfully tracked the F1 car! Pole position secured!`;
+                    gameStatus.textContent = `🎉 Spot on! You successfully tracked the F1 car through the loops!`;
                     gameStatus.style.color = "#4caf50";
                 } else {
                     losses++;
                     scoreLossesEl.textContent = losses;
-                    gameStatus.textContent = `💥 Lost in the rotation! The F1 car was under a different cup.`;
+                    gameStatus.textContent = `💥 Miscalculated the rotation! The F1 car was under a different cup.`;
                     gameStatus.style.color = "var(--danger)";
                 }
 
