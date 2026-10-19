@@ -268,80 +268,90 @@
             }
 
             // Smooth 2D Circular Path Shuffle Animation
-            async function startShuffle() {
-                if (carIndex === null) return;
-                gameState = "SHUFFLING";
-                actionBtn.style.display = "none";
-                gameStatus.textContent = "🌀 Following circular crossing paths... Track the F1 car!";
+           // Extremely fast, unpredictable 10-second shuffle logic
+async function startShuffle() {
+    if (carIndex === null) return;
+    gameState = "SHUFFLING";
+    actionBtn.style.display = "none";
+    gameStatus.textContent = "🌀 Shuffling rapidly for 10 seconds... Track the F1 car if you can!";
 
-                let totalRounds = 8;
-                for (let r = 0; r < totalRounds; r++) {
-                    let idx1 = Math.floor(Math.random() * totalCups);
-                    let idx2;
-                    do {
-                        idx2 = Math.floor(Math.random() * totalCups);
-                    } while (idx2 === idx1);
+    const shuffleDuration = 10000; // 10 seconds continuous shuffle
+    const startTimeOverall = Date.now();
 
-                    let cupA = cupsData.find(c => c.currentSlot === idx1);
-                    let cupB = cupsData.find(c => c.currentSlot === idx2);
+    while (Date.now() - startTimeOverall < shuffleDuration) {
+        // 1. Pick two random distinct cups
+        let idx1 = Math.floor(Math.random() * totalCups);
+        let idx2;
+        do {
+            idx2 = Math.floor(Math.random() * totalCups);
+        } while (idx2 === idx1);
 
-                    const wrapperA = cupTable.querySelector(`[data-cup-id="${cupA.id}"]`);
-                    const wrapperB = cupTable.querySelector(`[data-cup-id="${cupB.id}"]`);
+        let cupA = cupsData.find(c => c.currentSlot === idx1);
+        let cupB = cupsData.find(c => c.currentSlot === idx2);
 
-                    if (wrapperA && wrapperB) {
-                        const startLeftA = parseFloat(wrapperA.style.left);
-                        const startLeftB = parseFloat(wrapperB.style.left);
-                        const targetLeftA = startLeftB;
-                        const targetLeftB = startLeftA;
+        const wrapperA = cupTable.querySelector(`[data-cup-id="${cupA.id}"]`);
+        const wrapperB = cupTable.querySelector(`[data-cup-id="${cupB.id}"]`);
 
-                        const distance = targetLeftA - startLeftA;
-                        const arcRadius = Math.min(Math.abs(distance) * 0.4, 90);
-                        const direction = distance > 0 ? 1 : -1;
+        if (wrapperA && wrapperB) {
+            const startLeftA = parseFloat(wrapperA.style.left);
+            const startLeftB = parseFloat(wrapperB.style.left);
+            const distance = startLeftB - startLeftA;
 
-                        const duration = 350; // Smooth tracking speed
-                        let startTime = null;
+            // 2. Randomize path geometry per movement (linear vs arc vs deep arc)
+            const pathType = Math.floor(Math.random() * 3); // 0: Straight, 1: Circular Arc, 2: Deep Off-center Arc
+            const arcHeight = (pathType === 0) ? 0 : (Math.random() * 120 + 40); 
+            const direction = Math.random() < 0.5 ? 1 : -1;
 
-                        await new Promise((resolve) => {
-                            function animateStep(timestamp) {
-                                if (!startTime) startTime = timestamp;
-                                let progress = (timestamp - startTime) / duration;
-                                if (progress > 1) progress = 1;
+            // Fast random movement speed (120ms to 180ms per swap)
+            const moveDuration = Math.floor(Math.random() * 60) + 120;
+            let moveStartTime = null;
 
-                                // Sine-wave arc for Y direction combined with linear X interpolation creates a true circular path loop
-                                let currentLeftA = startLeftA + (distance * progress);
-                                let currentLeftB = startLeftB - (distance * progress);
+            await new Promise((resolve) => {
+                function animateStep(timestamp) {
+                    if (!moveStartTime) moveStartTime = timestamp;
+                    let progress = (timestamp - moveStartTime) / moveDuration;
+                    if (progress > 1) progress = 1;
 
-                                let currentY = Math.sin(progress * Math.PI) * arcRadius * direction;
+                    // Interpolate X position
+                    let currentLeftA = startLeftA + (distance * progress);
+                    let currentLeftB = startLeftB - (distance * progress);
 
-                                wrapperA.style.left = `${currentLeftA}px`;
-                                wrapperA.style.transform = `translate(0px, ${-currentY}px)`;
-                                wrapperA.style.zIndex = "10";
+                    // Interpolate Y curve height (sin curve for smooth pathing)
+                    let currentYA = Math.sin(progress * Math.PI) * arcHeight * direction;
+                    let currentYB = Math.sin(progress * Math.PI) * arcHeight * (-direction);
 
-                                wrapperB.style.left = `${currentLeftB}px`;
-                                wrapperB.style.transform = `translate(0px, ${currentY}px)`;
-                                wrapperB.style.zIndex = "5";
+                    wrapperA.style.left = `${currentLeftA}px`;
+                    wrapperA.style.transform = `translate(0px, ${-currentYA}px)`;
+                    wrapperA.style.zIndex = direction > 0 ? "10" : "5";
 
-                                if (progress < 1) {
-                                    requestAnimationFrame(animateStep);
-                                } else {
-                                    resolve();
-                                }
-                            }
-                            requestAnimationFrame(animateStep);
-                        });
+                    wrapperB.style.left = `${currentLeftB}px`;
+                    wrapperB.style.transform = `translate(0px, ${-currentYB}px)`;
+                    wrapperB.style.zIndex = direction > 0 ? "5" : "10";
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateStep);
+                    } else {
+                        // Reset transforms after step completes
+                        wrapperA.style.transform = "translate(0px, 0px)";
+                        wrapperB.style.transform = "translate(0px, 0px)";
+                        resolve();
                     }
-
-                    // Swap slots in data model after animation completes
-                    let temp = cupA.currentSlot;
-                    cupA.currentSlot = cupB.currentSlot;
-                    cupB.currentSlot = temp;
-
-                    renderCups(false);
                 }
+                requestAnimationFrame(animateStep);
+            });
 
-                gameState = "GUESSING";
-                gameStatus.textContent = "🏁 Circular shuffle complete! Click a cup and complete its brain break exercise to check your guess!";
-            }
+            // 3. Swap current slots in data model
+            let temp = cupA.currentSlot;
+            cupA.currentSlot = cupB.currentSlot;
+            cupB.currentSlot = temp;
+
+            renderCups(false);
+        }
+    }
+
+    gameState = "GUESSING";
+    gameStatus.textContent = "🏁 10-second shuffle complete! Pick a cup and complete its brain break exercise to verify your guess!";
+}
 
             function checkGuess(selectedCupId) {
                 gameState = "REVEALED";
