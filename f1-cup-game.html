@@ -49,12 +49,12 @@
         <div class="game-card" style="text-align: center;">
             <div class="game-header">
                 <h1 class="game-title">F1 PIT LANE CUP SHUFFLE</h1>
-                <p class="game-tagline">Track the Solo cup hiding the F1 car!</p>
+                <p class="game-tagline">Track the red Solo cup hiding the F1 car!</p>
             </div>
 
             <div class="stats-panel" style="max-width: 600px; margin: 0 auto 24px;">
                 <p id="gameStatus" class="control-label-bold" style="font-size: 16px; color: var(--accent);">
-                    Step 1: Click a Solo cup to hide the F1 car under it.
+                    Step 1: Click a red Solo cup to hide the F1 car under it.
                 </p>
                 <div style="display: flex; justify-content: center; gap: 20px; margin-top: 12px; font-size: 14px; color: var(--text-muted);">
                     <span>Wins: <strong id="scoreWins" style="color: var(--text-main);">0</strong></span>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Cup Table Area -->
-            <div id="cupTable" style="display: flex; justify-content: center; gap: 12px; min-height: 240px; align-items: flex-end; margin-bottom: 30px; position: relative; overflow: hidden; padding: 20px 0;">
+            <div id="cupTable" style="display: flex; justify-content: center; align-items: flex-end; min-height: 240px; margin-bottom: 30px; position: relative; width: 100%; overflow: hidden; padding: 20px 0;">
                 <!-- Generated via Javascript -->
             </div>
 
@@ -79,48 +79,63 @@
     </footer>
 
     <style>
-        .cup-slot {
-            position: relative;
-            width: 85px;
-            height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.4s ease-in-out;
-        }
         .f1-cup-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
             position: absolute;
-            width: 85px;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100px;
+            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
         }
+        /* Realistic Red Solo Cup Design */
         .cup-graphic {
-            width: 80px;
-            height: 105px;
-            background: linear-gradient(135deg, #1f293d, #0b1018);
-            border-top: 5px solid var(--accent); /* Rolled rim effect */
-            clip-path: polygon(12% 0%, 88% 0%, 96% 100%, 4% 100%); /* Solo cup trapezoid shape */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+            width: 90px;
+            height: 115px;
+            background: linear-gradient(135deg, #e63946, #b7091c);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 90%, 90% 100%, 10% 100%, 0% 90%);
             position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6), inset -12px 0 20px rgba(0,0,0,0.3), inset 10px 0 20px rgba(255,255,255,0.25);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 8px;
             z-index: 2;
-            transition: transform 0.4s ease;
+            transition: transform 0.4s ease, background 0.4s ease;
+        }
+        /* Classic White Bottom Rim */
+        .cup-graphic::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 5%;
+            width: 90%;
+            height: 10px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+        /* Cup Ridge Line */
+        .cup-graphic::before {
+            content: "";
+            position: absolute;
+            top: 55%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
         }
         .cup-graphic.lifted {
-            transform: translateY(-55px);
-            background: linear-gradient(135deg, #2b3b57, #141b29);
-            border-top-color: #4caf50;
+            transform: translateY(-60px);
+            background: linear-gradient(135deg, #ff4d5a, #c51b2a);
         }
         .cup-number {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            color: var(--text-muted);
-            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.85);
+            z-index: 3;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
         .car-hidden-slot {
             height: 35px;
@@ -131,12 +146,12 @@
             z-index: 1;
         }
         .mini-f1-car {
-            font-size: 28px;
+            font-size: 30px;
             animation: bounce 0.6s infinite alternate;
         }
         @keyframes bounce {
             from { transform: translateY(0); }
-            to { transform: translateY(-4px); }
+            to { transform: translateY(-5px); }
         }
     </style>
 
@@ -151,11 +166,10 @@
 
             let wins = 0;
             let losses = 0;
-            let carIndex = null; // Which cup index currently holds the car (0 to 4)
-            let cupPositions = [0, 1, 2, 3, 4]; // Maps visual slot index to original cup object
+            let carIndex = null; // 0 to 4
             let gameState = "SETUP"; // SETUP, SHUFFLING, GUESSING, REVEALED
             const totalCups = 5;
-            const slotWidth = 97; // Pixels distance between cup slots for sliding animation
+            const slotWidth = 105; // Horizontal spacing between cups
 
             let cupsData = [];
 
@@ -170,11 +184,12 @@
             function renderCups(revealCar = false) {
                 cupTable.innerHTML = "";
                 
-                // Create relative positioning tracks
-                cupsData.forEach((cup, idx) => {
+                cupsData.forEach((cup) => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "f1-cup-wrapper";
-                    wrapper.style.transform = `translateX(${cup.currentSlot * slotWidth}px)`;
+                    // Center the cups container layout dynamically
+                    const centerOffset = (cupTable.clientWidth - (totalCups * slotWidth)) / 2;
+                    wrapper.style.left = `${Math.max(10, centerOffset + (cup.currentSlot * slotWidth))}px`;
 
                     const cupEl = document.createElement("div");
                     cupEl.className = "cup-graphic";
@@ -201,11 +216,10 @@
                     wrapper.appendChild(cupEl);
                     wrapper.appendChild(carSlot);
 
-                    // Click interaction
                     wrapper.addEventListener("click", function () {
                         if (gameState === "SETUP") {
                             carIndex = cup.id;
-                            gameStatus.textContent = `F1 car placed under Cup ${cup.id + 1}. Click 'Start Trackable Shuffle'!`;
+                            gameStatus.textContent = `F1 car placed under Red Cup ${cup.id + 1}. Click 'Start Trackable Shuffle'!`;
                             renderCups(true);
                             setTimeout(() => renderCups(false), 800);
                             actionBtn.style.display = "inline-flex";
@@ -218,29 +232,26 @@
                 });
             }
 
-            // Smooth Trackable Swap Animation
+            // Smooth Trackable Swapping Animation
             async function startShuffle() {
                 if (carIndex === null) return;
                 gameState = "SHUFFLING";
                 actionBtn.style.display = "none";
-                gameStatus.textContent = "👀 Keep your eyes on the Solo cup with the F1 car...";
+                gameStatus.textContent = "👀 Keep your eyes on the red Solo cup carrying the F1 car...";
 
-                let totalSwaps = 7; // Number of trackable swaps
+                let totalSwaps = 8;
                 for (let s = 0; s < totalSwaps; s++) {
-                    await new Promise(resolve => setTimeout(resolve, 550));
+                    await new Promise(resolve => setTimeout(resolve, 500));
 
-                    // Pick two adjacent or random slots to swap
                     let idx1 = Math.floor(Math.random() * totalCups);
                     let idx2;
                     do {
                         idx2 = Math.floor(Math.random() * totalCups);
                     } while (idx2 === idx1);
 
-                    // Find cups currently occupying these slots
                     let cupA = cupsData.find(c => c.currentSlot === idx1);
                     let cupB = cupsData.find(c => c.currentSlot === idx2);
 
-                    // Swap their slot positions
                     let temp = cupA.currentSlot;
                     cupA.currentSlot = cupB.currentSlot;
                     cupB.currentSlot = temp;
@@ -249,7 +260,7 @@
                 }
 
                 gameState = "GUESSING";
-                gameStatus.textContent = "🏁 Shuffle complete! Which Solo cup is the F1 car hiding under?";
+                gameStatus.textContent = "🏁 Shuffle complete! Choose a red Solo cup to find your F1 car.";
             }
 
             function checkGuess(selectedCupId) {
@@ -259,12 +270,12 @@
                 if (selectedCupId === carIndex) {
                     wins++;
                     scoreWinsEl.textContent = wins;
-                    gameStatus.textContent = `🎉 Spot on! The F1 car was under Cup ${carIndex + 1}! Pole position secured!`;
+                    gameStatus.textContent = `🎉 Spot on! The F1 car was under Red Cup ${carIndex + 1}! Pole position secured!`;
                     gameStatus.style.color = "#4caf50";
                 } else {
                     losses++;
                     scoreLossesEl.textContent = losses;
-                    gameStatus.textContent = `💥 Miscalculation! The F1 car was actually under Cup ${carIndex + 1}.`;
+                    gameStatus.textContent = `💥 Pit stop blunder! The F1 car was actually under Red Cup ${carIndex + 1}.`;
                     gameStatus.style.color = "var(--danger)";
                 }
 
@@ -275,7 +286,7 @@
             function resetGame() {
                 gameState = "SETUP";
                 carIndex = null;
-                gameStatus.textContent = "Step 1: Click a Solo cup to hide the F1 car under it.";
+                gameStatus.textContent = "Step 1: Click a red Solo cup to hide the F1 car under it.";
                 gameStatus.style.color = "var(--accent)";
                 actionBtn.textContent = "Start Trackable Shuffle";
                 actionBtn.style.display = "none";
@@ -292,7 +303,6 @@
 
             resetBtn.addEventListener("click", resetGame);
 
-            // Initial Setup
             initCups();
         });
     </script>
