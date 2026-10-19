@@ -49,29 +49,29 @@
         <div class="game-card" style="text-align: center;">
             <div class="game-header">
                 <h1 class="game-title">F1 PIT LANE PONG</h1>
-                <p class="game-tagline">Bounce the racing tire down the track! First to 5 points wins.</p>
+                <p class="game-tagline">Defend your pit box with the carbon-fiber front wing! First to 5 points wins the Grand Prix.</p>
             </div>
 
             <!-- Mode Selector & Controls Info -->
             <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 16px;">
-                <button id="modeAI" class="primary-btn" style="font-size: 12px; padding: 8px 16px;">1 Player vs Computer</button>
-                <button id="mode2P" class="secondary-btn" style="font-size: 12px; padding: 8px 16px;">2 Player Split-Keyboard</button>
+                <button id="modeAI" class="primary-btn" style="font-size: 12px; padding: 8px 16px;">1 Player vs Ferrari AI</button>
+                <button id="mode2P" class="secondary-btn" style="font-size: 12px; padding: 8px 16px;">2 Player Split-Keyboard Duel</button>
             </div>
 
-            <div class="stats-panel" style="max-width: 700px; margin: 0 auto 16px;">
+            <div class="stats-panel" style="max-width: 720px; margin: 0 auto 16px;">
                 <p id="gameStatus" class="control-label-bold" style="font-size: 14px; color: var(--accent);">
-                    P1 Controls: <strong style="color:var(--text-main);">W</strong> (Up) / <strong style="color:var(--text-main);">S</strong> (Down) &nbsp;|&nbsp; P2 Controls: <strong style="color:var(--text-main);">Arrow Up</strong> / <strong style="color:var(--text-main);">Arrow Down</strong>
+                    P1 Controls (Mercedes): <strong style="color:var(--text-main);">W</strong> / <strong style="color:var(--text-main);">S</strong> &nbsp;|&nbsp; P2 Controls (Red Bull): <strong style="color:var(--text-main);">Arrow Up / Down</strong>
                 </p>
             </div>
 
             <!-- Pong Canvas Arena -->
             <div style="display: flex; justify-content: center; margin-bottom: 20px; position: relative;">
-                <canvas id="pongCanvas" width="700" height="400" style="background: #030812; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-width: 100%;"></canvas>
+                <canvas id="pongCanvas" width="750" height="420" style="background: #0b0f19; border: 2px solid rgba(255,255,255,0.15); border-radius: 14px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); max-width: 100%;"></canvas>
             </div>
 
             <div style="display: flex; justify-content: center; gap: 12px;">
-                <button id="startBtn" class="primary-btn" style="padding: 10px 24px; font-size: 14px;">Start Rally</button>
-                <button id="resetBtn" class="secondary-btn" style="padding: 10px 24px; font-size: 14px;">Reset Game</button>
+                <button id="startBtn" class="primary-btn" style="padding: 10px 24px; font-size: 14px;">Start Grand Prix Rally</button>
+                <button id="resetBtn" class="secondary-btn" style="padding: 10px 24px; font-size: 14px;">Reset Pit Lane</button>
             </div>
         </div>
     </main>
@@ -98,42 +98,41 @@
             let p2Score = 0;
             const winningScore = 5;
 
-            // Paddle configuration
-            const paddleWidth = 12;
-            const paddleHeight = 80;
-            const paddleSpeed = 7;
+            // Paddle configuration (F1 Front Wing style)
+            const paddleWidth = 14;
+            const paddleHeight = 90;
+            const paddleSpeed = 7.5;
 
-            let p1 = { x: 20, y: canvas.height / 2 - paddleHeight / 2, dy: 0 };
-            let p2 = { x: canvas.width - 32, y: canvas.height / 2 - paddleHeight / 2, dy: 0 };
+            let p1 = { x: 25, y: canvas.height / 2 - paddleHeight / 2 };
+            let p2 = { x: canvas.width - 39, y: canvas.height / 2 - paddleHeight / 2 };
 
-            // Ball configuration (Racing Tire 🛞 style)
+            // Ball configuration (Racing Slick Tire 🛞 style)
             let ball = {
                 x: canvas.width / 2,
                 y: canvas.height / 2,
-                radius: 10,
-                speed: 5,
-                dx: 5,
-                dy: 3
+                radius: 12,
+                speed: 5.5,
+                dx: 5.5,
+                dy: 3,
+                rotation: 0
             };
 
-            // Keyboard input tracking
             let keys = {};
             window.addEventListener("keydown", (e) => {
                 keys[e.code] = true;
                 if (["Space", "ArrowUp", "ArrowDown"].includes(e.code)) {
-                    e.preventDefault(); // Prevent page scrolling
+                    e.preventDefault();
                 }
             });
             window.addEventListener("keyup", (e) => {
                 keys[e.code] = false;
             });
 
-            // Mode selection buttons
             modeAIBtn.addEventListener("click", () => {
                 gameMode = "AI";
                 modeAIBtn.className = "primary-btn";
                 mode2PBtn.className = "secondary-btn";
-                gameStatus.innerHTML = "Mode: 1 Player vs Computer AI &nbsp;|&nbsp; P1 Controls: <strong style='color:var(--text-main);'>W / S</strong>";
+                gameStatus.innerHTML = "Mode: 1 Player vs Ferrari AI &nbsp;|&nbsp; P1 Controls (Mercedes): <strong style='color:var(--text-main);'>W / S</strong>";
                 resetGame();
             });
 
@@ -141,32 +140,30 @@
                 gameMode = "2P";
                 mode2PBtn.className = "primary-btn";
                 modeAIBtn.className = "secondary-btn";
-                gameStatus.innerHTML = "Mode: 2 Player Split-Keyboard &nbsp;|&nbsp; P1: <strong style='color:var(--text-main);'>W/S</strong> &nbsp;|&nbsp; P2: <strong style='color:var(--text-main);'>Arrow Up/Down</strong>";
+                gameStatus.innerHTML = "Mode: 2 Player Split-Keyboard &nbsp;|&nbsp; P1 (Mercedes): <strong style='color:var(--text-main);'>W/S</strong> &nbsp;|&nbsp; P2 (Red Bull): <strong style='color:var(--text-main);'>Arrow Up/Down</strong>";
                 resetGame();
             });
 
             function updatePaddles() {
-                // Player 1 controls (W and S)
-                if (keys["KeyW"] && p1.y > 10) {
+                if (keys["KeyW"] && p1.y > 15) {
                     p1.y -= paddleSpeed;
-                } else if (keys["KeyS"] && p1.y < canvas.height - paddleHeight - 10) {
+                } else if (keys["KeyS"] && p1.y < canvas.height - paddleHeight - 15) {
                     p1.y += paddleSpeed;
                 }
 
-                // Player 2 controls or Computer AI
                 if (gameMode === "2P") {
-                    if (keys["ArrowUp"] && p2.y > 10) {
+                    if (keys["ArrowUp"] && p2.y > 15) {
                         p2.y -= paddleSpeed;
-                    } else if (keys["ArrowDown"] && p2.y < canvas.height - paddleHeight - 10) {
+                    } else if (keys["ArrowDown"] && p2.y < canvas.height - paddleHeight - 15) {
                         p2.y += paddleSpeed;
                     }
                 } else {
-                    // Simple Computer AI tracking ball Y position smoothly
+                    // Ferrari AI tracking logic
                     let aiCenter = p2.y + paddleHeight / 2;
-                    if (aiCenter < ball.y - 15 && p2.y < canvas.height - paddleHeight - 10) {
-                        p2.y += paddleSpeed * 0.75;
-                    } else if (aiCenter > ball.y + 15 && p2.y > 10) {
-                        p2.y -= paddleSpeed * 0.75;
+                    if (aiCenter < ball.y - 12 && p2.y < canvas.height - paddleHeight - 15) {
+                        p2.y += paddleSpeed * 0.78;
+                    } else if (aiCenter > ball.y + 12 && p2.y > 15) {
+                        p2.y -= paddleSpeed * 0.78;
                     }
                 }
             }
@@ -174,17 +171,18 @@
             function updateBall() {
                 ball.x += ball.dx;
                 ball.y += ball.dy;
+                ball.rotation += ball.dx * 0.05; // Spin tire based on movement speed
 
-                // Top and bottom wall collisions
-                if (ball.y - ball.radius < 0) {
-                    ball.y = ball.radius;
+                // Red-and-white Kerb collisions (Top & Bottom Track Boundaries)
+                if (ball.y - ball.radius < 12) {
+                    ball.y = 12 + ball.radius;
                     ball.dy *= -1;
-                } else if (ball.y + ball.radius > canvas.height) {
-                    ball.y = canvas.height - ball.radius;
+                } else if (ball.y + ball.radius > canvas.height - 12) {
+                    ball.y = canvas.height - 12 - ball.radius;
                     ball.dy *= -1;
                 }
 
-                // Left paddle collision (Player 1)
+                // Left Paddle (Mercedes Front Wing) collision
                 if (
                     ball.x - ball.radius <= p1.x + paddleWidth &&
                     ball.y >= p1.y &&
@@ -193,16 +191,16 @@
                 ) {
                     let hitOffset = ball.y - (p1.y + paddleHeight / 2);
                     let normalizedOffset = hitOffset / (paddleHeight / 2);
-                    let bounceAngle = normalizedOffset * (Math.PI / 4); // Max 45 degrees
+                    let bounceAngle = normalizedOffset * (Math.PI / 3);
 
-                    let currentSpeed = Math.hypot(ball.dx, ball.dy) * 1.05; // Slight speedup on hit
-                    ball.speed = Math.min(currentSpeed, 14);
+                    let currentSpeed = Math.hypot(ball.dx, ball.dy) * 1.06;
+                    ball.speed = Math.min(currentSpeed, 15);
                     ball.dx = ball.speed * Math.cos(bounceAngle);
                     ball.dy = ball.speed * Math.sin(bounceAngle);
                     ball.x = p1.x + paddleWidth + ball.radius;
                 }
 
-                // Right paddle collision (Player 2 / AI)
+                // Right Paddle (Ferrari / Red Bull Front Wing) collision
                 if (
                     ball.x + ball.radius >= p2.x &&
                     ball.y >= p2.y &&
@@ -211,16 +209,16 @@
                 ) {
                     let hitOffset = ball.y - (p2.y + paddleHeight / 2);
                     let normalizedOffset = hitOffset / (paddleHeight / 2);
-                    let bounceAngle = normalizedOffset * (Math.PI / 4);
+                    let bounceAngle = normalizedOffset * (Math.PI / 3);
 
-                    let currentSpeed = Math.hypot(ball.dx, ball.dy) * 1.05;
-                    ball.speed = Math.min(currentSpeed, 14);
+                    let currentSpeed = Math.hypot(ball.dx, ball.dy) * 1.06;
+                    ball.speed = Math.min(currentSpeed, 15);
                     ball.dx = -ball.speed * Math.cos(bounceAngle);
                     ball.dy = ball.speed * Math.sin(bounceAngle);
                     ball.x = p2.x - ball.radius;
                 }
 
-                // Scoring points
+                // Pit Wall Scoring
                 if (ball.x < 0) {
                     p2Score++;
                     checkWinCondition();
@@ -235,7 +233,7 @@
             function resetBall(servingDirection) {
                 ball.x = canvas.width / 2;
                 ball.y = canvas.height / 2;
-                ball.speed = 5;
+                ball.speed = 5.5;
                 ball.dx = servingDirection * ball.speed;
                 ball.dy = (Math.random() * 4 - 2);
             }
@@ -243,61 +241,102 @@
             function checkWinCondition() {
                 if (p1Score >= winningScore || p2Score >= winningScore) {
                     gameRunning = false;
-                    let winnerText = p1Score >= winningScore ? "Player 1 Wins the Grand Prix!" : (gameMode === "AI" ? "Computer AI Wins!" : "Player 2 Wins the Grand Prix!");
-                    gameStatus.textContent = `🏆 ${winnerText} Click 'Start Rally' to play again.`;
+                    let winnerText = p1Score >= winningScore ? "Mercedes Wins the Grand Prix!" : (gameMode === "AI" ? "Ferrari AI Wins the Grand Prix!" : "Red Bull Wins the Grand Prix!");
+                    gameStatus.textContent = `🏆 ${winnerText} Click 'Start Grand Prix Rally' to race again.`;
                     gameStatus.style.color = "#4caf50";
-                    startBtn.textContent = "Play Again";
+                    startBtn.textContent = "Race Again";
+                }
+            }
+
+            function drawTrackKerbs() {
+                // Top and Bottom Red & White Racing Kerbs
+                let kerbWidth = 30;
+                for (let x = 0; x < canvas.width; x += kerbWidth) {
+                    // Top kerb
+                    ctx.fillStyle = (x / kerbWidth) % 2 === 0 ? "#e63946" : "#ffffff";
+                    ctx.fillRect(x, 0, kerbWidth, 12);
+                    // Bottom kerb
+                    ctx.fillRect(x, canvas.height - 12, kerbWidth, 12);
                 }
             }
 
             function drawEverything() {
-                // Clear canvas with track background
-                ctx.fillStyle = "#030812";
+                // Clear canvas with pit asphalt background
+                ctx.fillStyle = "#0b0f19";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Draw center dashed F1 pit line
-                ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+                drawTrackKerbs();
+
+                // Draw Center Pit Lane Dashed Line
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
                 ctx.lineWidth = 4;
-                ctx.setLineDash([10, 15]);
+                ctx.setLineDash([12, 16]);
                 ctx.beginPath();
-                ctx.moveTo(canvas.width / 2, 0);
-                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.moveTo(canvas.width / 2, 12);
+                ctx.lineTo(canvas.width / 2, canvas.height - 12);
                 ctx.stroke();
-                ctx.setLineDash([]); // Reset line dash
+                ctx.setLineDash([]);
 
-                // Draw Scores
-                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-                ctx.font = "bold 36px sans-serif";
+                // Draw Scores & Telemetry header
+                ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+                ctx.font = "bold 40px sans-serif";
                 ctx.textAlign = "center";
-                ctx.fillText(p1Score, canvas.width / 4, 50);
-                ctx.fillText(p2Score, (canvas.width / 4) * 3, 50);
+                ctx.fillText(p1Score, canvas.width / 4, 60);
+                ctx.fillText(p2Score, (canvas.width / 4) * 3, 60);
 
-                // Draw Paddles (F1 Side Pod / Wrench style)
+                ctx.font = "11px sans-serif";
+                ctx.fillStyle = "#3aa3ff";
+                ctx.fillText("MERCEDES PIT", canvas.width / 4, 85);
+                ctx.fillStyle = gameMode === "AI" ? "#e63946" : "#ffb703";
+                ctx.fillText(gameMode === "AI" ? "FERRARI PIT" : "RED BULL PIT", (canvas.width / 4) * 3, 85);
+
+                // Draw Paddles (F1 Front Wing Wrench Aesthetic)
+                // Player 1 Paddle (Mercedes - Electric Blue)
                 ctx.fillStyle = "#3aa3ff";
                 ctx.shadowColor = "#3aa3ff";
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 12;
                 ctx.fillRect(p1.x, p1.y, paddleWidth, paddleHeight);
+                // Carbon endplate accent
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(p1.x - 2, p1.y, 2, paddleHeight);
 
-                ctx.fillStyle = gameMode === "AI" ? "#e63946" : "#ffb703";
-                ctx.shadowColor = gameMode === "AI" ? "#e63946" : "#ffb703";
+                // Player 2 Paddle (Ferrari / Red Bull)
+                let p2Color = gameMode === "AI" ? "#e63946" : "#ffb703";
+                ctx.fillStyle = p2Color;
+                ctx.shadowColor = p2Color;
                 ctx.fillRect(p2.x, p2.y, paddleWidth, paddleHeight);
-                ctx.shadowBlur = 0; // Reset shadow
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(p2.x + paddleWidth, p2.y, 2, paddleHeight);
+                ctx.shadowBlur = 0;
 
-                // Draw Ball (Racing Tire 🛞)
+                // Draw Ball (Spinning Racing Slick Tire 🛞)
+                ctx.save();
+                ctx.translate(ball.x, ball.y);
+                ctx.rotate(ball.rotation);
+
+                // Outer rubber tire
                 ctx.beginPath();
-                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#1a1a1a";
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#444444";
+                ctx.stroke();
+
+                // Tire rim center
+                ctx.beginPath();
+                ctx.arc(0, 0, 5, 0, Math.PI * 2);
                 ctx.fillStyle = "#ffffff";
                 ctx.fill();
-                ctx.closePath();
+
+                ctx.restore();
             }
 
             function gameLoop() {
                 if (!gameRunning) return;
-
                 updatePaddles();
                 updateBall();
                 drawEverything();
-
                 requestAnimationFrame(gameLoop);
             }
 
@@ -307,7 +346,7 @@
                     p2Score = 0;
                 }
                 gameRunning = true;
-                startBtn.textContent = "Rally Active";
+                startBtn.textContent = "Race Live 🏎️";
                 gameStatus.style.color = "var(--accent)";
                 resetBall(Math.random() > 0.5 ? 1 : -1);
                 gameLoop();
@@ -321,7 +360,7 @@
                 p2.y = canvas.height / 2 - paddleHeight / 2;
                 resetBall(1);
                 drawEverything();
-                startBtn.textContent = "Start Rally";
+                startBtn.textContent = "Start Grand Prix Rally";
                 gameStatus.style.color = "var(--accent)";
             }
 
@@ -331,7 +370,6 @@
 
             resetBtn.addEventListener("click", resetGame);
 
-            // Initial render
             resetGame();
         });
     </script>
