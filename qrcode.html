@@ -52,7 +52,7 @@
         <div class="game-card">
             <div class="game-header">
                 <h1 class="game-title">QR CODE GENERATOR</h1>
-                <p class="game-tagline">100% Client-Side • Gradients & Solid • Zero Server Data</p>
+                <p class="game-tagline">100% Client-Side • Preset Gradients • Zero Server Data</p>
             </div>
 
             <div class="plotter-container">
@@ -75,7 +75,7 @@
                         </div>
 
                         <!-- Solid Color Picker (Shown by default) -->
-                        <div id="solidControls" class="color-pickers-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 10px;">
+                        <div id="solidControls" class="color-pickers-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 4px;">
                             <div class="color-picker-card">
                                 <span class="series-name">Foreground</span>
                                 <div class="picker-control-wrapper">
@@ -92,25 +92,18 @@
                             </div>
                         </div>
 
-                        <!-- Gradient Color Pickers (Hidden by default) -->
-                        <div id="gradientControls" class="hidden" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;">
-                            <div class="color-pickers-grid" style="grid-template-columns: 1fr 1fr;">
-                                <div class="color-picker-card">
-                                    <span class="series-name">Gradient Start</span>
-                                    <div class="picker-control-wrapper">
-                                        <input type="color" id="gradStart" class="prominent-color-input" value="#3aa3ff">
-                                        <span class="hex-label" id="startHex">#3aa3ff</span>
-                                    </div>
-                                </div>
-                                <div class="color-picker-card">
-                                    <span class="series-name">Gradient End</span>
-                                    <div class="picker-control-wrapper">
-                                        <input type="color" id="gradEnd" class="prominent-color-input" value="#0b1018">
-                                        <span class="hex-label" id="endHex">#0b1018</span>
-                                    </div>
-                                </div>
+                        <!-- Gradient Presets Selection (Hidden by default) -->
+                        <div id="gradientControls" style="display: none; flex-direction: column; gap: 8px; margin-top: 8px;">
+                            <span class="control-label">Choose a Gradient Style:</span>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                                <button type="button" class="gradient-preset-btn active" data-start="#3aa3ff" data-end="#020308" style="background: linear-gradient(135deg, #3aa3ff, #020308); color: #fff;">Electric Blue</button>
+                                <button type="button" class="gradient-preset-btn" data-start="#ff4d5a" data-end="#ffb703" style="background: linear-gradient(135deg, #ff4d5a, #ffb703); color: #fff;">Sunset Glow</button>
+                                <button type="button" class="gradient-preset-btn" data-start="#00f5d4" data-end="#7b2cbf" style="background: linear-gradient(135deg, #00f5d4, #7b2cbf); color: #fff;">Neon Cyber</button>
+                                <button type="button" class="gradient-preset-btn" data-start="#38b000" data-end="#007200" style="background: linear-gradient(135deg, #38b000, #007200); color: #fff;">Emerald Matrix</button>
+                                <button type="button" class="gradient-preset-btn" data-start="#7209b7" data-end="#4361ee" style="background: linear-gradient(135deg, #7209b7, #4361ee); color: #fff;">Deep Violet</button>
+                                <button type="button" class="gradient-preset-btn" data-start="#adb5bd" data-end="#212529" style="background: linear-gradient(135deg, #adb5bd, #212529); color: #fff;">Carbon Steel</button>
                             </div>
-                            <div class="color-picker-card" style="width: 100%; box-sizing: border-box;">
+                            <div class="color-picker-card" style="width: 100%; box-sizing: border-box; margin-top: 4px;">
                                 <span class="series-name">Background Color</span>
                                 <div class="picker-control-wrapper">
                                     <input type="color" id="qrLightGrad" class="prominent-color-input" value="#ffffff">
@@ -149,6 +142,26 @@
         <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
     </footer>
 
+    <style>
+        .gradient-preset-btn {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .gradient-preset-btn:hover {
+            transform: translateY(-2px);
+        }
+        .gradient-preset-btn.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(58, 163, 255, 0.8);
+        }
+    </style>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const qrText = document.getElementById("qrText");
@@ -161,11 +174,8 @@
             const darkHex = document.getElementById("darkHex");
             const lightHex = document.getElementById("lightHex");
 
-            const gradStart = document.getElementById("gradStart");
-            const gradEnd = document.getElementById("gradEnd");
+            const presetButtons = document.querySelectorAll(".gradient-preset-btn");
             const qrLightGrad = document.getElementById("qrLightGrad");
-            const startHex = document.getElementById("startHex");
-            const endHex = document.getElementById("endHex");
             const lightGradHex = document.getElementById("lightGradHex");
 
             const qrSize = document.getElementById("qrSize");
@@ -174,7 +184,21 @@
             const copyBtn = document.getElementById("copyBtn");
             const qrStatus = document.getElementById("qrStatus");
 
-            // Toggle view panels based on checkbox
+            let selectedPresetStart = "#3aa3ff";
+            let selectedPresetEnd = "#020308";
+
+            // Handle preset button clicks
+            presetButtons.forEach(btn => {
+                btn.addEventListener("click", function() {
+                    presetButtons.forEach(b => b.classList.remove("active"));
+                    this.classList.add("active");
+                    selectedPresetStart = this.getAttribute("data-start");
+                    selectedPresetEnd = this.getAttribute("data-end");
+                    generateQR();
+                });
+            });
+
+            // Toggle view panels cleanly without class conflicts
             enableGradient.addEventListener("change", function() {
                 if (this.checked) {
                     solidControls.style.display = "none";
@@ -210,18 +234,13 @@
                         correctLevel: QRCode.CorrectLevel.H
                     });
                 } else {
-                    // Gradient Mode Processing
-                    const cStart = gradStart.value;
-                    const cEnd = gradEnd.value;
+                    // Gradient Mode Processing using Selected Preset
                     const cLight = qrLightGrad.value;
-                    startHex.textContent = cStart;
-                    endHex.textContent = cEnd;
                     lightGradHex.textContent = cLight;
                     qrContainer.style.backgroundColor = cLight;
 
-                    // Step 1: Render standard black-on-white QR onto a temporary wrapper
                     const tempDiv = document.createElement("div");
-                    const qr = new QRCode(tempDiv, {
+                    new QRCode(tempDiv, {
                         text: text,
                         width: size,
                         height: size,
@@ -238,7 +257,6 @@
                         const imgData = ctx.getImageData(0, 0, size, size);
                         const pixels = imgData.data;
 
-                        // Create a secondary canvas for applying the gradient mask
                         const finalCanvas = document.createElement("canvas");
                         finalCanvas.width = size;
                         finalCanvas.height = size;
@@ -248,17 +266,15 @@
                         fCtx.fillStyle = cLight;
                         fCtx.fillRect(0, 0, size, size);
 
-                        // Create Linear Gradient (Top-Left to Bottom-Right)
+                        // Create Linear Gradient from Preset Selection
                         const grad = fCtx.createLinearGradient(0, 0, size, size);
-                        grad.addColorStop(0, cStart);
-                        grad.addColorStop(1, cEnd);
+                        grad.addColorStop(0, selectedPresetStart);
+                        grad.addColorStop(1, selectedPresetEnd);
                         fCtx.fillStyle = grad;
 
-                        // Apply gradient exclusively to dark QR modules
                         for (let y = 0; y < size; y++) {
                             for (let x = 0; x < size; x++) {
                                 const idx = (y * size + x) * 4;
-                                // If pixel is dark (part of QR code pattern)
                                 if (pixels[idx] < 128) {
                                     fCtx.fillRect(x, y, 1, 1);
                                 }
@@ -274,8 +290,6 @@
             qrText.addEventListener("input", generateQR);
             qrDark.addEventListener("input", generateQR);
             qrLight.addEventListener("input", generateQR);
-            gradStart.addEventListener("input", generateQR);
-            gradEnd.addEventListener("input", generateQR);
             qrLightGrad.addEventListener("input", generateQR);
             qrSize.addEventListener("change", generateQR);
 
