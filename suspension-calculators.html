@@ -228,7 +228,7 @@
                 </details>
             </div>
 
-            <!-- Tool 7: Wheel Upright Force & Vector Analyzer -->
+            <!-- Tool 7: Wheel Upright Force & Vector Analyzer (Rigorous Steering & Braking) -->
             <div class="calculator-card" style="background-color: var(--bg-elevated-soft); border: 1px solid var(--border-subtle); border-radius: var(--radius-large); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 style="color: var(--accent); margin-top: 0; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; font-size: 16px;">7. Wheel Upright Force & Vector Analyzer</h3>
@@ -241,8 +241,12 @@
                         <input type="number" id="t7-ax" value="1.5" step="0.1" oninput="calcTool7()" style="width: 100%; padding: 8px 12px; background-color: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-main); box-sizing: border-box;">
                     </div>
                     <div class="input-group" style="margin-bottom: 12px;">
-                        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">Max Cornering Acceleration (g)</label>
+                        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">Lateral Acceleration (g)</label>
                         <input type="number" id="t7-ay" value="1.4" step="0.1" oninput="calcTool7()" style="width: 100%; padding: 8px 12px; background-color: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-main); box-sizing: border-box;">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">Effective Tire Trail, t (mm) [Mech. + Pneumatic]</label>
+                        <input type="number" id="t7-trail" value="35" oninput="calcTool7()" style="width: 100%; padding: 8px 12px; background-color: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-main); box-sizing: border-box;">
                     </div>
                     <div class="input-group" style="margin-bottom: 12px;">
                         <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">Steering Arm Length, L_arm (mm)</label>
@@ -252,12 +256,13 @@
                 </div>
                 <details style="margin-top: 15px; border: 1px solid var(--border-subtle); border-radius: 6px; background-color: var(--bg-main); overflow: hidden;">
                     <summary style="padding: 10px 12px; font-size: 0.85rem; color: var(--accent); cursor: pointer; font-weight: 600;">🧮 View Formula & Reference</summary>
-                    <div style="padding: 12px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); line-height: 1.4;">
+                    <div style="padding: 12px; font-size: 0.80rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); line-height: 1.4;">
                         <strong>Braking Force:</strong> <code>F_x = W_dyn × a_x</code><br>
                         <strong>Cornering Force:</strong> <code>F_y = W_dyn × a_y</code><br>
-                        <strong>Resultant Horizontal Vector:</strong> <code>F_res = √(F_x² + F_y²)</code><br>
-                        <strong>Tie-Rod Load (Steering):</strong> Moment equilibrium about kingpin axis incorporating scrub radius.<br>
-                        <em>Ref: Milliken & Milliken, "Race Car Vehicle Dynamics", Chapter on Steering & Upright Load Analysis.</em>
+                        <strong>Resultant Vector:</strong> <code>F_res = √(F_x² + F_y²)</code><br>
+                        <strong>Self-Aligning Torque:</strong> <code>M_z = F_y × \text{Trail}</code><br>
+                        <strong>Tie-Rod Load:</strong> <code>F_tierod = M_z / L_arm</code><br>
+                        <em>Ref: Milliken & Milliken, "Race Car Vehicle Dynamics", Chapter on Steering & Tire Aligning Torque.</em>
                     </div>
                 </details>
             </div>
@@ -345,21 +350,28 @@
             let W_dyn = parseFloat(document.getElementById('t7-w').value) || 0;
             let ax = parseFloat(document.getElementById('t7-ax').value) || 0;
             let ay = parseFloat(document.getElementById('t7-ay').value) || 0;
-            let l_arm = parseFloat(document.getElementById('t7-larm').value) || 1;
+            let trail = parseFloat(document.getElementById('t7-trail').value) || 0; // mm
+            let l_arm = parseFloat(document.getElementById('t7-larm').value) || 1; // mm
 
+            // Longitudinal braking force at contact patch
             let F_x = W_dyn * ax;
+            // Lateral cornering force at contact patch
             let F_y = W_dyn * ay;
+            // Resultant horizontal load vector on the spindle carrier
             let F_res = Math.sqrt((F_x ** 2) + (F_y ** 2));
 
-            let scrubRadius = 25; // mm
-            let steeringMoment = (F_y * scrubRadius);
-            let F_tierod = steeringMoment / l_arm;
+            // Self-Aligning Torque (Mz) = Lateral Force * Effective Trail (Mechanical + Pneumatic)
+            // Note: F_y in N, trail in mm -> Mz in N*mm
+            let M_z = F_y * trail;
+
+            // Tie-rod force required to balance the aligning moment about the kingpin axis
+            let F_tierod = M_z / l_arm;
 
             document.getElementById('t7-res').innerHTML = `
                 <p><strong>Longitudinal Braking (Fx):</strong> ${F_x.toFixed(1)} N</p>
                 <p><strong>Lateral Cornering (Fy):</strong> ${F_y.toFixed(1)} N</p>
                 <p><strong>Resultant Vector (F_res):</strong> ${F_res.toFixed(1)} N</p>
-                <p><strong>Est. Tie-Rod Force:</strong> ${F_tierod.toFixed(1)} N</p>
+                <p><strong>Tie-Rod Load (Steering):</strong> ${F_tierod.toFixed(1)} N</p>
             `;
         }
 
