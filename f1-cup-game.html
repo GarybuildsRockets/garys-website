@@ -49,7 +49,7 @@
         <div class="game-card" style="text-align: center;">
             <div class="game-header">
                 <h1 class="game-title">F1 BRAIN BREAK CUP GAME</h1>
-                <p class="game-tagline">Track the F1 car, complete the pit stop exercise, and lock in your guess!</p>
+                <p class="game-tagline">Track the F1 car through circular path shuffles, complete the exercise, and win!</p>
             </div>
 
             <div class="stats-panel" style="max-width: 600px; margin: 0 auto 24px;">
@@ -63,12 +63,12 @@
             </div>
 
             <!-- Cup Table Area -->
-            <div id="cupTable" style="display: flex; justify-content: center; align-items: flex-end; min-height: 320px; margin-bottom: 30px; position: relative; width: 100%; overflow: visible; padding: 60px 0;">
+            <div id="cupTable" style="display: flex; justify-content: center; align-items: flex-end; min-height: 340px; margin-bottom: 30px; position: relative; width: 100%; overflow: visible; padding: 80px 0;">
                 <!-- Generated via Javascript -->
             </div>
 
             <div style="display: flex; justify-content: center; gap: 12px;">
-                <button id="actionBtn" class="primary-btn" style="display: none;">Start Orbital Shuffle</button>
+                <button id="actionBtn" class="primary-btn" style="display: none;">Start Circular Shuffle</button>
                 <button id="resetBtn" class="secondary-btn">Restart Game</button>
             </div>
         </div>
@@ -86,17 +86,7 @@
             cursor: pointer;
             position: absolute;
             width: 95px;
-            transition: left 0.5s ease-in-out;
-        }
-
-        .f1-cup-wrapper.orbiting {
-            animation: cupOrbit 0.5s ease-in-out forwards;
-        }
-
-        @keyframes cupOrbit {
-            0% { transform: translateY(0px) scale(1); z-index: 2; }
-            50% { transform: translateY(-85px) scale(1.12); z-index: 10; }
-            100% { transform: translateY(0px) scale(1); z-index: 2; }
+            will-change: transform, left;
         }
 
         /* Realistic Red Solo Cup Design */
@@ -112,7 +102,7 @@
             justify-content: center;
             padding-bottom: 12px;
             z-index: 2;
-            transition: transform 0.4s ease, background 0.4s ease;
+            transition: background 0.4s ease;
         }
         .cup-graphic::after {
             content: "";
@@ -204,7 +194,6 @@
             function initCups() {
                 cupsData = [];
                 for (let i = 0; i < totalCups; i++) {
-                    // Assign random brain break exercise to each cup slot
                     let randEx = exercises[Math.floor(Math.random() * exercises.length)];
                     cupsData.push({ id: i, currentSlot: i, exercise: randEx });
                 }
@@ -213,14 +202,16 @@
 
             function renderCups(revealCar = false) {
                 cupTable.innerHTML = "";
+                const centerOffset = (cupTable.clientWidth - (totalCups * slotWidth)) / 2;
                 
                 cupsData.forEach((cup) => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "f1-cup-wrapper";
                     wrapper.setAttribute("data-cup-id", cup.id);
                     
-                    const centerOffset = (cupTable.clientWidth - (totalCups * slotWidth)) / 2;
-                    wrapper.style.left = `${Math.max(10, centerOffset + (cup.currentSlot * slotWidth))}px`;
+                    const leftPos = Math.max(10, centerOffset + (cup.currentSlot * slotWidth));
+                    wrapper.style.left = `${leftPos}px`;
+                    wrapper.style.transform = "translate(0px, 0px)";
 
                     const cupEl = document.createElement("div");
                     cupEl.className = "cup-graphic";
@@ -241,7 +232,6 @@
 
                     wrapper.appendChild(cupEl);
 
-                    // Show exercise badge once shuffling is complete
                     if (gameState === "GUESSING" || gameState === "EXERCISE_PROMPT") {
                         const badge = document.createElement("div");
                         badge.className = "exercise-badge";
@@ -254,7 +244,7 @@
                     wrapper.addEventListener("click", function () {
                         if (gameState === "SETUP") {
                             carIndex = cup.id;
-                            gameStatus.textContent = `F1 car locked in under Cup ${cup.id + 1}. Click 'Start Orbital Shuffle'!`;
+                            gameStatus.textContent = `F1 car locked in. Click 'Start Circular Shuffle'!`;
                             renderCups(true);
                             setTimeout(() => renderCups(false), 800);
                             actionBtn.style.display = "inline-flex";
@@ -277,16 +267,15 @@
                 });
             }
 
+            // Smooth 2D Circular Path Shuffle Animation
             async function startShuffle() {
                 if (carIndex === null) return;
                 gameState = "SHUFFLING";
                 actionBtn.style.display = "none";
-                gameStatus.textContent = "🌀 Cups looping and crossing over each other... Track the car!";
+                gameStatus.textContent = "🌀 Following circular crossing paths... Track the F1 car!";
 
-                let totalSwaps = 9;
-                for (let s = 0; s < totalSwaps; s++) {
-                    await new Promise(resolve => setTimeout(resolve, 520));
-
+                let totalRounds = 8;
+                for (let r = 0; r < totalRounds; r++) {
                     let idx1 = Math.floor(Math.random() * totalCups);
                     let idx2;
                     do {
@@ -300,23 +289,58 @@
                     const wrapperB = cupTable.querySelector(`[data-cup-id="${cupB.id}"]`);
 
                     if (wrapperA && wrapperB) {
-                        wrapperA.classList.add("orbiting");
-                        wrapperB.classList.add("orbiting");
+                        const startLeftA = parseFloat(wrapperA.style.left);
+                        const startLeftB = parseFloat(wrapperB.style.left);
+                        const targetLeftA = startLeftB;
+                        const targetLeftB = startLeftA;
+
+                        const distance = targetLeftA - startLeftA;
+                        const arcRadius = Math.min(Math.abs(distance) * 0.4, 90);
+                        const direction = distance > 0 ? 1 : -1;
+
+                        const duration = 650; // Smooth tracking speed
+                        let startTime = null;
+
+                        await new Promise((resolve) => {
+                            function animateStep(timestamp) {
+                                if (!startTime) startTime = timestamp;
+                                let progress = (timestamp - startTime) / duration;
+                                if (progress > 1) progress = 1;
+
+                                // Sine-wave arc for Y direction combined with linear X interpolation creates a true circular path loop
+                                let currentLeftA = startLeftA + (distance * progress);
+                                let currentLeftB = startLeftB - (distance * progress);
+
+                                let currentY = Math.sin(progress * Math.PI) * arcRadius * direction;
+
+                                wrapperA.style.left = `${currentLeftA}px`;
+                                wrapperA.style.transform = `translate(0px, ${-currentY}px)`;
+                                wrapperA.style.zIndex = "10";
+
+                                wrapperB.style.left = `${currentLeftB}px`;
+                                wrapperB.style.transform = `translate(0px, ${currentY}px)`;
+                                wrapperB.style.zIndex = "5";
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(animateStep);
+                                } else {
+                                    resolve();
+                                }
+                            }
+                            requestAnimationFrame(animateStep);
+                        });
                     }
 
+                    // Swap slots in data model after animation completes
                     let temp = cupA.currentSlot;
                     cupA.currentSlot = cupB.currentSlot;
                     cupB.currentSlot = temp;
 
                     renderCups(false);
-
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    const cleanWrappers = cupTable.querySelectorAll(".f1-cup-wrapper");
-                    cleanWrappers.forEach(w => w.classList.remove("orbiting"));
                 }
 
                 gameState = "GUESSING";
-                gameStatus.textContent = "🏁 Shuffle complete! Click a cup and complete its brain break exercise to check your guess!";
+                gameStatus.textContent = "🏁 Circular shuffle complete! Click a cup and complete its brain break exercise to check your guess!";
             }
 
             function checkGuess(selectedCupId) {
@@ -326,7 +350,7 @@
                 if (selectedCupId === carIndex) {
                     wins++;
                     scoreWinsEl.textContent = wins;
-                    gameStatus.textContent = `🎉 Awesome job! You tracked the F1 car and crushed your brain break!`;
+                    gameStatus.textContent = `🎉 Awesome job! You tracked the F1 car through the circular shuffle and crushed your brain break!`;
                     gameStatus.style.color = "#4caf50";
                 } else {
                     losses++;
@@ -345,7 +369,7 @@
                 selectedCupForGuess = null;
                 gameStatus.textContent = "Step 1: Click any red Solo cup to hide the F1 car under it.";
                 gameStatus.style.color = "var(--accent)";
-                actionBtn.textContent = "Start Orbital Shuffle";
+                actionBtn.textContent = "Start Circular Shuffle";
                 actionBtn.style.display = "none";
                 initCups();
             }
