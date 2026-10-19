@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Pit Lane Pong | Gary Kanyuh</title>
+
+    <!-- Styles & Scripts -->
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">Mechanical Engineering Student</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#tools">Tools</a></li>
+                    <li><a href="index.html#projects">Projects</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Fullscreen Overlay Nav -->
+        <div class="mobile-nav-overlay">
+            <ul class="mobile-nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#tools">Tools</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div class="game-card" style="text-align: center;">
+            <div class="game-header">
+                <h1 class="game-title">F1 PIT LANE PONG</h1>
+                <p class="game-tagline">Bounce the racing tire down the track! First to 5 points wins.</p>
+            </div>
+
+            <!-- Mode Selector & Controls Info -->
+            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 16px;">
+                <button id="modeAI" class="primary-btn" style="font-size: 12px; padding: 8px 16px;">1 Player vs Computer</button>
+                <button id="mode2P" class="secondary-btn" style="font-size: 12px; padding: 8px 16px;">2 Player Split-Keyboard</button>
+            </div>
+
+            <div class="stats-panel" style="max-width: 700px; margin: 0 auto 16px;">
+                <p id="gameStatus" class="control-label-bold" style="font-size: 14px; color: var(--accent);">
+                    P1 Controls: <strong style="color:var(--text-main);">W</strong> (Up) / <strong style="color:var(--text-main);">S</strong> (Down) &nbsp;|&nbsp; P2 Controls: <strong style="color:var(--text-main);">Arrow Up</strong> / <strong style="color:var(--text-main);">Arrow Down</strong>
+                </p>
+            </div>
+
+            <!-- Pong Canvas Arena -->
+            <div style="display: flex; justify-content: center; margin-bottom: 20px; position: relative;">
+                <canvas id="pongCanvas" width="700" height="400" style="background: #030812; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-width: 100%;"></canvas>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 12px;">
+                <button id="startBtn" class="primary-btn" style="padding: 10px 24px; font-size: 14px;">Start Rally</button>
+                <button id="resetBtn" class="secondary-btn" style="padding: 10px 24px; font-size: 14px;">Reset Game</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById("pongCanvas");
+            const ctx = canvas.getContext("2d");
+            const modeAIBtn = document.getElementById("modeAI");
+            const mode2PBtn = document.getElementById("mode2P");
+            const startBtn = document.getElementById("startBtn");
+            const resetBtn = document.getElementById("resetBtn");
+            const gameStatus = document.getElementById("gameStatus");
+
+            let gameMode = "AI"; // 'AI' or '2P'
+            let gameRunning = false;
+
+            // Scoreboard
+            let p1Score = 0;
+            let p2Score = 0;
+            const winningScore = 5;
+
+            // Paddle configuration
+            const paddleWidth = 12;
+            const paddleHeight = 80;
+            const paddleSpeed = 7;
+
+            let p1 = { x: 20, y: canvas.height / 2 - paddleHeight / 2, dy: 0 };
+            let p2 = { x: canvas.width - 32, y: canvas.height / 2 - paddleHeight / 2, dy: 0 };
+
+            // Ball configuration (Racing Tire 🛞 style)
+            let ball = {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                radius: 10,
+                speed: 5,
+                dx: 5,
+                dy: 3
+            };
+
+            // Keyboard input tracking
+            let keys = {};
+            window.addEventListener("keydown", (e) => {
+                keys[e.code] = true;
+                if (["Space", "ArrowUp", "ArrowDown"].includes(e.code)) {
+                    e.preventDefault(); // Prevent page scrolling
+                }
+            });
+            window.addEventListener("keyup", (e) => {
+                keys[e.code] = false;
+            });
+
+            // Mode selection buttons
+            modeAIBtn.addEventListener("click", () => {
+                gameMode = "AI";
+                modeAIBtn.className = "primary-btn";
+                mode2PBtn.className = "secondary-btn";
+                gameStatus.innerHTML = "Mode: 1 Player vs Computer AI &nbsp;|&nbsp; P1 Controls: <strong style='color:var(--text-main);'>W / S</strong>";
+                resetGame();
+            });
+
+            mode2PBtn.addEventListener("click", () => {
+                gameMode = "2P";
+                mode2PBtn.className = "primary-btn";
+                modeAIBtn.className = "secondary-btn";
+                gameStatus.innerHTML = "Mode: 2 Player Split-Keyboard &nbsp;|&nbsp; P1: <strong style='color:var(--text-main);'>W/S</strong> &nbsp;|&nbsp; P2: <strong style='color:var(--text-main);'>Arrow Up/Down</strong>";
+                resetGame();
+            });
+
+            function updatePaddles() {
+                // Player 1 controls (W and S)
+                if (keys["KeyW"] && p1.y > 10) {
+                    p1.y -= paddleSpeed;
+                } else if (keys["KeyS"] && p1.y < canvas.height - paddleHeight - 10) {
+                    p1.y += paddleSpeed;
+                }
+
+                // Player 2 controls or Computer AI
+                if (gameMode === "2P") {
+                    if (keys["ArrowUp"] && p2.y > 10) {
+                        p2.y -= paddleSpeed;
+                    } else if (keys["ArrowDown"] && p2.y < canvas.height - paddleHeight - 10) {
+                        p2.y += paddleSpeed;
+                    }
+                } else {
+                    // Simple Computer AI tracking ball Y position smoothly
+                    let aiCenter = p2.y + paddleHeight / 2;
+                    if (aiCenter < ball.y - 15 && p2.y < canvas.height - paddleHeight - 10) {
+                        p2.y += paddleSpeed * 0.75;
+                    } else if (aiCenter > ball.y + 15 && p2.y > 10) {
+                        p2.y -= paddleSpeed * 0.75;
+                    }
+                }
+            }
+
+            function updateBall() {
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                // Top and bottom wall collisions
+                if (ball.y - ball.radius < 0) {
+                    ball.y = ball.radius;
+                    ball.dy *= -1;
+                } else if (ball.y + ball.radius > canvas.height) {
+                    ball.y = canvas.height - ball.radius;
+                    ball.dy *= -1;
+                }
+
+                // Left paddle collision (Player 1)
+                if (
+                    ball.x - ball.radius <= p1.x + paddleWidth &&
+                    ball.y >= p1.y &&
+                    ball.y <= p1.y + paddleHeight &&
+                    ball.dx < 0
+                ) {
+                    let hitOffset = ball.y - (p1.y + paddleHeight / 2);
+                    let normalizedOffset = hitOffset / (paddleHeight / 2);
+                    let bounceAngle = normalizedOffset * (Math.PI / 4); // Max 45 degrees
+
+                    let currentSpeed = Math.hypot(ball.dx, ball.dy) * 1.05; // Slight speedup on hit
+                    ball.speed = Math.min(currentSpeed, 14);
+                    ball.dx = ball.speed * Math.cos(bounceAngle);
+                    ball.dy = ball.speed * Math.sin(bounceAngle);
+                    ball.x = p1.x + paddleWidth + ball.radius;
+                }
+
+                // Right paddle collision (Player 2 / AI)
+                if (
+                    ball.x + ball.radius >= p2.x &&
+                    ball.y >= p2.y &&
+                    ball.y <= p2.y + paddleHeight &&
+                    ball.dx > 0
+                ) {
+                    let hitOffset = ball.y - (p2.y + paddleHeight / 2);
+                    let normalizedOffset = hitOffset / (paddleHeight / 2);
+                    let bounceAngle = normalizedOffset * (Math.PI / 4);
+
+                    let currentSpeed = Math.hypot(ball.dx, ball.dy) * 1.05;
+                    ball.speed = Math.min(currentSpeed, 14);
+                    ball.dx = -ball.speed * Math.cos(bounceAngle);
+                    ball.dy = ball.speed * Math.sin(bounceAngle);
+                    ball.x = p2.x - ball.radius;
+                }
+
+                // Scoring points
+                if (ball.x < 0) {
+                    p2Score++;
+                    checkWinCondition();
+                    resetBall(1);
+                } else if (ball.x > canvas.width) {
+                    p1Score++;
+                    checkWinCondition();
+                    resetBall(-1);
+                }
+            }
+
+            function resetBall(servingDirection) {
+                ball.x = canvas.width / 2;
+                ball.y = canvas.height / 2;
+                ball.speed = 5;
+                ball.dx = servingDirection * ball.speed;
+                ball.dy = (Math.random() * 4 - 2);
+            }
+
+            function checkWinCondition() {
+                if (p1Score >= winningScore || p2Score >= winningScore) {
+                    gameRunning = false;
+                    let winnerText = p1Score >= winningScore ? "Player 1 Wins the Grand Prix!" : (gameMode === "AI" ? "Computer AI Wins!" : "Player 2 Wins the Grand Prix!");
+                    gameStatus.textContent = `🏆 ${winnerText} Click 'Start Rally' to play again.`;
+                    gameStatus.style.color = "#4caf50";
+                    startBtn.textContent = "Play Again";
+                }
+            }
+
+            function drawEverything() {
+                // Clear canvas with track background
+                ctx.fillStyle = "#030812";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw center dashed F1 pit line
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+                ctx.lineWidth = 4;
+                ctx.setLineDash([10, 15]);
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, 0);
+                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.stroke();
+                ctx.setLineDash([]); // Reset line dash
+
+                // Draw Scores
+                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+                ctx.font = "bold 36px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(p1Score, canvas.width / 4, 50);
+                ctx.fillText(p2Score, (canvas.width / 4) * 3, 50);
+
+                // Draw Paddles (F1 Side Pod / Wrench style)
+                ctx.fillStyle = "#3aa3ff";
+                ctx.shadowColor = "#3aa3ff";
+                ctx.shadowBlur = 10;
+                ctx.fillRect(p1.x, p1.y, paddleWidth, paddleHeight);
+
+                ctx.fillStyle = gameMode === "AI" ? "#e63946" : "#ffb703";
+                ctx.shadowColor = gameMode === "AI" ? "#e63946" : "#ffb703";
+                ctx.fillRect(p2.x, p2.y, paddleWidth, paddleHeight);
+                ctx.shadowBlur = 0; // Reset shadow
+
+                // Draw Ball (Racing Tire 🛞)
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#ffffff";
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            function gameLoop() {
+                if (!gameRunning) return;
+
+                updatePaddles();
+                updateBall();
+                drawEverything();
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function startGame() {
+                if (p1Score >= winningScore || p2Score >= winningScore) {
+                    p1Score = 0;
+                    p2Score = 0;
+                }
+                gameRunning = true;
+                startBtn.textContent = "Rally Active";
+                gameStatus.style.color = "var(--accent)";
+                resetBall(Math.random() > 0.5 ? 1 : -1);
+                gameLoop();
+            }
+
+            function resetGame() {
+                gameRunning = false;
+                p1Score = 0;
+                p2Score = 0;
+                p1.y = canvas.height / 2 - paddleHeight / 2;
+                p2.y = canvas.height / 2 - paddleHeight / 2;
+                resetBall(1);
+                drawEverything();
+                startBtn.textContent = "Start Rally";
+                gameStatus.style.color = "var(--accent)";
+            }
+
+            startBtn.addEventListener("click", () => {
+                if (!gameRunning) startGame();
+            });
+
+            resetBtn.addEventListener("click", resetGame);
+
+            // Initial render
+            resetGame();
+        });
+    </script>
+</body>
+</html>
