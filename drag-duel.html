@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag Strip Reaction Duel | Gary Kanyuh</title>
+
+    <!-- Styles & Scripts -->
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">Mechanical Engineering Student</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#tools">Tools</a></li>
+                    <li><a href="index.html#projects">Projects</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Fullscreen Overlay Nav -->
+        <div class="mobile-nav-overlay">
+            <ul class="mobile-nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#tools">Tools</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div class="game-card" style="text-align: center;">
+            <div class="game-header">
+                <h1 class="game-title">DRAG STRIP REACTION DUEL</h1>
+                <p class="game-tagline">Watch the Christmas tree lights, wait for green, and hit your key instantly!</p>
+            </div>
+
+            <!-- Mode Selector Panel -->
+            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px;">
+                <button id="mode1P" class="primary-btn" style="font-size: 12px; padding: 8px 16px;">1 Player Solo Mode</button>
+                <button id="mode2P" class="secondary-btn" style="font-size: 12px; padding: 8px 16px;">2 Player Split-Key Duel</button>
+            </div>
+
+            <div class="stats-panel" style="max-width: 650px; margin: 0 auto 20px;">
+                <p id="gameStatus" class="control-label-bold" style="font-size: 16px; color: var(--accent);">
+                    Select a mode above and click 'Start Race' to stage the tree.
+                </p>
+                <div id="instructionSub" style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+                    1-Player Control: Press <strong style="color:var(--text-main);">SPACEBAR</strong> or click the trigger button.
+                </div>
+            </div>
+
+            <!-- Christmas Light Tree Display Arena -->
+            <div class="tree-arena">
+                <div class="tree-column">
+                    <div class="light-bulb" id="lightStage">STAGE</div>
+                    <div class="light-bulb yellow" id="lightY1"></div>
+                    <div class="light-bulb yellow" id="lightY2"></div>
+                    <div class="light-bulb yellow" id="lightY3"></div>
+                    <div class="light-bulb green" id="lightGreen">GO!</div>
+                </div>
+            </div>
+
+            <!-- Results / Times Display -->
+            <div id="resultsPanel" style="display: flex; justify-content: center; gap: 30px; margin: 20px 0; font-size: 15px; min-height: 30px;">
+                <div id="p1Result" style="display: none;">Player 1 Time: <strong id="p1Time" style="color: var(--accent);">0.000s</strong></div>
+                <div id="p2Result" style="display: none;">Player 2 Time: <strong id="p2Time" style="color: var(--accent);">0.000s</strong></div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 12px; margin-top: 10px;">
+                <button id="actionBtn" class="primary-btn" style="padding: 12px 30px; font-size: 15px;">Start Race</button>
+                <button id="triggerBtn" class="primary-btn" style="background: #238636; display: none; padding: 12px 30px; font-size: 15px;">PRESS TO GO! (P1)</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
+    </footer>
+
+    <style>
+        .tree-arena {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(3, 8, 18, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 20px;
+            max-width: 250px;
+            margin: 0 auto 20px;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.6);
+        }
+        .tree-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+        .light-bulb {
+            width: 100%;
+            height: 38px;
+            background: #111827;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.3);
+            transition: background 0.1s ease, box-shadow 0.1s ease, color 0.1s ease;
+        }
+        .light-bulb.yellow.active {
+            background: #ffb703;
+            border-color: #ffb703;
+            color: #000;
+            box-shadow: 0 0 15px #ffb703;
+        }
+        .light-bulb.green.active {
+            background: #38b000;
+            border-color: #38b000;
+            color: #fff;
+            box-shadow: 0 0 25px #38b000;
+        }
+        .light-bulb.stage.active {
+            background: #3aa3ff;
+            border-color: #3aa3ff;
+            color: #fff;
+            box-shadow: 0 0 15px #3aa3ff;
+        }
+        .light-bulb.foul {
+            background: #e63946 !important;
+            border-color: #e63946 !important;
+            color: #fff !important;
+            box-shadow: 0 0 20px #e63946 !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const mode1PBtn = document.getElementById("mode1P");
+            const mode2PBtn = document.getElementById("mode2P");
+            const gameStatus = document.getElementById("gameStatus");
+            const instructionSub = document.getElementById("instructionSub");
+            const actionBtn = document.getElementById("actionBtn");
+            const triggerBtn = document.getElementById("triggerBtn");
+            
+            const lightStage = document.getElementById("lightStage");
+            const lightY1 = document.getElementById("lightY1");
+            const lightY2 = document.getElementById("lightY2");
+            const lightY3 = document.getElementById("lightY3");
+            const lightGreen = document.getElementById("lightGreen");
+
+            const p1Result = document.getElementById("p1Result");
+            const p2Result = document.getElementById("p2Result");
+            const p1TimeEl = document.getElementById("p1Time");
+            const p2TimeEl = document.getElementById("p2Time");
+
+            let gameMode = "1P"; // '1P' or '2P'
+            let gameState = "IDLE"; // 'IDLE', 'STAGING', 'WAITING_GREEN', 'FINISHED'
+            let greenTime = null;
+
+            let p1Foul = false;
+            let p2Foul = false;
+            let p1Time = null;
+            let p2Time = null;
+            let timeoutIds = [];
+
+            // Mode switching
+            mode1PBtn.addEventListener("click", () => {
+                gameMode = "1P";
+                mode1PBtn.className = "primary-btn";
+                mode2PBtn.className = "secondary-btn";
+                instructionSub.innerHTML = "1-Player Control: Press <strong style='color:var(--text-main);'>SPACEBAR</strong> or click 'PRESS TO GO!'.";
+                resetGame();
+            });
+
+            mode2PBtn.addEventListener("click", () => {
+                gameMode = "2P";
+                mode2PBtn.className = "primary-btn";
+                mode1PBtn.className = "secondary-btn";
+                instructionSub.innerHTML = "2-Player Split Keyboard: Player 1 presses <strong style='color:var(--accent);'>'A'</strong> | Player 2 presses <strong style='color:var(--danger);'>'L'</strong>.";
+                resetGame();
+            });
+
+            function resetGame() {
+                clearAllTimeouts();
+                gameState = "IDLE";
+                greenTime = null;
+                p1Foul = false;
+                p2Foul = false;
+                p1Time = null;
+                p2Time = null;
+
+                lightStage.className = "light-bulb";
+                lightY1.className = "light-bulb yellow";
+                lightY2.className = "light-bulb yellow";
+                lightY3.className = "light-bulb yellow";
+                lightGreen.className = "light-bulb green";
+
+                p1Result.style.display = "none";
+                p2Result.style.display = "none";
+
+                gameStatus.textContent = gameMode === "1P" ? "Ready for Solo Run. Click 'Start Race'." : "Ready for Duel. Click 'Start Race'.";
+                gameStatus.style.color = "var(--accent)";
+                actionBtn.style.display = "inline-flex";
+                triggerBtn.style.display = "none";
+            }
+
+            function clearAllTimeouts() {
+                timeoutIds.forEach(id => clearTimeout(id));
+                timeoutIds = [];
+            }
+
+            function startRaceSequence() {
+                resetGame();
+                gameState = "STAGING";
+                actionBtn.style.display = "none";
+                gameStatus.textContent = "Staging... Watch the lights drop!";
+                gameStatus.style.color = "var(--text-main)";
+
+                if (gameMode === "1P") {
+                    triggerBtn.style.display = "inline-flex";
+                }
+
+                // Stage light on immediately
+                lightStage.classList.add("active");
+
+                // Sequential yellow lights (.4s intervals)
+                timeoutIds.push(setTimeout(() => { lightY1.classList.add("active"); }, 500));
+                timeoutIds.push(setTimeout(() => { lightY2.classList.add("active"); }, 900));
+                timeoutIds.push(setTimeout(() => { lightY3.classList.add("active"); }, 1300));
+
+                // Randomized delay before Green light (between 800ms to 2000ms after last yellow)
+                const randomGreenDelay = 1300 + Math.floor(Math.random() * 1200) + 800;
+
+                timeoutIds.push(setTimeout(() => {
+                    if (gameState !== "STAGING") return;
+                    gameState = "WAITING_GREEN";
+                    lightGreen.classList.add("active");
+                    greenTime = performance.now();
+                    gameStatus.textContent = "🟢 GO! GO! GO!";
+                    gameStatus.style.color = "#38b000";
+                }, randomGreenDelay));
+            }
+
+            // Keyboard listener for reactions
+            window.addEventListener("keydown", function (e) {
+                if (e.code === "Space" && e.target === document.body) {
+                    e.preventDefault(); // Prevent scrolling
+                }
+
+                if (gameState === "IDLE" || gameState === "FINISHED") return;
+
+                const pressTime = performance.now();
+
+                if (gameMode === "1P" && (e.code === "Space" || e.key.toLowerCase() === "a")) {
+                    handlePlayerInput("P1", pressTime);
+                } else if (gameMode === "2P") {
+                    if (e.key.toLowerCase() === "a" && p1Time === null && !p1Foul) {
+                        handlePlayerInput("P1", pressTime);
+                    }
+                    if (e.key.toLowerCase() === "l" && p2Time === null && !p2Foul) {
+                        handlePlayerInput("P2", pressTime);
+                    }
+                }
+            });
+
+            triggerBtn.addEventListener("click", function() {
+                if (gameState === "IDLE" || gameState === "FINISHED") return;
+                const pressTime = performance.now();
+                handlePlayerInput("P1", pressTime);
+            });
+
+            function handlePlayerInput(player, pressTime) {
+                if (gameState === "STAGING") {
+                    // False start / Red light foul!
+                    if (player === "P1") {
+                        p1Foul = true;
+                        lightStage.classList.add("foul");
+                    }
+                    if (player === "P2") {
+                        p2Foul = true;
+                    }
+
+                    if (gameMode === "1P" || (p1Foul && p2Foul) || (gameMode === "2P" && (p1Foul || p2Foul))) {
+                        gameState = "FINISHED";
+                        clearAllTimeouts();
+                        gameStatus.textContent = `🚨 FALSE START! You jumped the green light!`;
+                        gameStatus.style.color = "var(--danger)";
+                        actionBtn.textContent = "Try Again";
+                        actionBtn.style.display = "inline-flex";
+                        triggerBtn.style.display = "none";
+                    }
+                    return;
+                }
+
+                if (gameState === "WAITING_GREEN") {
+                    const reactionMs = pressTime - greenTime;
+                    const reactionSec = (reactionMs / 1000).toFixed(3) + "s";
+
+                    if (player === "P1" && p1Time === null) {
+                        p1Time = reactionMs;
+                        p1Result.style.display = "block";
+                        p1TimeEl.textContent = reactionSec;
+                    } else if (player === "P2" && p2Time === null) {
+                        p2Time = reactionMs;
+                        p2Result.style.display = "block";
+                        p2TimeEl.textContent = reactionSec;
+                    }
+
+                    // Check if round is complete
+                    if (gameMode === "1P" || (gameMode === "2P" && (p1Time !== null && p2Time !== null))) {
+                        gameState = "FINISHED";
+                        triggerBtn.style.display = "none";
+                        actionBtn.textContent = "Play Again";
+                        actionBtn.style.display = "inline-flex";
+
+                        if (gameMode === "1P") {
+                            gameStatus.textContent = `🏁 Finished! Your Reaction Time: ${reactionSec}`;
+                            gameStatus.style.color = "var(--accent)";
+                        } else {
+                            if (p1Time < p2Time) {
+                                gameStatus.textContent = `🏆 Player 1 Wins! Faster by ${(Math.abs(p1Time - p2Time)/1000).toFixed(3)}s`;
+                            } else if (p2Time < p1Time) {
+                                gameStatus.textContent = `🏆 Player 2 Wins! Faster by ${(Math.abs(p1Time - p2Time)/1000).toFixed(3)}s`;
+                            } else {
+                                gameStatus.textContent = `🤝 Dead Heat! Exact same reaction time!`;
+                            }
+                            gameStatus.style.color = "var(--accent)";
+                        }
+                    }
+                }
+            }
+
+            actionBtn.addEventListener("click", startRaceSequence);
+            resetBtn.addEventListener("click", resetGame);
+        });
+    </script>
+</body>
+</html>
