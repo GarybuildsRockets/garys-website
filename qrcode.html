@@ -52,7 +52,7 @@
         <div class="game-card">
             <div class="game-header">
                 <h1 class="game-title">QR CODE GENERATOR</h1>
-                <p class="game-tagline">100% Client-Side • Instant Download • Zero Server Data</p>
+                <p class="game-tagline">100% Client-Side • Gradients & Solid • Zero Server Data</p>
             </div>
 
             <div class="plotter-container">
@@ -60,14 +60,22 @@
                 <div class="plotter-controls">
                     <div class="form-group" style="max-width: 100%;">
                         <label class="control-label-bold" for="qrText">URL or Text Input</label>
-                        <textarea id="qrText" class="custom-scrollbar" style="width: 100%; height: 90px;" placeholder="https://garykanyuh.com or enter any text...">https://garykanyuh.com</textarea>
+                        <textarea id="qrText" class="custom-scrollbar" style="width: 100%; height: 80px;" placeholder="https://garykanyuh.com or enter any text...">https://garykanyuh.com</textarea>
                     </div>
 
                     <div class="highlight-selector-panel">
                         <div class="panel-header-flex">
-                            <span class="control-label-bold">Custom Styling</span>
+                            <span class="control-label-bold">Styling & Colors</span>
+                            <!-- Gradient Toggle Switch -->
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enableGradient">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label-text">Gradient Mode</span>
+                            </label>
                         </div>
-                        <div class="color-pickers-grid" style="grid-template-columns: 1fr 1fr;">
+
+                        <!-- Solid Color Picker (Shown by default) -->
+                        <div id="solidControls" class="color-pickers-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 10px;">
                             <div class="color-picker-card">
                                 <span class="series-name">Foreground</span>
                                 <div class="picker-control-wrapper">
@@ -75,12 +83,38 @@
                                     <span class="hex-label" id="darkHex">#05070b</span>
                                 </div>
                             </div>
-
                             <div class="color-picker-card">
                                 <span class="series-name">Background</span>
                                 <div class="picker-control-wrapper">
                                     <input type="color" id="qrLight" class="prominent-color-input" value="#ffffff">
                                     <span class="hex-label" id="lightHex">#ffffff</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gradient Color Pickers (Hidden by default) -->
+                        <div id="gradientControls" class="hidden" style="display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+                            <div class="color-pickers-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="color-picker-card">
+                                    <span class="series-name">Gradient Start</span>
+                                    <div class="picker-control-wrapper">
+                                        <input type="color" id="gradStart" class="prominent-color-input" value="#3aa3ff">
+                                        <span class="hex-label" id="startHex">#3aa3ff</span>
+                                    </div>
+                                </div>
+                                <div class="color-picker-card">
+                                    <span class="series-name">Gradient End</span>
+                                    <div class="picker-control-wrapper">
+                                        <input type="color" id="gradEnd" class="prominent-color-input" value="#0b1018">
+                                        <span class="hex-label" id="endHex">#0b1018</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="color-picker-card" style="width: 100%; box-sizing: border-box;">
+                                <span class="series-name">Background Color</span>
+                                <div class="picker-control-wrapper">
+                                    <input type="color" id="qrLightGrad" class="prominent-color-input" value="#ffffff">
+                                    <span class="hex-label" id="lightGradHex">#ffffff</span>
                                 </div>
                             </div>
                         </div>
@@ -118,44 +152,131 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const qrText = document.getElementById("qrText");
+            const enableGradient = document.getElementById("enableGradient");
+            const solidControls = document.getElementById("solidControls");
+            const gradientControls = document.getElementById("gradientControls");
+
             const qrDark = document.getElementById("qrDark");
             const qrLight = document.getElementById("qrLight");
-            const qrSize = document.getElementById("qrSize");
             const darkHex = document.getElementById("darkHex");
             const lightHex = document.getElementById("lightHex");
+
+            const gradStart = document.getElementById("gradStart");
+            const gradEnd = document.getElementById("gradEnd");
+            const qrLightGrad = document.getElementById("qrLightGrad");
+            const startHex = document.getElementById("startHex");
+            const endHex = document.getElementById("endHex");
+            const lightGradHex = document.getElementById("lightGradHex");
+
+            const qrSize = document.getElementById("qrSize");
             const qrContainer = document.getElementById("qrcode");
             const downloadBtn = document.getElementById("downloadBtn");
             const copyBtn = document.getElementById("copyBtn");
             const qrStatus = document.getElementById("qrStatus");
 
-            let qr = null;
+            // Toggle view panels based on checkbox
+            enableGradient.addEventListener("change", function() {
+                if (this.checked) {
+                    solidControls.style.display = "none";
+                    gradientControls.style.display = "flex";
+                } else {
+                    solidControls.style.display = "grid";
+                    gradientControls.style.display = "none";
+                }
+                generateQR();
+            });
 
             function generateQR() {
                 const text = qrText.value.trim() || "https://garykanyuh.com";
                 const size = parseInt(qrSize.value, 10);
-                const colorDark = qrDark.value;
-                const colorLight = qrLight.value;
-
-                darkHex.textContent = colorDark;
-                lightHex.textContent = colorLight;
+                const isGrad = enableGradient.checked;
 
                 qrContainer.innerHTML = "";
-                qrContainer.style.backgroundColor = colorLight;
 
-                qr = new QRCode(qrContainer, {
-                    text: text,
-                    width: size,
-                    height: size,
-                    colorDark: colorDark,
-                    colorLight: colorLight,
-                    correctLevel: QRCode.CorrectLevel.H
-                });
+                if (!isGrad) {
+                    // Solid Mode
+                    const colorDark = qrDark.value;
+                    const colorLight = qrLight.value;
+                    darkHex.textContent = colorDark;
+                    lightHex.textContent = colorLight;
+                    qrContainer.style.backgroundColor = colorLight;
+
+                    new QRCode(qrContainer, {
+                        text: text,
+                        width: size,
+                        height: size,
+                        colorDark: colorDark,
+                        colorLight: colorLight,
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                } else {
+                    // Gradient Mode Processing
+                    const cStart = gradStart.value;
+                    const cEnd = gradEnd.value;
+                    const cLight = qrLightGrad.value;
+                    startHex.textContent = cStart;
+                    endHex.textContent = cEnd;
+                    lightGradHex.textContent = cLight;
+                    qrContainer.style.backgroundColor = cLight;
+
+                    // Step 1: Render standard black-on-white QR onto a temporary wrapper
+                    const tempDiv = document.createElement("div");
+                    const qr = new QRCode(tempDiv, {
+                        text: text,
+                        width: size,
+                        height: size,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+
+                    setTimeout(() => {
+                        const canvas = tempDiv.querySelector("canvas");
+                        if (!canvas) return;
+
+                        const ctx = canvas.getContext("2d");
+                        const imgData = ctx.getImageData(0, 0, size, size);
+                        const pixels = imgData.data;
+
+                        // Create a secondary canvas for applying the gradient mask
+                        const finalCanvas = document.createElement("canvas");
+                        finalCanvas.width = size;
+                        finalCanvas.height = size;
+                        const fCtx = finalCanvas.getContext("2d");
+
+                        // Fill background
+                        fCtx.fillStyle = cLight;
+                        fCtx.fillRect(0, 0, size, size);
+
+                        // Create Linear Gradient (Top-Left to Bottom-Right)
+                        const grad = fCtx.createLinearGradient(0, 0, size, size);
+                        grad.addColorStop(0, cStart);
+                        grad.addColorStop(1, cEnd);
+                        fCtx.fillStyle = grad;
+
+                        // Apply gradient exclusively to dark QR modules
+                        for (let y = 0; y < size; y++) {
+                            for (let x = 0; x < size; x++) {
+                                const idx = (y * size + x) * 4;
+                                // If pixel is dark (part of QR code pattern)
+                                if (pixels[idx] < 128) {
+                                    fCtx.fillRect(x, y, 1, 1);
+                                }
+                            }
+                        }
+
+                        qrContainer.appendChild(finalCanvas);
+                    }, 50);
+                }
             }
 
             // Real-time Event Listeners
             qrText.addEventListener("input", generateQR);
             qrDark.addEventListener("input", generateQR);
             qrLight.addEventListener("input", generateQR);
+            gradStart.addEventListener("input", generateQR);
+            gradEnd.addEventListener("input", generateQR);
+            qrLightGrad.addEventListener("input", generateQR);
             qrSize.addEventListener("change", generateQR);
 
             // Initial Build
@@ -180,7 +301,7 @@
 
                 const link = document.createElement("a");
                 link.href = dataUrl;
-                link.download = "qrcode.png";
+                link.download = "qrcode-gradient.png";
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
