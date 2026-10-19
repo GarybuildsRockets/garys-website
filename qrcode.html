@@ -1,1 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator | Gary Kanyuh</title>
 
+    <!-- QRCodeJS Lightweight Client-Side Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Styles & Scripts -->
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <header id="navbar" class="curved-navbar">
+        <div class="nav-inner">
+            <div class="logo">
+                <span class="logo-name">Gary Kanyuh</span>
+                <span class="logo-tagline">Mechanical Engineering Student</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#tools">Tools</a></li>
+                    <li><a href="index.html#projects">Projects</a></li>
+                </ul>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Fullscreen Overlay Nav -->
+        <div class="mobile-nav-overlay">
+            <ul class="mobile-nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#tools">Tools</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div class="game-card">
+            <div class="game-header">
+                <h1 class="game-title">QR CODE GENERATOR</h1>
+                <p class="game-tagline">100% Client-Side • Instant Download • Zero Server Data</p>
+            </div>
+
+            <div class="plotter-container">
+                <!-- Controls Side -->
+                <div class="plotter-controls">
+                    <div class="form-group" style="max-width: 100%;">
+                        <label class="control-label-bold" for="qrText">URL or Text Input</label>
+                        <textarea id="qrText" class="custom-scrollbar" style="width: 100%; height: 90px;" placeholder="https://garykanyuh.com or enter any text...">https://garykanyuh.com</textarea>
+                    </div>
+
+                    <div class="highlight-selector-panel">
+                        <div class="panel-header-flex">
+                            <span class="control-label-bold">Custom Styling</span>
+                        </div>
+                        <div class="color-pickers-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="color-picker-card">
+                                <span class="series-name">Foreground</span>
+                                <div class="picker-control-wrapper">
+                                    <input type="color" id="qrDark" class="prominent-color-input" value="#05070b">
+                                    <span class="hex-label" id="darkHex">#05070b</span>
+                                </div>
+                            </div>
+
+                            <div class="color-picker-card">
+                                <span class="series-name">Background</span>
+                                <div class="picker-control-wrapper">
+                                    <input type="color" id="qrLight" class="prominent-color-input" value="#ffffff">
+                                    <span class="hex-label" id="lightHex">#ffffff</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="max-width: 100%;">
+                        <label class="control-label-bold" for="qrSize">Resolution (Pixels)</label>
+                        <select id="qrSize" style="background: rgba(3, 8, 18, 0.9); color: var(--text-main); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); width: 100%;">
+                            <option value="200">200 x 200 px (Small)</option>
+                            <option value="300" selected>300 x 300 px (Medium)</option>
+                            <option value="500">500 x 500 px (Large)</option>
+                            <option value="800">800 x 800 px (HD Print)</option>
+                        </select>
+                    </div>
+
+                    <div class="plotter-actions">
+                        <button id="downloadBtn" class="primary-btn" style="width: 100%;">Download PNG</button>
+                        <button id="copyBtn" class="uniform-btn" style="width: 100%;">Copy Image</button>
+                    </div>
+                </div>
+
+                <!-- Preview Viewport Side -->
+                <div class="plotter-viewport" style="flex-direction: column; gap: 16px;">
+                    <div id="qrcode" style="padding: 16px; background: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.5);"></div>
+                    <span id="qrStatus" class="control-label" style="color: var(--accent);">Live Preview</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year"></span> Gary Kanyuh. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const qrText = document.getElementById("qrText");
+            const qrDark = document.getElementById("qrDark");
+            const qrLight = document.getElementById("qrLight");
+            const qrSize = document.getElementById("qrSize");
+            const darkHex = document.getElementById("darkHex");
+            const lightHex = document.getElementById("lightHex");
+            const qrContainer = document.getElementById("qrcode");
+            const downloadBtn = document.getElementById("downloadBtn");
+            const copyBtn = document.getElementById("copyBtn");
+            const qrStatus = document.getElementById("qrStatus");
+
+            let qr = null;
+
+            function generateQR() {
+                const text = qrText.value.trim() || "https://garykanyuh.com";
+                const size = parseInt(qrSize.value, 10);
+                const colorDark = qrDark.value;
+                const colorLight = qrLight.value;
+
+                darkHex.textContent = colorDark;
+                lightHex.textContent = colorLight;
+
+                qrContainer.innerHTML = "";
+                qrContainer.style.backgroundColor = colorLight;
+
+                qr = new QRCode(qrContainer, {
+                    text: text,
+                    width: size,
+                    height: size,
+                    colorDark: colorDark,
+                    colorLight: colorLight,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+
+            // Real-time Event Listeners
+            qrText.addEventListener("input", generateQR);
+            qrDark.addEventListener("input", generateQR);
+            qrLight.addEventListener("input", generateQR);
+            qrSize.addEventListener("change", generateQR);
+
+            // Initial Build
+            generateQR();
+
+            // Download PNG Function
+            downloadBtn.addEventListener("click", function () {
+                const img = qrContainer.querySelector("img");
+                const canvas = qrContainer.querySelector("canvas");
+
+                let dataUrl = "";
+                if (img && img.src) {
+                    dataUrl = img.src;
+                } else if (canvas) {
+                    dataUrl = canvas.toDataURL("image/png");
+                }
+
+                if (!dataUrl) {
+                    alert("Error preparing image for download.");
+                    return;
+                }
+
+                const link = document.createElement("a");
+                link.href = dataUrl;
+                link.download = "qrcode.png";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+            // Copy Image to Clipboard
+            copyBtn.addEventListener("click", async function () {
+                const canvas = qrContainer.querySelector("canvas");
+                if (!canvas) {
+                    alert("Unable to copy image directly.");
+                    return;
+                }
+
+                canvas.toBlob(async function (blob) {
+                    try {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ "image/png": blob })
+                        ]);
+                        qrStatus.textContent = "Copied to clipboard!";
+                        setTimeout(() => { qrStatus.textContent = "Live Preview"; }, 2500);
+                    } catch (err) {
+                        alert("Clipboard copy not supported by your browser context.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
