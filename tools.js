@@ -314,225 +314,229 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // High-Resolution Export Master Canvas
-  // High-Resolution Export Master Canvas (Guaranteed No Overlap)
-function generateCleanExportCanvas() {
-    const parsed = parseCSV(csvInput.value);
-    if (!parsed) return null;
+    // High-Resolution Export Master Canvas (Guaranteed Zero Overlap)
+    function generateCleanExportCanvas() {
+        const parsed = parseCSV(csvInput.value);
+        if (!parsed) return null;
 
-    const isColor = colorModeToggle.checked;
-    const showValues = showDataValuesToggle.checked;
+        const isColor = colorModeToggle.checked;
+        const showValues = showDataValuesToggle.checked;
 
-    // Master Canvas Dimensions
-    const canvasWidth = 1800;
-    const chartAreaHeight = 900;
-    const tableHeaderHeight = 42;
-    const tableColHeight = 34;
-    const rowHeight = 38;
-    const tableAreaHeight = tableHeaderHeight + tableColHeight + (parsed.seriesNames.length * rowHeight) + 40;
-    const totalHeight = chartAreaHeight + tableAreaHeight + 60;
+        const exportDatasets = parsed.seriesNames.map((name, idx) => {
+            const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
+            return {
+                label: name,
+                data: parsed.seriesData[name],
+                borderColor: color,
+                backgroundColor: color,
+                borderWidth: 3,
+                borderDash: isColor ? [] : bwLineStyles[idx % bwLineStyles.length],
+                pointStyle: pointStyles[idx % pointStyles.length],
+                pointRadius: 7,
+                pointBackgroundColor: color,
+                tension: 0.1
+            };
+        });
 
-    const masterCanvas = document.createElement("canvas");
-    masterCanvas.width = canvasWidth;
-    masterCanvas.height = totalHeight;
-    const ctx = masterCanvas.getContext("2d");
+        const canvasWidth = 1800;
+        const chartHeight = 700;
 
-    // Fill Solid White Background
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvasWidth, totalHeight);
+        // Create temporary offscreen container for Chart.js rendering
+        const tempContainer = document.createElement("div");
+        tempContainer.style.position = "absolute";
+        tempContainer.style.left = "-9999px";
+        tempContainer.style.top = "-9999px";
+        tempContainer.style.width = `${canvasWidth - 100}px`;
+        tempContainer.style.height = `${chartHeight}px`;
 
-    const exportDatasets = parsed.seriesNames.map((name, idx) => {
-        const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
-        return {
-            label: name,
-            data: parsed.seriesData[name],
-            borderColor: color,
-            backgroundColor: color,
-            borderWidth: 3,
-            borderDash: isColor ? [] : bwLineStyles[idx % bwLineStyles.length],
-            pointStyle: pointStyles[idx % pointStyles.length],
-            pointRadius: 7,
-            pointBackgroundColor: color,
-            tension: 0.1
-        };
-    });
+        const chartCanvas = document.createElement("canvas");
+        chartCanvas.width = canvasWidth - 100;
+        chartCanvas.height = chartHeight;
+        tempContainer.appendChild(chartCanvas);
+        document.body.appendChild(tempContainer);
 
-    // 1. ISOLATED CHART CANVAS (Strictly limited to top region)
-    const tempContainer = document.createElement("div");
-    tempContainer.style.position = "absolute";
-    tempContainer.style.left = "-9999px";
-    tempContainer.style.top = "-9999px";
-    tempContainer.style.width = `${canvasWidth - 100}px`;
-    tempContainer.style.height = `${chartAreaHeight - 40}px`;
+        const chartCtx = chartCanvas.getContext("2d");
 
-    const chartCanvas = document.createElement("canvas");
-    chartCanvas.width = canvasWidth - 100;
-    chartCanvas.height = chartAreaHeight - 40;
-    tempContainer.appendChild(chartCanvas);
-    document.body.appendChild(tempContainer);
-
-    const chartCtx = chartCanvas.getContext("2d");
-
-    const tempChart = new Chart(chartCtx, {
-        type: 'line',
-        data: {
-            labels: parsed.xValues,
-            datasets: exportDatasets
-        },
-        options: {
-            animation: false,
-            responsive: false,
-            maintainAspectRatio: false,
-            layout: { padding: { top: 20, left: 30, right: 30, bottom: 25 } },
-            plugins: {
-                title: {
-                    display: true,
-                    text: chartTitleInput.value,
-                    color: '#111111',
-                    font: { size: 26, weight: 'bold' },
-                    padding: { bottom: 15 },
-                    align: 'center'
+        const tempChart = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: parsed.xValues,
+                datasets: exportDatasets
+            },
+            options: {
+                animation: false,
+                responsive: false,
+                maintainAspectRatio: false,
+                layout: { padding: { top: 20, left: 30, right: 30, bottom: 40 } },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartTitleInput.value,
+                        color: '#111111',
+                        font: { size: 26, weight: 'bold' },
+                        padding: { bottom: 15 },
+                        align: 'center'
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'center',
+                        labels: { color: '#111111', font: { size: 15, weight: '600' }, boxWidth: 16, usePointStyle: true }
+                    }
                 },
-                legend: {
-                    display: true,
-                    position: 'top',
-                    align: 'center',
-                    labels: { color: '#111111', font: { size: 15, weight: '600' }, boxWidth: 16, usePointStyle: true }
+                scales: {
+                    x: {
+                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
+                        grid: { color: '#e2e8f0', lineWidth: 1.5 },
+                        ticks: { color: '#111111', font: { size: 13, weight: '500' } }
+                    },
+                    y: {
+                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
+                        grid: { color: '#e2e8f0', lineWidth: 1.5 },
+                        ticks: { color: '#111111', font: { size: 13, weight: '500' } }
+                    }
                 }
             },
-            scales: {
-                x: {
-                    title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
-                    grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                    ticks: { color: '#111111', font: { size: 13, weight: '500' } }
-                },
-                y: {
-                    title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
-                    grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                    ticks: { color: '#111111', font: { size: 13, weight: '500' } }
-                }
-            }
-        },
-        plugins: [{
-            id: 'dataValuesPrint',
-            afterDatasetsDraw: (chart) => {
-                if (!showValues) return;
-                const cCtx = chart.ctx;
-                cCtx.save();
-                cCtx.font = "bold 13px sans-serif";
-                cCtx.fillStyle = "#111111";
-                cCtx.textAlign = "center";
-                cCtx.textBaseline = "bottom";
+            plugins: [{
+                id: 'dataValuesPrint',
+                afterDatasetsDraw: (chart) => {
+                    if (!showValues) return;
+                    const cCtx = chart.ctx;
+                    cCtx.save();
+                    cCtx.font = "bold 13px sans-serif";
+                    cCtx.fillStyle = "#111111";
+                    cCtx.textAlign = "center";
+                    cCtx.textBaseline = "bottom";
 
-                chart.data.datasets.forEach((ds, i) => {
-                    const meta = chart.getDatasetMeta(i);
-                    meta.data.forEach((pt, index) => {
-                        cCtx.fillText(ds.data[index], pt.x, pt.y - 10);
+                    chart.data.datasets.forEach((ds, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((pt, index) => {
+                            cCtx.fillText(ds.data[index], pt.x, pt.y - 10);
+                        });
                     });
-                });
-                cCtx.restore();
-            }
-        }]
-    });
+                    cCtx.restore();
+                }
+            }]
+        });
 
-    // Draw full chart image onto master canvas top section
-    ctx.drawImage(chartCanvas, 50, 20);
+        // Compute exact table parameters
+        const tableHeaderHeight = 42;
+        const tableColHeight = 34;
+        const rowHeight = 38;
+        const tableHeight = tableHeaderHeight + tableColHeight + (parsed.seriesNames.length * rowHeight);
 
-    // Clean up temp Chart DOM element
-    tempChart.destroy();
-    document.body.removeChild(tempContainer);
+        // Gap below the chart
+        const gap = 60;
+        const tableY = chartHeight + gap;
+        const totalHeight = tableY + tableHeight + 60;
 
-    // 2. DEDICATED SUMMARY TABLE REGION (Starts strictly below chartAreaHeight)
-    const marginX = 80;
-    const tableY = chartAreaHeight + 10; // Placed clearly below the bottom axis of the chart
-    const tableWidth = canvasWidth - (marginX * 2);
+        // Construct Master Canvas
+        const masterCanvas = document.createElement("canvas");
+        masterCanvas.width = canvasWidth;
+        masterCanvas.height = totalHeight;
+        const ctx = masterCanvas.getContext("2d");
 
-    // Table Header Banner
-    ctx.fillStyle = "#1e293b";
-    ctx.fillRect(marginX, tableY, tableWidth, tableHeaderHeight);
+        // Fill Solid White
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvasWidth, totalHeight);
 
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 15px sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillText("KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY", marginX + 20, tableY + (tableHeaderHeight / 2));
+        // Render Chart Image strictly onto Top Canvas Region
+        ctx.drawImage(chartCanvas, 50, 20);
 
-    // Column Headers
-    const colHeaderY = tableY + tableHeaderHeight;
-    ctx.fillStyle = "#f1f5f9";
-    ctx.fillRect(marginX, colHeaderY, tableWidth, tableColHeight);
+        // Cleanup Offscreen Temp Chart
+        tempChart.destroy();
+        document.body.removeChild(tempContainer);
 
-    ctx.fillStyle = "#334155";
-    ctx.font = "bold 13px sans-serif";
+        // Render Summary Table strictly below tableY
+        const marginX = 80;
+        const tableWidth = canvasWidth - (marginX * 2);
 
-    const colWidths = [tableWidth * 0.28, tableWidth * 0.24, tableWidth * 0.24, tableWidth * 0.24];
-    let currX = marginX;
+        // Header Banner
+        ctx.fillStyle = "#1e293b";
+        ctx.fillRect(marginX, tableY, tableWidth, tableHeaderHeight);
 
-    ctx.fillText("Series Name", currX + 20, colHeaderY + (tableColHeight / 2));
-    currX += colWidths[0];
-    ctx.fillText("Max Point (X, Y)", currX + 15, colHeaderY + (tableColHeight / 2));
-    currX += colWidths[1];
-    ctx.fillText("Min Point (X, Y)", currX + 15, colHeaderY + (tableColHeight / 2));
-    currX += colWidths[2];
-    ctx.fillText("Turning / Inflection Points", currX + 15, colHeaderY + (tableColHeight / 2));
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 15px sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY", marginX + 20, tableY + (tableHeaderHeight / 2));
 
-    // Data Rows
-    let rowY = colHeaderY + tableColHeight;
-    parsed.seriesNames.forEach((name, idx) => {
-        const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
-        const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
+        // Column Titles
+        const colHeaderY = tableY + tableHeaderHeight;
+        ctx.fillStyle = "#f1f5f9";
+        ctx.fillRect(marginX, colHeaderY, tableWidth, tableColHeight);
 
-        ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
-        ctx.fillRect(marginX, rowY, tableWidth, rowHeight);
-
-        // Series Color Indicator
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(marginX + 20, rowY + (rowHeight / 2), 6, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Series Name
-        ctx.fillStyle = "#0f172a";
+        ctx.fillStyle = "#334155";
         ctx.font = "bold 13px sans-serif";
-        ctx.fillText(name, marginX + 36, rowY + (rowHeight / 2));
 
-        // Max & Min Coordinates
-        ctx.font = "13px monospace";
-        currX = marginX + colWidths[0];
-        ctx.fillText(`(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})`, currX + 15, rowY + (rowHeight / 2));
+        const colWidths = [tableWidth * 0.28, tableWidth * 0.24, tableWidth * 0.24, tableWidth * 0.24];
+        let currX = marginX;
 
+        ctx.fillText("Series Name", currX + 20, colHeaderY + (tableColHeight / 2));
+        currX += colWidths[0];
+        ctx.fillText("Max Point (X, Y)", currX + 15, colHeaderY + (tableColHeight / 2));
         currX += colWidths[1];
-        ctx.fillText(`(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})`, currX + 15, rowY + (rowHeight / 2));
-
-        // Turning / Inflection Text
+        ctx.fillText("Min Point (X, Y)", currX + 15, colHeaderY + (tableColHeight / 2));
         currX += colWidths[2];
-        ctx.font = "12px sans-serif";
-        let infText = "Monotonic / Uniform";
-        if (trend.extrema.length > 0) {
-            infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
-        } else if (trend.inflectionPoints.length > 0) {
-            infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
-        }
-        ctx.fillText(infText, currX + 15, rowY + (rowHeight / 2));
+        ctx.fillText("Turning / Inflection Points", currX + 15, colHeaderY + (tableColHeight / 2));
 
-        // Row Separator Line
-        ctx.strokeStyle = "#e2e8f0";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(marginX, rowY + rowHeight);
-        ctx.lineTo(marginX + tableWidth, rowY + rowHeight);
-        ctx.stroke();
+        // Data Rows
+        let rowY = colHeaderY + tableColHeight;
+        parsed.seriesNames.forEach((name, idx) => {
+            const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
+            const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
 
-        rowY += rowHeight;
-    });
+            ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
+            ctx.fillRect(marginX, rowY, tableWidth, rowHeight);
 
-    // Outer Table Border
-    ctx.strokeStyle = "#cbd5e1";
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(marginX, tableY, tableWidth, rowY - tableY);
+            // Series Color Indicator
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(marginX + 20, rowY + (rowHeight / 2), 6, 0, Math.PI * 2);
+            ctx.fill();
 
-    return masterCanvas;
-}
+            // Series Name
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 13px sans-serif";
+            ctx.fillText(name, marginX + 36, rowY + (rowHeight / 2));
+
+            // Max & Min Coordinates
+            ctx.font = "13px monospace";
+            currX = marginX + colWidths[0];
+            ctx.fillText(`(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})`, currX + 15, rowY + (rowHeight / 2));
+
+            currX += colWidths[1];
+            ctx.fillText(`(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})`, currX + 15, rowY + (rowHeight / 2));
+
+            // Turning / Inflection Text
+            currX += colWidths[2];
+            ctx.font = "12px sans-serif";
+            let infText = "Monotonic / Uniform";
+            if (trend.extrema.length > 0) {
+                infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
+            } else if (trend.inflectionPoints.length > 0) {
+                infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
+            }
+            ctx.fillText(infText, currX + 15, rowY + (rowHeight / 2));
+
+            // Divider Line
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(marginX, rowY + rowHeight);
+            ctx.lineTo(marginX + tableWidth, rowY + rowHeight);
+            ctx.stroke();
+
+            rowY += rowHeight;
+        });
+
+        // Table Border
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(marginX, tableY, tableWidth, rowY - tableY);
+
+        return masterCanvas;
+    }
 
     function exportPNG() {
         const offCanvas = generateCleanExportCanvas();
