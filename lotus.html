@@ -55,7 +55,7 @@
                 <h2 class="section-title">Lotus Graphing Plotter</h2>
                 <div class="section-accent-line"></div>
                 <p style="color: var(--text-muted); margin-top: 8px;">
-                    Simulate kinematics, customize styles, display data point values, and export clean PNG or PDF reports.
+                    Simulate kinematics, customize styles, calculate trend inflection points, and export report-ready graphs with embedded trend tables.
                 </p>
             </div>
 
@@ -114,10 +114,26 @@
                     </div>
                 </div>
 
-                <!-- Graph Viewport -->
-                <div class="plotter-viewport" id="pdf-export-area">
-                    <div class="canvas-wrapper">
-                        <canvas id="lotusChart"></canvas>
+                <!-- Graph & Trends Viewport Grid -->
+                <div class="plotter-main-view">
+                    <!-- Graph Canvas -->
+                    <div class="plotter-viewport" id="pdf-export-area">
+                        <div class="canvas-wrapper">
+                            <canvas id="lotusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Trends & Analysis Sidebar Panel -->
+                    <div class="trends-sidebar-panel">
+                        <div class="trends-header">
+                            <div class="trends-title-group">
+                                <h3> Kinematic Trends & Key Points</h3>
+                                <p class="trends-subtitle">Automated min/max extremes & inflection analysis</p>
+                            </div>
+                        </div>
+                        <div id="trendsSummaryContainer" class="trends-cards-list">
+                            <!-- Dynamically generated trend cards -->
+                        </div>
                     </div>
                 </div>
             </div>
