@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Graph-Only High-Resolution Export
+    // Graph-Only High-Resolution Centered Export
     function generateCleanExportCanvas() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         const canvasWidth = 1800;
-        const canvasHeight = 1000;
+        const canvasHeight = 1100;
 
         // Temporary offscreen container
         const tempContainer = document.createElement("div");
@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: false,
                 responsive: false,
                 maintainAspectRatio: false,
-                layout: { padding: { top: 30, left: 40, right: 40, bottom: 30 } },
+                layout: { padding: { top: 30, left: 60, right: 60, bottom: 60 } },
                 plugins: {
                     title: {
                         display: true,
@@ -375,25 +375,26 @@ document.addEventListener("DOMContentLoaded", function () {
                         color: '#111111',
                         font: { size: 28, weight: 'bold' },
                         padding: { bottom: 20 },
-                        align: 'center'
+                        align: 'center',
+                        fullSize: true
                     },
                     legend: {
                         display: true,
                         position: 'top',
                         align: 'center',
-                        labels: { color: '#111111', font: { size: 16, weight: '600' }, boxWidth: 18, usePointStyle: true, padding: 20 }
+                        labels: { color: '#111111', font: { size: 16, weight: '600' }, boxWidth: 18, usePointStyle: true, padding: 25 }
                     }
                 },
                 scales: {
                     x: {
-                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { top: 10 } },
+                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { top: 15 } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 14, weight: '500' } }
+                        ticks: { color: '#111111', font: { size: 14, weight: '500' }, padding: 10 }
                     },
                     y: {
-                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { bottom: 10 } },
+                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { bottom: 15 } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 14, weight: '500' } }
+                        ticks: { color: '#111111', font: { size: 14, weight: '500' }, padding: 10 }
                     }
                 }
             },
