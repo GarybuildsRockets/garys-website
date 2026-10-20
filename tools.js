@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // High-Resolution Export Master Canvas (Guaranteed Zero Overlap)
+    // Graph-Only High-Resolution Export
     function generateCleanExportCanvas() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
@@ -339,19 +339,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         const canvasWidth = 1800;
-        const chartHeight = 700;
+        const canvasHeight = 1000;
 
-        // Create temporary offscreen container for Chart.js rendering
+        // Temporary offscreen container
         const tempContainer = document.createElement("div");
         tempContainer.style.position = "absolute";
         tempContainer.style.left = "-9999px";
         tempContainer.style.top = "-9999px";
-        tempContainer.style.width = `${canvasWidth - 100}px`;
-        tempContainer.style.height = `${chartHeight}px`;
+        tempContainer.style.width = `${canvasWidth}px`;
+        tempContainer.style.height = `${canvasHeight}px`;
 
         const chartCanvas = document.createElement("canvas");
-        chartCanvas.width = canvasWidth - 100;
-        chartCanvas.height = chartHeight;
+        chartCanvas.width = canvasWidth;
+        chartCanvas.height = canvasHeight;
         tempContainer.appendChild(chartCanvas);
         document.body.appendChild(tempContainer);
 
@@ -367,38 +367,46 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: false,
                 responsive: false,
                 maintainAspectRatio: false,
-                layout: { padding: { top: 20, left: 30, right: 30, bottom: 40 } },
+                layout: { padding: { top: 30, left: 40, right: 40, bottom: 30 } },
                 plugins: {
                     title: {
                         display: true,
                         text: chartTitleInput.value,
                         color: '#111111',
-                        font: { size: 26, weight: 'bold' },
-                        padding: { bottom: 15 },
+                        font: { size: 28, weight: 'bold' },
+                        padding: { bottom: 20 },
                         align: 'center'
                     },
                     legend: {
                         display: true,
                         position: 'top',
                         align: 'center',
-                        labels: { color: '#111111', font: { size: 15, weight: '600' }, boxWidth: 16, usePointStyle: true }
+                        labels: { color: '#111111', font: { size: 16, weight: '600' }, boxWidth: 18, usePointStyle: true, padding: 20 }
                     }
                 },
                 scales: {
                     x: {
-                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
+                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { top: 10 } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 13, weight: '500' } }
+                        ticks: { color: '#111111', font: { size: 14, weight: '500' } }
                     },
                     y: {
-                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
+                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { bottom: 10 } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 13, weight: '500' } }
+                        ticks: { color: '#111111', font: { size: 14, weight: '500' } }
                     }
                 }
             },
             plugins: [{
-                id: 'dataValuesPrint',
+                id: 'whiteBgAndValues',
+                beforeDraw: (chart) => {
+                    const ctx = chart.canvas.getContext('2d');
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                },
                 afterDatasetsDraw: (chart) => {
                     if (!showValues) return;
                     const cCtx = chart.ctx;
@@ -419,121 +427,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }]
         });
 
-        // Compute exact table parameters
-        const tableHeaderHeight = 42;
-        const tableColHeight = 34;
-        const rowHeight = 38;
-        const tableHeight = tableHeaderHeight + tableColHeight + (parsed.seriesNames.length * rowHeight);
-
-        // Gap below the chart
-        const gap = 60;
-        const tableY = chartHeight + gap;
-        const totalHeight = tableY + tableHeight + 60;
-
-        // Construct Master Canvas
+        // Copy canvas output
         const masterCanvas = document.createElement("canvas");
         masterCanvas.width = canvasWidth;
-        masterCanvas.height = totalHeight;
+        masterCanvas.height = canvasHeight;
         const ctx = masterCanvas.getContext("2d");
+        ctx.drawImage(chartCanvas, 0, 0);
 
-        // Fill Solid White
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvasWidth, totalHeight);
-
-        // Render Chart Image strictly onto Top Canvas Region
-        ctx.drawImage(chartCanvas, 50, 20);
-
-        // Cleanup Offscreen Temp Chart
         tempChart.destroy();
         document.body.removeChild(tempContainer);
-
-        // Render Summary Table strictly below tableY
-        const marginX = 80;
-        const tableWidth = canvasWidth - (marginX * 2);
-
-        // Header Banner
-        ctx.fillStyle = "#1e293b";
-        ctx.fillRect(marginX, tableY, tableWidth, tableHeaderHeight);
-
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 15px sans-serif";
-        ctx.textAlign = "left";
-        ctx.textBaseline = "middle";
-        ctx.fillText("KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY", marginX + 20, tableY + (tableHeaderHeight / 2));
-
-        // Column Titles
-        const colHeaderY = tableY + tableHeaderHeight;
-        ctx.fillStyle = "#f1f5f9";
-        ctx.fillRect(marginX, colHeaderY, tableWidth, tableColHeight);
-
-        ctx.fillStyle = "#334155";
-        ctx.font = "bold 13px sans-serif";
-
-        const colWidths = [tableWidth * 0.28, tableWidth * 0.24, tableWidth * 0.24, tableWidth * 0.24];
-        let currX = marginX;
-
-        ctx.fillText("Series Name", currX + 20, colHeaderY + (tableColHeight / 2));
-        currX += colWidths[0];
-        ctx.fillText("Max Point (X, Y)", currX + 15, colHeaderY + (tableColHeight / 2));
-        currX += colWidths[1];
-        ctx.fillText("Min Point (X, Y)", currX + 15, colHeaderY + (tableColHeight / 2));
-        currX += colWidths[2];
-        ctx.fillText("Turning / Inflection Points", currX + 15, colHeaderY + (tableColHeight / 2));
-
-        // Data Rows
-        let rowY = colHeaderY + tableColHeight;
-        parsed.seriesNames.forEach((name, idx) => {
-            const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
-            const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
-
-            ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
-            ctx.fillRect(marginX, rowY, tableWidth, rowHeight);
-
-            // Series Color Indicator
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.arc(marginX + 20, rowY + (rowHeight / 2), 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Series Name
-            ctx.fillStyle = "#0f172a";
-            ctx.font = "bold 13px sans-serif";
-            ctx.fillText(name, marginX + 36, rowY + (rowHeight / 2));
-
-            // Max & Min Coordinates
-            ctx.font = "13px monospace";
-            currX = marginX + colWidths[0];
-            ctx.fillText(`(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})`, currX + 15, rowY + (rowHeight / 2));
-
-            currX += colWidths[1];
-            ctx.fillText(`(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})`, currX + 15, rowY + (rowHeight / 2));
-
-            // Turning / Inflection Text
-            currX += colWidths[2];
-            ctx.font = "12px sans-serif";
-            let infText = "Monotonic / Uniform";
-            if (trend.extrema.length > 0) {
-                infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
-            } else if (trend.inflectionPoints.length > 0) {
-                infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
-            }
-            ctx.fillText(infText, currX + 15, rowY + (rowHeight / 2));
-
-            // Divider Line
-            ctx.strokeStyle = "#e2e8f0";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(marginX, rowY + rowHeight);
-            ctx.lineTo(marginX + tableWidth, rowY + rowHeight);
-            ctx.stroke();
-
-            rowY += rowHeight;
-        });
-
-        // Table Border
-        ctx.strokeStyle = "#cbd5e1";
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(marginX, tableY, tableWidth, rowY - tableY);
 
         return masterCanvas;
     }
@@ -544,7 +446,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const imgData = offCanvas.toDataURL("image/png", 1.0);
         const link = document.createElement("a");
-        link.download = "Lotus_Shark_Kinematics_Report.png";
+        link.download = "Lotus_Shark_Kinematics_Graph.png";
         link.href = imgData;
         link.click();
     }
@@ -566,7 +468,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
 
-            const margin = 8;
+            const margin = 10;
             const imgWidth = pageWidth - (margin * 2);
             const imgHeight = (offCanvas.height * imgWidth) / offCanvas.width;
 
