@@ -314,14 +314,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function generateExportCanvas() {
+    // High-Resolution Export Master Canvas
+    function generateCleanExportCanvas() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
 
+        const canvasWidth = 1800;
+        const chartHeight = 900;
+        const tableHeight = 60 + (parsed.seriesNames.length * 40) + 40;
+        const totalHeight = chartHeight + tableHeight + 100;
+
         const offCanvas = document.createElement("canvas");
-        offCanvas.width = 2000;
-        offCanvas.height = 1400; // Expanded height to give room for centered title & summary table
-        const offCtx = offCanvas.getContext("2d");
+        offCanvas.width = canvasWidth;
+        offCanvas.height = totalHeight;
+        const ctx = offCanvas.getContext("2d");
+
+        // Solid White Background
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvasWidth, totalHeight);
 
         const isColor = colorModeToggle.checked;
         const showValues = showDataValuesToggle.checked;
@@ -333,21 +343,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 data: parsed.seriesData[name],
                 borderColor: color,
                 backgroundColor: color,
-                borderWidth: 3.5,
+                borderWidth: 3,
                 borderDash: isColor ? [] : bwLineStyles[idx % bwLineStyles.length],
                 pointStyle: pointStyles[idx % pointStyles.length],
-                pointRadius: 8,
+                pointRadius: 7,
                 pointBackgroundColor: color,
                 tension: 0.1
             };
         });
 
-        // Fill solid white background
-        offCtx.fillStyle = '#ffffff';
-        offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
+        // Dedicated Chart Sub-Canvas
+        const chartCanvas = document.createElement("canvas");
+        chartCanvas.width = canvasWidth - 100;
+        chartCanvas.height = chartHeight;
+        const chartCtx = chartCanvas.getContext("2d");
 
-        // Chart Region
-        const exportChart = new Chart(offCtx, {
+        const tempChart = new Chart(chartCtx, {
             type: 'line',
             data: {
                 labels: parsed.xValues,
@@ -357,198 +368,189 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: false,
                 responsive: false,
                 devicePixelRatio: 2,
-                layout: {
-                    padding: {
-                        top: 20,
-                        left: 40,
-                        right: 60,
-                        bottom: 420 // Bottom padding leaves room for the table
-                    }
-                },
+                layout: { padding: { top: 20, left: 20, right: 30, bottom: 20 } },
                 plugins: {
                     title: {
                         display: true,
                         text: chartTitleInput.value,
                         color: '#111111',
-                        font: { size: 28, weight: 'bold' },
-                        padding: { top: 10, bottom: 15 },
-                        align: 'center' // Centered Title
+                        font: { size: 26, weight: 'bold' },
+                        padding: { bottom: 15 }
                     },
                     legend: {
+                        display: true,
                         position: 'top',
-                        align: 'center', // Centered Legend
-                        labels: {
-                            color: '#111111',
-                            font: { size: 16, weight: '600' },
-                            boxWidth: 20,
-                            padding: 20,
-                            usePointStyle: true
-                        }
+                        labels: { color: '#111111', font: { size: 15, weight: '600' }, boxWidth: 16, usePointStyle: true }
                     }
                 },
                 scales: {
                     x: {
-                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: '600' } },
+                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 14 } }
+                        ticks: { color: '#111111', font: { size: 13, weight: '500' } }
                     },
                     y: {
-                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: '600' } },
+                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 16, weight: 'bold' } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 14 } }
+                        ticks: { color: '#111111', font: { size: 13, weight: '500' } }
                     }
                 }
             },
             plugins: [{
-                id: 'after_chart_draw',
+                id: 'dataValuesPrint',
                 afterDatasetsDraw: (chart) => {
-                    if (showValues) {
-                        const ctx = chart.ctx;
-                        ctx.save();
-                        ctx.font = "bold 15px sans-serif";
-                        ctx.fillStyle = "#111111";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "bottom";
+                    if (!showValues) return;
+                    const cCtx = chart.ctx;
+                    cCtx.save();
+                    cCtx.font = "bold 13px sans-serif";
+                    cCtx.fillStyle = "#111111";
+                    cCtx.textAlign = "center";
+                    cCtx.textBaseline = "bottom";
 
-                        chart.data.datasets.forEach((ds, i) => {
-                            const meta = chart.getDatasetMeta(i);
-                            meta.data.forEach((pt, index) => {
-                                ctx.fillText(ds.data[index], pt.x, pt.y - 12);
-                            });
+                    chart.data.datasets.forEach((ds, i) => {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach((pt, index) => {
+                            cCtx.fillText(ds.data[index], pt.x, pt.y - 10);
                         });
-                        ctx.restore();
-                    }
+                    });
+                    cCtx.restore();
                 }
             }]
         });
 
+        // Draw rendered chart onto master canvas
+        ctx.drawImage(chartCanvas, 50, 20);
+        tempChart.destroy();
+
         // Render Summary Table beneath the chart
-        const tableY = 1010;
         const marginX = 80;
-        const tableWidth = offCanvas.width - (marginX * 2);
+        const tableY = chartHeight + 40;
+        const tableWidth = canvasWidth - (marginX * 2);
 
-        // Header Banner
-        offCtx.fillStyle = "#1e293b";
-        offCtx.fillRect(marginX, tableY, tableWidth, 40);
+        // Banner Header
+        ctx.fillStyle = "#1e293b";
+        ctx.fillRect(marginX, tableY, tableWidth, 42);
 
-        offCtx.fillStyle = "#ffffff";
-        offCtx.font = "bold 15px sans-serif";
-        offCtx.textAlign = "left";
-        offCtx.textBaseline = "middle";
-        offCtx.fillText("KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY", marginX + 20, tableY + 20);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 15px sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY", marginX + 20, tableY + 21);
 
-        // Column Headers
-        const colY = tableY + 40;
-        offCtx.fillStyle = "#f1f5f9";
-        offCtx.fillRect(marginX, colY, tableWidth, 32);
+        // Column Titles
+        const colHeaderY = tableY + 42;
+        ctx.fillStyle = "#f1f5f9";
+        ctx.fillRect(marginX, colHeaderY, tableWidth, 34);
 
-        offCtx.fillStyle = "#475569";
-        offCtx.font = "bold 13px sans-serif";
-        
+        ctx.fillStyle = "#334155";
+        ctx.font = "bold 13px sans-serif";
+
         const colWidths = [tableWidth * 0.28, tableWidth * 0.24, tableWidth * 0.24, tableWidth * 0.24];
-        let curX = marginX;
+        let currX = marginX;
 
-        offCtx.fillText("Series Name", curX + 20, colY + 16);
-        curX += colWidths[0];
-        offCtx.fillText("Max Point (X, Y)", curX + 10, colY + 16);
-        curX += colWidths[1];
-        offCtx.fillText("Min Point (X, Y)", curX + 10, colY + 16);
-        curX += colWidths[2];
-        offCtx.fillText("Inflection / Turning Points", curX + 10, colY + 16);
+        ctx.fillText("Series Name", currX + 20, colHeaderY + 17);
+        currX += colWidths[0];
+        ctx.fillText("Max Point (X, Y)", currX + 15, colHeaderY + 17);
+        currX += colWidths[1];
+        ctx.fillText("Min Point (X, Y)", currX + 15, colHeaderY + 17);
+        currX += colWidths[2];
+        ctx.fillText("Turning / Inflection Points", currX + 15, colHeaderY + 17);
 
-        // Rows
-        let rowY = colY + 32;
+        // Data Rows
+        let rowY = colHeaderY + 34;
         parsed.seriesNames.forEach((name, idx) => {
             const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
             const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
 
-            offCtx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
-            offCtx.fillRect(marginX, rowY, tableWidth, 32);
+            ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
+            ctx.fillRect(marginX, rowY, tableWidth, 38);
 
-            // Series indicator dot
-            offCtx.fillStyle = color;
-            offCtx.beginPath();
-            offCtx.arc(marginX + 20, rowY + 16, 5, 0, Math.PI * 2);
-            offCtx.fill();
+            // Series Dot
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(marginX + 20, rowY + 19, 6, 0, Math.PI * 2);
+            ctx.fill();
 
-            offCtx.fillStyle = "#0f172a";
-            offCtx.font = "bold 13px sans-serif";
-            offCtx.fillText(name, marginX + 35, rowY + 16);
+            // Series Name
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 13px sans-serif";
+            ctx.fillText(name, marginX + 36, rowY + 19);
 
-            offCtx.font = "13px monospace";
-            curX = marginX + colWidths[0];
-            offCtx.fillText(`(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})`, curX + 10, rowY + 16);
+            // Max & Min Points
+            ctx.font = "13px monospace";
+            currX = marginX + colWidths[0];
+            ctx.fillText(`(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})`, currX + 15, rowY + 19);
 
-            curX += colWidths[1];
-            offCtx.fillText(`(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})`, curX + 10, rowY + 16);
+            currX += colWidths[1];
+            ctx.fillText(`(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})`, currX + 15, rowY + 19);
 
-            curX += colWidths[2];
-            offCtx.font = "12px sans-serif";
-            let infText = "Monotonic";
+            // Inflection Text
+            currX += colWidths[2];
+            ctx.font = "12px sans-serif";
+            let infText = "Monotonic / Uniform";
             if (trend.extrema.length > 0) {
                 infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
             } else if (trend.inflectionPoints.length > 0) {
                 infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
             }
-            offCtx.fillText(infText, curX + 10, rowY + 16);
+            ctx.fillText(infText, currX + 15, rowY + 19);
 
-            // Divider line
-            offCtx.strokeStyle = "#e2e8f0";
-            offCtx.lineWidth = 1;
-            offCtx.beginPath();
-            offCtx.moveTo(marginX, rowY + 32);
-            offCtx.lineTo(marginX + tableWidth, rowY + 32);
-            offCtx.stroke();
+            // Divider Line
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(marginX, rowY + 38);
+            ctx.lineTo(marginX + tableWidth, rowY + 38);
+            ctx.stroke();
 
-            rowY += 32;
+            rowY += 38;
         });
 
-        // Outer border
-        offCtx.strokeStyle = "#cbd5e1";
-        offCtx.lineWidth = 1.5;
-        offCtx.strokeRect(marginX, tableY, tableWidth, rowY - tableY);
+        // Table Outline
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(marginX, tableY, tableWidth, rowY - tableY);
 
-        return { exportChart, offCanvas };
+        return offCanvas;
     }
 
     function exportPNG() {
-        const generated = generateExportCanvas();
-        if (!generated) return;
-        setTimeout(() => {
-            const imgData = generated.offCanvas.toDataURL("image/png", 1.0);
-            const link = document.createElement("a");
-            link.download = "Lotus_Shark_Kinematics_Graph_Trends.png";
-            link.href = imgData;
-            link.click();
-            generated.exportChart.destroy();
-        }, 100);
+        const offCanvas = generateCleanExportCanvas();
+        if (!offCanvas) return;
+
+        const imgData = offCanvas.toDataURL("image/png", 1.0);
+        const link = document.createElement("a");
+        link.download = "Lotus_Shark_Kinematics_Report.png";
+        link.href = imgData;
+        link.click();
     }
 
     function exportPDF() {
-        const generated = generateExportCanvas();
-        if (!generated) return;
-        setTimeout(() => {
-            const imgData = generated.offCanvas.toDataURL("image/jpeg", 0.98);
-            const { jsPDF } = window.jspdf || {};
-            if (jsPDF) {
-                const pdf = new jsPDF({
-                    orientation: 'landscape',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                
-                const margin = 10;
-                const imgWidth = pageWidth - (margin * 2);
-                const imgHeight = (generated.offCanvas.height * imgWidth) / generated.offCanvas.width;
-                const posY = (pageHeight - imgHeight) / 2;
+        const offCanvas = generateCleanExportCanvas();
+        if (!offCanvas) return;
 
-                pdf.addImage(imgData, 'JPEG', margin, posY > margin ? posY : margin, imgWidth, imgHeight);
-                pdf.save('Lotus_Shark_Kinematics_Report.pdf');
-            }
-            generated.exportChart.destroy();
-        }, 100);
+        const imgData = offCanvas.toDataURL("image/jpeg", 0.98);
+        const { jsPDF } = window.jspdf || {};
+
+        if (jsPDF) {
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            const margin = 8;
+            const imgWidth = pageWidth - (margin * 2);
+            const imgHeight = (offCanvas.height * imgWidth) / offCanvas.width;
+
+            const posY = (pageHeight - imgHeight) / 2;
+
+            pdf.addImage(imgData, 'JPEG', margin, posY > margin ? posY : margin, imgWidth, imgHeight);
+            pdf.save('Lotus_Shark_Kinematics_Report.pdf');
+        }
     }
 
     updateBtn.addEventListener("click", updateGraph);
