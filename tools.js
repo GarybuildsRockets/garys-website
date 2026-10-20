@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let rawText = text.trim();
 
-        // Strip out top title headers if pasted
         if (/^anti\s+\w+/i.test(rawText)) {
             const firstLineEnd = rawText.indexOf("\n");
             if (firstLineEnd !== -1) {
@@ -44,10 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Split text into individual lines
         let lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l);
 
-        // Handle single concatenated line case
         if (lines.length === 1 && lines[0].includes("Front")) {
             const headerMatch = lines[0].match(/^(X\s*Front \+ve Y\s*Front -ve Y\s*Rear \+ve Y\s*Rear -ve Y)/i);
             if (headerMatch) {
@@ -65,9 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (lines.length < 2) return null;
 
-        // Detect delimiter (tab, comma, or whitespace)
         const delimiter = lines[0].includes("\t") ? "\t" : (lines[0].includes(",") ? "," : /\s+/);
-
         const headers = lines[0].split(delimiter).map(h => h.trim()).filter(h => h);
         const seriesNames = headers.slice(1);
 
@@ -88,64 +83,101 @@ document.addEventListener("DOMContentLoaded", function () {
         return { xValues, seriesNames, seriesData };
     }
 
-    /**
-     * Calculates Max, Min, and Inflection / Turning points for dataset
-     */
-    function calculateSeriesTrends(xValues, yValues) {
-        if (!xValues || !yValues || xValues.length === 0 || yValues.length === 0) {
-            return { maxPoint: null, minPoint: null, inflections: [] };
-        }
+    function analyzeTrend(xValues, yValues) {
+        if (!xValues || !yValues || xValues.length < 2) return null;
 
-        let maxIdx = 0;
-        let minIdx = 0;
+        let maxVal = -Infinity, minVal = Infinity;
+        let maxIdx = -1, minIdx = -1;
 
-        for (let i = 1; i < yValues.length; i++) {
-            if (yValues[i] > yValues[maxIdx]) maxIdx = i;
-            if (yValues[i] < yValues[minIdx]) minIdx = i;
-        }
-
-        const maxPoint = { x: xValues[maxIdx], y: yValues[maxIdx] };
-        const minPoint = { x: xValues[minIdx], y: yValues[minIdx] };
-
-        // Turning / Inflection point analysis using slope changes
-        const inflections = [];
-        if (xValues.length >= 3) {
-            const slopes = [];
-            for (let i = 0; i < xValues.length - 1; i++) {
-                const dx = xValues[i + 1] - xValues[i];
-                const dy = yValues[i + 1] - yValues[i];
-                slopes.push(dx !== 0 ? dy / dx : 0);
+        for (let i = 0; i < yValues.length; i++) {
+            if (yValues[i] > maxVal) {
+                maxVal = yValues[i];
+                maxIdx = i;
             }
-
-            // Detect slope direction sign flip (Turning points / Local Extremes)
-            for (let i = 0; i < slopes.length - 1; i++) {
-                const s1 = slopes[i];
-                const s2 = slopes[i + 1];
-                
-                // Peak or trough local turning point
-                if ((s1 > 0 && s2 < 0) || (s1 < 0 && s2 > 0)) {
-                    inflections.push({
-                        x: xValues[i + 1],
-                        y: yValues[i + 1],
-                        type: (s1 > 0 && s2 < 0) ? 'Local Max' : 'Local Min'
-                    });
-                } else if (Math.abs(s2 - s1) > 0.05 && i < slopes.length - 2) {
-                    // Concavity shift / Slope change rate shift check
-                    const s3 = slopes[i + 2];
-                    const d1 = s2 - s1;
-                    const d2 = s3 - s2;
-                    if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) {
-                        inflections.push({
-                            x: xValues[i + 1],
-                            y: yValues[i + 1],
-                            type: 'Inflection'
-                        });
-                    }
-                }
+            if (yValues[i] < minVal) {
+                minVal = yValues[i];
+                minIdx = i;
             }
         }
 
-        return { maxPoint, minPoint, inflections };
+        const extrema = [];
+        for (let i = 1; i < yValues.length - 1; i++) {
+            const prevDiff = yValues[i] - yValues[i - 1];
+            const nextDiff = yValues[i + 1] - yValues[i];
+
+            if (prevDiff > 0 && nextDiff < 0) {
+                extrema.push({ type: 'Peak (Local Max)', x: xValues[i], y: yValues[i] });
+            } else if (prevDiff < 0 && nextDiff > 0) {
+                extrema.push({ type: 'Trough (Local Min)', x: xValues[i], y: yValues[i] });
+            }
+        }
+
+        const inflectionPoints = [];
+        for (let i = 1; i < yValues.length - 2; i++) {
+            const s1 = (yValues[i] - yValues[i - 1]) / (xValues[i] - xValues[i - 1]);
+            const s2 = (yValues[i + 1] - yValues[i]) / (xValues[i + 1] - xValues[i]);
+            const s3 = (yValues[i + 2] - yValues[i + 1]) / (xValues[i + 2] - xValues[i + 1]);
+
+            const curve1 = s2 - s1;
+            const curve2 = s3 - s2;
+
+            if ((curve1 > 0 && curve2 < 0) || (curve1 < 0 && curve2 > 0)) {
+                inflectionPoints.push({ x: xValues[i + 1], y: yValues[i + 1] });
+            }
+        }
+
+        return {
+            maxPoint: { x: xValues[maxIdx], y: maxVal },
+            minPoint: { x: xValues[minIdx], y: minVal },
+            extrema,
+            inflectionPoints
+        };
+    }
+
+    function updateTrendsPanel(parsed) {
+        if (!trendsSummaryContainer) return;
+        trendsSummaryContainer.innerHTML = "";
+
+        parsed.seriesNames.forEach((name, idx) => {
+            const color = colorModeToggle.checked ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#3aa3ff";
+            const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
+            if (!trend) return;
+
+            const card = document.createElement("div");
+            card.className = "trend-card";
+            card.style.borderLeftColor = color;
+
+            const header = document.createElement("div");
+            header.className = "trend-card-header";
+            header.textContent = name;
+            card.appendChild(header);
+
+            const maxItem = document.createElement("div");
+            maxItem.className = "trend-item";
+            maxItem.innerHTML = `<span>Maximum:</span> <span class="trend-item-val">(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})</span>`;
+            card.appendChild(maxItem);
+
+            const minItem = document.createElement("div");
+            minItem.className = "trend-item";
+            minItem.innerHTML = `<span>Minimum:</span> <span class="trend-item-val">(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})</span>`;
+            card.appendChild(minItem);
+
+            let infText = "Monotonic / Uniform";
+            if (trend.extrema.length > 0) {
+                infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
+            } else if (trend.inflectionPoints.length > 0) {
+                infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
+            }
+
+            const infItem = document.createElement("div");
+            infItem.className = "trend-item";
+            infItem.style.flexDirection = "column";
+            infItem.style.gap = "2px";
+            infItem.innerHTML = `<span style="font-size: 10px; opacity: 0.8;">Turning / Inflection Points:</span> <span class="trend-item-val" style="font-size: 10px; color: ${color};">${infText}</span>`;
+            card.appendChild(infItem);
+
+            trendsSummaryContainer.appendChild(card);
+        });
     }
 
     function initColorPickers(seriesNames) {
@@ -191,51 +223,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function renderWebsideTrends(parsed) {
-        if (!trendsSummaryContainer) return;
-        trendsSummaryContainer.innerHTML = "";
-
-        parsed.seriesNames.forEach((name, idx) => {
-            const yData = parsed.seriesData[name];
-            const trends = calculateSeriesTrends(parsed.xValues, yData);
-            const isColor = colorModeToggle.checked;
-            const cardColor = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#3aa3ff";
-
-            const card = document.createElement("div");
-            card.className = "trend-card";
-            card.style.borderLeftColor = cardColor;
-
-            let inflectionText = "Monotonic / Uniform";
-            if (trends.inflections.length > 0) {
-                inflectionText = trends.inflections
-                    .map(pt => `(${pt.x}, ${pt.y.toFixed(2)}) [${pt.type}]`)
-                    .join(", ");
-            }
-
-            card.innerHTML = `
-                <div class="trend-card-title" style="color: ${cardColor};">
-                    ${name}
-                </div>
-                <div class="trend-card-grid">
-                    <div class="trend-stat">
-                        <span class="stat-label">Maximum</span>
-                        <span class="stat-value max-val">(${trends.maxPoint.x}, ${trends.maxPoint.y.toFixed(2)})</span>
-                    </div>
-                    <div class="trend-stat">
-                        <span class="stat-label">Minimum</span>
-                        <span class="stat-value min-val">(${trends.minPoint.x}, ${trends.minPoint.y.toFixed(2)})</span>
-                    </div>
-                </div>
-                <div class="trend-stat" style="margin-top: 6px;">
-                    <span class="stat-label">Turning / Inflection Points</span>
-                    <span class="stat-value inflection-val">${inflectionText}</span>
-                </div>
-            `;
-
-            trendsSummaryContainer.appendChild(card);
-        });
-    }
-
     function drawDataValuesPlugin(chartInstance) {
         if (!showDataValuesToggle.checked) return;
         const ctx = chartInstance.ctx;
@@ -260,8 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!parsed) return;
 
         initColorPickers(parsed.seriesNames);
-        renderWebsideTrends(parsed);
-
+        updateTrendsPanel(parsed);
         const isColor = colorModeToggle.checked;
 
         const datasets = parsed.seriesNames.map((name, idx) => {
@@ -332,15 +318,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
 
-        // Expanded canvas height to conveniently render trend metrics summary table underneath
-        const chartHeight = 1000;
-        const summaryTableHeight = 400;
-        const canvasWidth = 2000;
-        const canvasHeight = chartHeight + summaryTableHeight;
-
         const offCanvas = document.createElement("canvas");
-        offCanvas.width = canvasWidth;
-        offCanvas.height = canvasHeight;
+        offCanvas.width = 2000;
+        offCanvas.height = 1400; // Expanded height to give room for centered title & summary table
         const offCtx = offCanvas.getContext("2d");
 
         const isColor = colorModeToggle.checked;
@@ -362,13 +342,12 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         });
 
-        // Create temporary sub-canvas for chart rendering
-        const chartCanvas = document.createElement("canvas");
-        chartCanvas.width = canvasWidth;
-        chartCanvas.height = chartHeight;
-        const chartCtx = chartCanvas.getContext("2d");
+        // Fill solid white background
+        offCtx.fillStyle = '#ffffff';
+        offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
 
-        const exportChart = new Chart(chartCtx, {
+        // Chart Region
+        const exportChart = new Chart(offCtx, {
             type: 'line',
             data: {
                 labels: parsed.xValues,
@@ -378,21 +357,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: false,
                 responsive: false,
                 devicePixelRatio: 2,
-                layout: { padding: { top: 30, left: 40, right: 40, bottom: 20 } },
+                layout: {
+                    padding: {
+                        top: 20,
+                        left: 40,
+                        right: 60,
+                        bottom: 420 // Bottom padding leaves room for the table
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
                         text: chartTitleInput.value,
                         color: '#111111',
                         font: { size: 28, weight: 'bold' },
-                        padding: { bottom: 20 }
+                        padding: { top: 10, bottom: 15 },
+                        align: 'center' // Centered Title
                     },
                     legend: {
                         position: 'top',
+                        align: 'center', // Centered Legend
                         labels: {
                             color: '#111111',
                             font: { size: 16, weight: '600' },
-                            boxWidth: 24,
+                            boxWidth: 20,
                             padding: 20,
                             usePointStyle: true
                         }
@@ -412,108 +400,113 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             },
             plugins: [{
-                id: 'pure_white_bg',
-                beforeDraw: (chart) => {
-                    const ctx = chart.canvas.getContext('2d');
-                    ctx.save();
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, chart.width, chart.height);
-                    ctx.restore();
-                },
+                id: 'after_chart_draw',
                 afterDatasetsDraw: (chart) => {
-                    if (!showValues) return;
-                    const ctx = chart.ctx;
-                    ctx.save();
-                    ctx.font = "bold 15px sans-serif";
-                    ctx.fillStyle = "#111111";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "bottom";
+                    if (showValues) {
+                        const ctx = chart.ctx;
+                        ctx.save();
+                        ctx.font = "bold 15px sans-serif";
+                        ctx.fillStyle = "#111111";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "bottom";
 
-                    chart.data.datasets.forEach((ds, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        meta.data.forEach((pt, index) => {
-                            ctx.fillText(ds.data[index], pt.x, pt.y - 12);
+                        chart.data.datasets.forEach((ds, i) => {
+                            const meta = chart.getDatasetMeta(i);
+                            meta.data.forEach((pt, index) => {
+                                ctx.fillText(ds.data[index], pt.x, pt.y - 12);
+                            });
                         });
-                    });
-                    ctx.restore();
+                        ctx.restore();
+                    }
                 }
             }]
         });
 
-        // Draw background for combined exported image
-        offCtx.fillStyle = '#ffffff';
-        offCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+        // Render Summary Table beneath the chart
+        const tableY = 1010;
+        const marginX = 80;
+        const tableWidth = offCanvas.width - (marginX * 2);
 
-        // Draw Chart onto master export canvas
-        offCtx.drawImage(chartCanvas, 0, 0);
+        // Header Banner
+        offCtx.fillStyle = "#1e293b";
+        offCtx.fillRect(marginX, tableY, tableWidth, 40);
 
-        // Render Conveniently Placed Trend Analysis Summary Table on Canvas Bottom
-        const startY = chartHeight + 10;
-        offCtx.save();
+        offCtx.fillStyle = "#ffffff";
+        offCtx.font = "bold 15px sans-serif";
+        offCtx.textAlign = "left";
+        offCtx.textBaseline = "middle";
+        offCtx.fillText("KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY", marginX + 20, tableY + 20);
 
-        // Draw Section Divider & Header Box
-        offCtx.fillStyle = '#1e293b';
-        offCtx.fillRect(40, startY, canvasWidth - 80, 44);
+        // Column Headers
+        const colY = tableY + 40;
+        offCtx.fillStyle = "#f1f5f9";
+        offCtx.fillRect(marginX, colY, tableWidth, 32);
 
-        offCtx.fillStyle = '#ffffff';
-        offCtx.font = 'bold 18px sans-serif';
-        offCtx.textAlign = 'left';
-        offCtx.fillText('KINEMATIC TREND ANALYSIS & KEY METRICS SUMMARY', 60, startY + 28);
+        offCtx.fillStyle = "#475569";
+        offCtx.font = "bold 13px sans-serif";
+        
+        const colWidths = [tableWidth * 0.28, tableWidth * 0.24, tableWidth * 0.24, tableWidth * 0.24];
+        let curX = marginX;
 
-        // Table Headers
-        const tableY = startY + 54;
-        offCtx.fillStyle = '#f1f5f9';
-        offCtx.fillRect(40, tableY, canvasWidth - 80, 36);
+        offCtx.fillText("Series Name", curX + 20, colY + 16);
+        curX += colWidths[0];
+        offCtx.fillText("Max Point (X, Y)", curX + 10, colY + 16);
+        curX += colWidths[1];
+        offCtx.fillText("Min Point (X, Y)", curX + 10, colY + 16);
+        curX += colWidths[2];
+        offCtx.fillText("Inflection / Turning Points", curX + 10, colY + 16);
 
-        offCtx.strokeStyle = '#cbd5e1';
-        offCtx.lineWidth = 1;
-        offCtx.strokeRect(40, tableY, canvasWidth - 80, 36);
-
-        offCtx.fillStyle = '#334155';
-        offCtx.font = 'bold 14px sans-serif';
-        offCtx.fillText('Series Name', 60, tableY + 23);
-        offCtx.fillText('Max Point (X, Y)', 500, tableY + 23);
-        offCtx.fillText('Min Point (X, Y)', 900, tableY + 23);
-        offCtx.fillText('Inflection / Turning Points', 1300, tableY + 23);
-
-        // Render rows for each series
-        let rowY = tableY + 36;
+        // Rows
+        let rowY = colY + 32;
         parsed.seriesNames.forEach((name, idx) => {
-            const yData = parsed.seriesData[name];
-            const trends = calculateSeriesTrends(parsed.xValues, yData);
-            const rowColor = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : '#111111';
+            const color = isColor ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#111111";
+            const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
 
-            // Alternating Row Background
-            offCtx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
-            offCtx.fillRect(40, rowY, canvasWidth - 80, 42);
-            offCtx.strokeRect(40, rowY, canvasWidth - 80, 42);
+            offCtx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
+            offCtx.fillRect(marginX, rowY, tableWidth, 32);
 
-            // Series Name with Color Indicator
-            offCtx.fillStyle = rowColor;
+            // Series indicator dot
+            offCtx.fillStyle = color;
             offCtx.beginPath();
-            offCtx.arc(70, rowY + 21, 6, 0, Math.PI * 2);
+            offCtx.arc(marginX + 20, rowY + 16, 5, 0, Math.PI * 2);
             offCtx.fill();
 
-            offCtx.fillStyle = '#0f172a';
-            offCtx.font = 'bold 14px sans-serif';
-            offCtx.fillText(name, 90, rowY + 26);
+            offCtx.fillStyle = "#0f172a";
+            offCtx.font = "bold 13px sans-serif";
+            offCtx.fillText(name, marginX + 35, rowY + 16);
 
-            // Metrics Data
-            offCtx.font = '14px monospace';
-            offCtx.fillStyle = '#1e293b';
-            offCtx.fillText(`(${trends.maxPoint.x}, ${trends.maxPoint.y.toFixed(2)})`, 500, rowY + 26);
-            offCtx.fillText(`(${trends.minPoint.x}, ${trends.minPoint.y.toFixed(2)})`, 900, rowY + 26);
+            offCtx.font = "13px monospace";
+            curX = marginX + colWidths[0];
+            offCtx.fillText(`(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})`, curX + 10, rowY + 16);
 
+            curX += colWidths[1];
+            offCtx.fillText(`(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})`, curX + 10, rowY + 16);
+
+            curX += colWidths[2];
+            offCtx.font = "12px sans-serif";
             let infText = "Monotonic";
-            if (trends.inflections.length > 0) {
-                infText = trends.inflections.map(pt => `(${pt.x}, ${pt.y.toFixed(2)})`).join(', ');
+            if (trend.extrema.length > 0) {
+                infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
+            } else if (trend.inflectionPoints.length > 0) {
+                infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
             }
-            offCtx.fillText(infText, 1300, rowY + 26);
+            offCtx.fillText(infText, curX + 10, rowY + 16);
 
-            rowY += 42;
+            // Divider line
+            offCtx.strokeStyle = "#e2e8f0";
+            offCtx.lineWidth = 1;
+            offCtx.beginPath();
+            offCtx.moveTo(marginX, rowY + 32);
+            offCtx.lineTo(marginX + tableWidth, rowY + 32);
+            offCtx.stroke();
+
+            rowY += 32;
         });
 
-        offCtx.restore();
+        // Outer border
+        offCtx.strokeStyle = "#cbd5e1";
+        offCtx.lineWidth = 1.5;
+        offCtx.strokeRect(marginX, tableY, tableWidth, rowY - tableY);
 
         return { exportChart, offCanvas };
     }
@@ -546,11 +539,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 
-                const imgWidth = pageWidth - 20;
+                const margin = 10;
+                const imgWidth = pageWidth - (margin * 2);
                 const imgHeight = (generated.offCanvas.height * imgWidth) / generated.offCanvas.width;
                 const posY = (pageHeight - imgHeight) / 2;
 
-                pdf.addImage(imgData, 'JPEG', 10, posY > 5 ? posY : 5, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'JPEG', margin, posY > margin ? posY : margin, imgWidth, imgHeight);
                 pdf.save('Lotus_Shark_Kinematics_Report.pdf');
             }
             generated.exportChart.destroy();
