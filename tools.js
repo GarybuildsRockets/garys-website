@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const colorPickersContainer = document.getElementById("colorPickersContainer");
     const colorModeToggle = document.getElementById("colorModeToggle");
     const showDataValuesToggle = document.getElementById("showDataValuesToggle");
+    const trendsSummaryContainer = document.getElementById("trendsSummaryContainer");
 
     if (!csvInput) return;
 
@@ -85,6 +86,103 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         return { xValues, seriesNames, seriesData };
+    }
+
+    function analyzeTrend(xValues, yValues) {
+        if (!xValues || !yValues || xValues.length < 2) return null;
+
+        let maxVal = -Infinity, minVal = Infinity;
+        let maxIdx = -1, minIdx = -1;
+
+        for (let i = 0; i < yValues.length; i++) {
+            if (yValues[i] > maxVal) {
+                maxVal = yValues[i];
+                maxIdx = i;
+            }
+            if (yValues[i] < minVal) {
+                minVal = yValues[i];
+                minIdx = i;
+            }
+        }
+
+        const extrema = [];
+        for (let i = 1; i < yValues.length - 1; i++) {
+            const prevDiff = yValues[i] - yValues[i - 1];
+            const nextDiff = yValues[i + 1] - yValues[i];
+
+            if (prevDiff > 0 && nextDiff < 0) {
+                extrema.push({ type: 'Peak (Local Max)', x: xValues[i], y: yValues[i] });
+            } else if (prevDiff < 0 && nextDiff > 0) {
+                extrema.push({ type: 'Trough (Local Min)', x: xValues[i], y: yValues[i] });
+            }
+        }
+
+        const inflectionPoints = [];
+        for (let i = 1; i < yValues.length - 2; i++) {
+            const s1 = (yValues[i] - yValues[i - 1]) / (xValues[i] - xValues[i - 1]);
+            const s2 = (yValues[i + 1] - yValues[i]) / (xValues[i + 1] - xValues[i]);
+            const s3 = (yValues[i + 2] - yValues[i + 1]) / (xValues[i + 2] - xValues[i + 1]);
+
+            const curve1 = s2 - s1;
+            const curve2 = s3 - s2;
+
+            if ((curve1 > 0 && curve2 < 0) || (curve1 < 0 && curve2 > 0)) {
+                inflectionPoints.push({ x: xValues[i + 1], y: yValues[i + 1] });
+            }
+        }
+
+        return {
+            maxPoint: { x: xValues[maxIdx], y: maxVal },
+            minPoint: { x: xValues[minIdx], y: minVal },
+            extrema,
+            inflectionPoints
+        };
+    }
+
+    function updateTrendsPanel(parsed) {
+        if (!trendsSummaryContainer) return;
+        trendsSummaryContainer.innerHTML = "";
+
+        parsed.seriesNames.forEach((name, idx) => {
+            const color = colorModeToggle.checked ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#3aa3ff";
+            const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
+            if (!trend) return;
+
+            const card = document.createElement("div");
+            card.className = "trend-card";
+            card.style.borderLeftColor = color;
+
+            const header = document.createElement("div");
+            header.className = "trend-card-header";
+            header.textContent = name;
+            card.appendChild(header);
+
+            const maxItem = document.createElement("div");
+            maxItem.className = "trend-item";
+            maxItem.innerHTML = `<span>Maximum:</span> <span class="trend-item-val">(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})</span>`;
+            card.appendChild(maxItem);
+
+            const minItem = document.createElement("div");
+            minItem.className = "trend-item";
+            minItem.innerHTML = `<span>Minimum:</span> <span class="trend-item-val">(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})</span>`;
+            card.appendChild(minItem);
+
+            let infText = "Monotonic / Uniform";
+            if (trend.extrema.length > 0) {
+                infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
+            } else if (trend.inflectionPoints.length > 0) {
+                infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
+            }
+
+            const infItem = document.createElement("div");
+            infItem.className = "trend-item";
+            infItem.style.flexDirection = "column";
+            infItem.style.gap = "2px";
+            infItem.innerHTML = `<span style="font-size: 10px; opacity: 0.8;">Turning / Inflection Points:</span> <span class="trend-item-val" style="font-size: 10px; color: ${color};">${infText}</span>`;
+            card.appendChild(infItem);
+
+            trendsSummaryContainer.appendChild(card);
+        });
     }
 
     function initColorPickers(seriesNames) {
@@ -154,6 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!parsed) return;
 
         initColorPickers(parsed.seriesNames);
+        updateTrendsPanel(parsed);
         const isColor = colorModeToggle.checked;
 
         const datasets = parsed.seriesNames.map((name, idx) => {
