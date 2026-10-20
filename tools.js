@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const colorPickersContainer = document.getElementById("colorPickersContainer");
     const colorModeToggle = document.getElementById("colorModeToggle");
     const showDataValuesToggle = document.getElementById("showDataValuesToggle");
-    const trendsSummaryContainer = document.getElementById("trendsSummaryContainer");
 
     if (!csvInput) return;
 
@@ -36,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let rawText = text.trim();
 
+        // Strip out top title headers if pasted (e.g., "Anti Squat (%)" or "Anti Dive (%)")
         if (/^anti\s+\w+/i.test(rawText)) {
             const firstLineEnd = rawText.indexOf("\n");
             if (firstLineEnd !== -1) {
@@ -43,8 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Split text into individual lines
         let lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l);
 
+        // If pasted as a single concatenated line, handle decimal extraction
         if (lines.length === 1 && lines[0].includes("Front")) {
             const headerMatch = lines[0].match(/^(X\s*Front \+ve Y\s*Front -ve Y\s*Rear \+ve Y\s*Rear -ve Y)/i);
             if (headerMatch) {
@@ -62,7 +64,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (lines.length < 2) return null;
 
+        // Detect delimiter (tab, comma, or whitespace)
         const delimiter = lines[0].includes("\t") ? "\t" : (lines[0].includes(",") ? "," : /\s+/);
+
         const headers = lines[0].split(delimiter).map(h => h.trim()).filter(h => h);
         const seriesNames = headers.slice(1);
 
@@ -81,103 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         return { xValues, seriesNames, seriesData };
-    }
-
-    function analyzeTrend(xValues, yValues) {
-        if (!xValues || !yValues || xValues.length < 2) return null;
-
-        let maxVal = -Infinity, minVal = Infinity;
-        let maxIdx = -1, minIdx = -1;
-
-        for (let i = 0; i < yValues.length; i++) {
-            if (yValues[i] > maxVal) {
-                maxVal = yValues[i];
-                maxIdx = i;
-            }
-            if (yValues[i] < minVal) {
-                minVal = yValues[i];
-                minIdx = i;
-            }
-        }
-
-        const extrema = [];
-        for (let i = 1; i < yValues.length - 1; i++) {
-            const prevDiff = yValues[i] - yValues[i - 1];
-            const nextDiff = yValues[i + 1] - yValues[i];
-
-            if (prevDiff > 0 && nextDiff < 0) {
-                extrema.push({ type: 'Peak (Local Max)', x: xValues[i], y: yValues[i] });
-            } else if (prevDiff < 0 && nextDiff > 0) {
-                extrema.push({ type: 'Trough (Local Min)', x: xValues[i], y: yValues[i] });
-            }
-        }
-
-        const inflectionPoints = [];
-        for (let i = 1; i < yValues.length - 2; i++) {
-            const s1 = (yValues[i] - yValues[i - 1]) / (xValues[i] - xValues[i - 1]);
-            const s2 = (yValues[i + 1] - yValues[i]) / (xValues[i + 1] - xValues[i]);
-            const s3 = (yValues[i + 2] - yValues[i + 1]) / (xValues[i + 2] - xValues[i + 1]);
-
-            const curve1 = s2 - s1;
-            const curve2 = s3 - s2;
-
-            if ((curve1 > 0 && curve2 < 0) || (curve1 < 0 && curve2 > 0)) {
-                inflectionPoints.push({ x: xValues[i + 1], y: yValues[i + 1] });
-            }
-        }
-
-        return {
-            maxPoint: { x: xValues[maxIdx], y: maxVal },
-            minPoint: { x: xValues[minIdx], y: minVal },
-            extrema,
-            inflectionPoints
-        };
-    }
-
-    function updateTrendsPanel(parsed) {
-        if (!trendsSummaryContainer) return;
-        trendsSummaryContainer.innerHTML = "";
-
-        parsed.seriesNames.forEach((name, idx) => {
-            const color = colorModeToggle.checked ? (seriesColors[name] || defaultPalette[idx % defaultPalette.length]) : "#3aa3ff";
-            const trend = analyzeTrend(parsed.xValues, parsed.seriesData[name]);
-            if (!trend) return;
-
-            const card = document.createElement("div");
-            card.className = "trend-card";
-            card.style.borderLeftColor = color;
-
-            const header = document.createElement("div");
-            header.className = "trend-card-header";
-            header.textContent = name;
-            card.appendChild(header);
-
-            const maxItem = document.createElement("div");
-            maxItem.className = "trend-item";
-            maxItem.innerHTML = `<span>Maximum:</span> <span class="trend-item-val">(${trend.maxPoint.x}, ${trend.maxPoint.y.toFixed(2)})</span>`;
-            card.appendChild(maxItem);
-
-            const minItem = document.createElement("div");
-            minItem.className = "trend-item";
-            minItem.innerHTML = `<span>Minimum:</span> <span class="trend-item-val">(${trend.minPoint.x}, ${trend.minPoint.y.toFixed(2)})</span>`;
-            card.appendChild(minItem);
-
-            let infText = "Monotonic / Uniform";
-            if (trend.extrema.length > 0) {
-                infText = trend.extrema.map(e => `${e.type} @ (${e.x}, ${e.y.toFixed(2)})`).join("; ");
-            } else if (trend.inflectionPoints.length > 0) {
-                infText = trend.inflectionPoints.map(p => `Inflection @ (${p.x}, ${p.y.toFixed(2)})`).join("; ");
-            }
-
-            const infItem = document.createElement("div");
-            infItem.className = "trend-item";
-            infItem.style.flexDirection = "column";
-            infItem.style.gap = "2px";
-            infItem.innerHTML = `<span style="font-size: 10px; opacity: 0.8;">Turning / Inflection Points:</span> <span class="trend-item-val" style="font-size: 10px; color: ${color};">${infText}</span>`;
-            card.appendChild(infItem);
-
-            trendsSummaryContainer.appendChild(card);
-        });
     }
 
     function initColorPickers(seriesNames) {
@@ -247,7 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!parsed) return;
 
         initColorPickers(parsed.seriesNames);
-        updateTrendsPanel(parsed);
         const isColor = colorModeToggle.checked;
 
         const datasets = parsed.seriesNames.map((name, idx) => {
@@ -314,10 +220,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // High-Resolution Full Graph Export Generator
-    function generateCleanExportCanvas() {
+    function generateExportCanvas() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
+
+        const offCanvas = document.createElement("canvas");
+        offCanvas.width = 2000;
+        offCanvas.height = 1125;
+        const offCtx = offCanvas.getContext("2d");
 
         const isColor = colorModeToggle.checked;
         const showValues = showDataValuesToggle.checked;
@@ -329,35 +239,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 data: parsed.seriesData[name],
                 borderColor: color,
                 backgroundColor: color,
-                borderWidth: 3,
+                borderWidth: 3.5,
                 borderDash: isColor ? [] : bwLineStyles[idx % bwLineStyles.length],
                 pointStyle: pointStyles[idx % pointStyles.length],
-                pointRadius: 7,
+                pointRadius: 8,
                 pointBackgroundColor: color,
                 tension: 0.1
             };
         });
 
-        const exportWidth = 1800;
-        const exportHeight = 1100;
-
-        // Temporary hidden container attached to body for accurate layout rendering
-        const tempContainer = document.createElement("div");
-        tempContainer.style.position = "fixed";
-        tempContainer.style.left = "-9999px";
-        tempContainer.style.top = "-9999px";
-        tempContainer.style.width = `${exportWidth}px`;
-        tempContainer.style.height = `${exportHeight}px`;
-
-        const chartCanvas = document.createElement("canvas");
-        chartCanvas.width = exportWidth;
-        chartCanvas.height = exportHeight;
-        tempContainer.appendChild(chartCanvas);
-        document.body.appendChild(tempContainer);
-
-        const chartCtx = chartCanvas.getContext("2d");
-
-        const tempChart = new Chart(chartCtx, {
+        const exportChart = new Chart(offCtx, {
             type: 'line',
             data: {
                 labels: parsed.xValues,
@@ -366,39 +257,42 @@ document.addEventListener("DOMContentLoaded", function () {
             options: {
                 animation: false,
                 responsive: false,
-                maintainAspectRatio: false,
-                layout: { padding: { top: 40, left: 60, right: 60, bottom: 60 } },
+                devicePixelRatio: 2,
+                layout: { padding: 40 },
                 plugins: {
                     title: {
                         display: true,
                         text: chartTitleInput.value,
                         color: '#111111',
-                        font: { size: 28, weight: 'bold' },
-                        padding: { bottom: 20 },
-                        align: 'center'
+                        font: { size: 26, weight: 'bold' },
+                        padding: { bottom: 20 }
                     },
                     legend: {
-                        display: true,
                         position: 'top',
-                        align: 'center',
-                        labels: { color: '#111111', font: { size: 16, weight: '600' }, boxWidth: 18, usePointStyle: true, padding: 25 }
+                        labels: {
+                            color: '#111111',
+                            font: { size: 16, weight: '600' },
+                            boxWidth: 24,
+                            padding: 20,
+                            usePointStyle: true
+                        }
                     }
                 },
                 scales: {
                     x: {
-                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { top: 15 } },
+                        title: { display: true, text: xAxisLabelInput.value, color: '#111111', font: { size: 18, weight: '600' } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 14, weight: '500' }, padding: 10 }
+                        ticks: { color: '#111111', font: { size: 14 } }
                     },
                     y: {
-                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: 'bold' }, padding: { bottom: 15 } },
+                        title: { display: true, text: yAxisLabelInput.value, color: '#111111', font: { size: 18, weight: '600' } },
                         grid: { color: '#e2e8f0', lineWidth: 1.5 },
-                        ticks: { color: '#111111', font: { size: 14, weight: '500' }, padding: 10 }
+                        ticks: { color: '#111111', font: { size: 14 } }
                     }
                 }
             },
             plugins: [{
-                id: 'whiteBgAndValues',
+                id: 'pure_white_bg_and_labels',
                 beforeDraw: (chart) => {
                     const ctx = chart.canvas.getContext('2d');
                     ctx.save();
@@ -409,74 +303,64 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 afterDatasetsDraw: (chart) => {
                     if (!showValues) return;
-                    const cCtx = chart.ctx;
-                    cCtx.save();
-                    cCtx.font = "bold 13px sans-serif";
-                    cCtx.fillStyle = "#111111";
-                    cCtx.textAlign = "center";
-                    cCtx.textBaseline = "bottom";
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    ctx.font = "bold 15px sans-serif";
+                    ctx.fillStyle = "#111111";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "bottom";
 
                     chart.data.datasets.forEach((ds, i) => {
                         const meta = chart.getDatasetMeta(i);
                         meta.data.forEach((pt, index) => {
-                            cCtx.fillText(ds.data[index], pt.x, pt.y - 10);
+                            ctx.fillText(ds.data[index], pt.x, pt.y - 12);
                         });
                     });
-                    cCtx.restore();
+                    ctx.restore();
                 }
             }]
         });
 
-        // Copy canvas to clean output
-        const masterCanvas = document.createElement("canvas");
-        masterCanvas.width = exportWidth;
-        masterCanvas.height = exportHeight;
-        const ctx = masterCanvas.getContext("2d");
-        ctx.drawImage(chartCanvas, 0, 0);
-
-        tempChart.destroy();
-        document.body.removeChild(tempContainer);
-
-        return masterCanvas;
+        return { exportChart, offCanvas };
     }
 
     function exportPNG() {
-        const offCanvas = generateCleanExportCanvas();
-        if (!offCanvas) return;
-
-        const imgData = offCanvas.toDataURL("image/png", 1.0);
-        const link = document.createElement("a");
-        link.download = "Lotus_Shark_Kinematics_Graph.png";
-        link.href = imgData;
-        link.click();
+        const generated = generateExportCanvas();
+        if (!generated) return;
+        setTimeout(() => {
+            const imgData = generated.offCanvas.toDataURL("image/png", 1.0);
+            const link = document.createElement("a");
+            link.download = "Lotus_Shark_Graph.png";
+            link.href = imgData;
+            link.click();
+            generated.exportChart.destroy();
+        }, 100);
     }
 
     function exportPDF() {
-        const offCanvas = generateCleanExportCanvas();
-        if (!offCanvas) return;
+        const generated = generateExportCanvas();
+        if (!generated) return;
+        setTimeout(() => {
+            const imgData = generated.offCanvas.toDataURL("image/jpeg", 0.98);
+            const { jsPDF } = window.jspdf || {};
+            if (jsPDF) {
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                
+                const imgWidth = pageWidth - 20;
+                const imgHeight = (generated.offCanvas.height * imgWidth) / generated.offCanvas.width;
+                const posY = (pageHeight - imgHeight) / 2;
 
-        const imgData = offCanvas.toDataURL("image/jpeg", 0.98);
-        const { jsPDF } = window.jspdf || {};
-
-        if (jsPDF) {
-            const pdf = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-
-            const margin = 10;
-            const imgWidth = pageWidth - (margin * 2);
-            const imgHeight = (offCanvas.height * imgWidth) / offCanvas.width;
-
-            const posY = (pageHeight - imgHeight) / 2;
-
-            pdf.addImage(imgData, 'JPEG', margin, posY > margin ? posY : margin, imgWidth, imgHeight);
-            pdf.save('Lotus_Shark_Kinematics_Report.pdf');
-        }
+                pdf.addImage(imgData, 'JPEG', 10, posY > 10 ? posY : 10, imgWidth, imgHeight);
+                pdf.save('Lotus_Shark_Graph_Report.pdf');
+            }
+            generated.exportChart.destroy();
+        }, 100);
     }
 
     updateBtn.addEventListener("click", updateGraph);
