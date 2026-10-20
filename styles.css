@@ -664,20 +664,82 @@ textarea:focus {
    LOTUS PLOTTER UNIFORM BUTTONS & LAYOUT
    =========================== */
 
+/* ===========================
+   LOTUS PLOTTER & TREND METRICS LAYOUT
+   =========================== */
+
+/* Update plotter container grid to accommodate side-by-side view */
 .plotter-container {
-    max-width: 1240px;
+    max-width: 1400px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 420px 1fr;
-    gap: 30px;
+    grid-template-columns: 360px 1fr 300px; /* Controls | Graph | Trend Panel */
+    gap: 20px;
     align-items: start;
     background: var(--bg-elevated);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-large);
-    padding: 30px;
+    padding: 24px;
     box-shadow: var(--shadow-soft);
 }
 
+/* Side Trend Panel styling on the website */
+.plotter-trends-panel {
+    background: var(--bg-elevated-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-medium);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+.panel-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 8px;
+    margin: 0;
+}
+
+.trend-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid var(--accent); /* Dynamic series color indicator */
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.trend-card-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.trend-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.trend-item-val {
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .plotter-container {
+        grid-template-columns: 1fr;
+    }
+}
 .plotter-controls {
     display: flex;
     flex-direction: column;
