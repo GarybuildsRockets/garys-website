@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Graph-Only High-Resolution Centered Export
+    // High-Resolution Full Graph Export Generator
     function generateCleanExportCanvas() {
         const parsed = parseCSV(csvInput.value);
         if (!parsed) return null;
@@ -338,20 +338,20 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         });
 
-        const canvasWidth = 1800;
-        const canvasHeight = 1100;
+        const exportWidth = 1800;
+        const exportHeight = 1100;
 
-        // Temporary offscreen container
+        // Temporary hidden container attached to body for accurate layout rendering
         const tempContainer = document.createElement("div");
-        tempContainer.style.position = "absolute";
+        tempContainer.style.position = "fixed";
         tempContainer.style.left = "-9999px";
         tempContainer.style.top = "-9999px";
-        tempContainer.style.width = `${canvasWidth}px`;
-        tempContainer.style.height = `${canvasHeight}px`;
+        tempContainer.style.width = `${exportWidth}px`;
+        tempContainer.style.height = `${exportHeight}px`;
 
         const chartCanvas = document.createElement("canvas");
-        chartCanvas.width = canvasWidth;
-        chartCanvas.height = canvasHeight;
+        chartCanvas.width = exportWidth;
+        chartCanvas.height = exportHeight;
         tempContainer.appendChild(chartCanvas);
         document.body.appendChild(tempContainer);
 
@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: false,
                 responsive: false,
                 maintainAspectRatio: false,
-                layout: { padding: { top: 30, left: 60, right: 60, bottom: 60 } },
+                layout: { padding: { top: 40, left: 60, right: 60, bottom: 60 } },
                 plugins: {
                     title: {
                         display: true,
@@ -375,8 +375,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         color: '#111111',
                         font: { size: 28, weight: 'bold' },
                         padding: { bottom: 20 },
-                        align: 'center',
-                        fullSize: true
+                        align: 'center'
                     },
                     legend: {
                         display: true,
@@ -428,10 +427,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }]
         });
 
-        // Copy canvas output
+        // Copy canvas to clean output
         const masterCanvas = document.createElement("canvas");
-        masterCanvas.width = canvasWidth;
-        masterCanvas.height = canvasHeight;
+        masterCanvas.width = exportWidth;
+        masterCanvas.height = exportHeight;
         const ctx = masterCanvas.getContext("2d");
         ctx.drawImage(chartCanvas, 0, 0);
 
