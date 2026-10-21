@@ -273,7 +273,215 @@
             </div>
             
         </section>
-        
+        <!-- Nürburgring Canvas Widget -->
+<div class="animation-card">
+    <h3 class="animation-title">Nürburgring Nordschleife Telemetry</h3>
+    <canvas id="nurburgringCanvas" width="400" height="280"></canvas>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById("nurburgringCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    // Simplified normalized 2D curve coordinates for the Nordschleife
+    const trackPoints = [
+        {x: 320, y: 220}, {x: 350, y: 180}, {x: 360, y: 130}, {x: 340, y: 80},
+        {x: 290, y: 50},  {x: 230, y: 40},  {x: 170, y: 60},  {x: 130, y: 90},
+        {x: 90,  y: 70},  {x: 50,  y: 110}, {x: 40,  y: 160}, {x: 70,  y: 200},
+        {x: 110, y: 230}, {x: 160, y: 200}, {x: 190, y: 230}, {x: 240, y: 240},
+        {x: 280, y: 210}
+    ];
+
+    let progress = 0;
+
+    function getSplinePoint(t) {
+        const numPoints = trackPoints.length;
+        const index = Math.floor(t * numPoints);
+        const p1 = trackPoints[index % numPoints];
+        const p2 = trackPoints[(index + 1) % numPoints];
+        const localT = (t * numPoints) - index;
+
+        return {
+            x: p1.x + (p2.x - p1.x) * localT,
+            y: p1.y + (p2.y - p1.y) * localT
+        };
+    }
+
+    function animateTrack() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Nordschleife Outline
+        ctx.beginPath();
+        ctx.moveTo(trackPoints[0].x, trackPoints[0].y);
+        for (let i = 1; i < trackPoints.length; i++) {
+            ctx.lineTo(trackPoints[i].x, trackPoints[i].y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = "rgba(58, 163, 255, 0.3)";
+        ctx.lineWidth = 6;
+        ctx.stroke();
+
+        ctx.strokeStyle = "#3aa3ff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Calculate car position along track
+        progress = (progress + 0.0015) % 1;
+        const carPos = getSplinePoint(progress);
+
+        // Render Race Car Marker
+        ctx.beginPath();
+        ctx.arc(carPos.x, carPos.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = "#ff4d5a";
+        ctx.shadowColor = "#ff4d5a";
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(animateTrack);
+    }
+    animateTrack();
+});
+</script>
+        <!-- Holographic Clock Widget -->
+<div class="animation-card">
+    <canvas id="holoClockCanvas" width="280" height="280"></canvas>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById("holoClockCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    function renderClock() {
+        const now = new Date();
+        const hrs = now.getHours();
+        const mins = now.getMinutes();
+        const secs = now.getSeconds();
+        const ms = now.getMilliseconds();
+
+        const center = 140;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Outer Rotating Hologram Ring
+        const secAngle = ((secs + ms / 1000) / 60) * Math.PI * 2 - Math.PI / 2;
+        ctx.beginPath();
+        ctx.arc(center, center, 110, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(58, 163, 255, 0.15)";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Seconds Sweep Glow Arc
+        ctx.beginPath();
+        ctx.arc(center, center, 110, -Math.PI / 2, secAngle);
+        ctx.strokeStyle = "#3aa3ff";
+        ctx.lineWidth = 4;
+        ctx.shadowColor = "#3aa3ff";
+        ctx.shadowBlur = 15;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // 24-Hour Progress Inner Arc
+        const hrAngle = (((hrs % 24) + mins / 60) / 24) * Math.PI * 2 - Math.PI / 2;
+        ctx.beginPath();
+        ctx.arc(center, center, 90, -Math.PI / 2, hrAngle);
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Holographic Digital Readout
+        const timeStr = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        ctx.fillStyle = "#f5f7fb";
+        ctx.font = "600 22px 'SF Pro Text', sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = "#3aa3ff";
+        ctx.shadowBlur = 10;
+        ctx.fillText(timeStr, center, center - 5);
+
+        ctx.fillStyle = "#3aa3ff";
+        ctx.font = "500 10px sans-serif";
+        ctx.fillText("24H TELEMETRY", center, center + 22);
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(renderClock);
+    }
+    renderClock();
+});
+</script>
+        <!-- Coilover Schematic Widget -->
+<div class="animation-card">
+    <canvas id="coiloverCanvas" width="260" height="320"></canvas>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById("coiloverCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    let t = 0;
+
+    function drawCoilover() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        t += 0.04;
+
+        // Compression dynamic height offset
+        const compression = Math.sin(t) * 25;
+        const centerX = 130;
+        const topY = 40;
+        const bottomY = 270 + compression;
+
+        // Top Mount Plate
+        ctx.fillStyle = "#a4afc3";
+        ctx.fillRect(centerX - 45, topY, 90, 12);
+
+        // Piston Rod
+        ctx.fillStyle = "#f5f7fb";
+        ctx.fillRect(centerX - 6, topY + 12, 12, 120 + compression * 0.5);
+
+        // Damper Cylinder Body
+        ctx.fillStyle = "#0f141e";
+        ctx.strokeStyle = "#3aa3ff";
+        ctx.lineWidth = 2;
+        ctx.fillRect(centerX - 25, topY + 110 + compression * 0.5, 50, 110);
+        ctx.strokeRect(centerX - 25, topY + 110 + compression * 0.5, 50, 110);
+
+        // Coil Spring Drawing
+        const springTop = topY + 20;
+        const springBottom = topY + 110 + compression * 0.5;
+        const coils = 8;
+        const springHeight = springBottom - springTop;
+        const step = springHeight / coils;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX - 30, springTop);
+        for (let i = 0; i < coils; i++) {
+            const y1 = springTop + i * step + step / 2;
+            const y2 = springTop + (i + 1) * step;
+            ctx.lineTo(centerX + 30, y1);
+            ctx.lineTo(centerX - 30, y2);
+        }
+        ctx.strokeStyle = "#ff4d5a";
+        ctx.lineWidth = 5;
+        ctx.lineJoin = "round";
+        ctx.stroke();
+
+        // Lower Eyelet Mount
+        ctx.beginPath();
+        ctx.arc(centerX, bottomY, 14, 0, Math.PI * 2);
+        ctx.strokeStyle = "#a4afc3";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        requestAnimationFrame(drawCoilover);
+    }
+    drawCoilover();
+});
+</script>
 
         <!-- CONTACT -->
         <section id="contact" class="section contact">
