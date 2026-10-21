@@ -87,6 +87,7 @@
         .header-actions {
             display: flex;
             gap: 12px;
+            align-items: center;
         }
 
         .btn {
@@ -122,6 +123,32 @@
             background: #52afff;
             box-shadow: 0 0 16px rgba(58, 163, 255, 0.5);
             color: #000;
+        }
+
+        /* UNIT TOGGLE SWITCH */
+        .unit-toggle-group {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+            border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .unit-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .unit-btn.active {
+            background: var(--accent);
+            color: #020308;
         }
 
         /* MAIN LAYOUT GRID */
@@ -315,15 +342,15 @@
         }
 
         .pressure-gradient-bar {
-            width: 140px;
+            width: 120px;
             height: 8px;
             border-radius: 4px;
-            background: linear-gradient(to right, #00e676 0%, #3aa3ff 35%, #9c27b0 70%, #ff1744 100%);
+            background: linear-gradient(to right, #00e676 0%, #3aa3ff 40%, #ff1744 100%);
             margin: 0 8px;
             display: inline-block;
         }
 
-        /* TELEMETRY METRICS */
+        /* TELEMETRY METRICS & DELTA DISPLAY */
         .telemetry-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -338,6 +365,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            position: relative;
         }
 
         .telemetry-label {
@@ -346,9 +374,15 @@
             text-transform: uppercase;
         }
 
+        .telemetry-value-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
         .telemetry-value {
             font-family: var(--font-mono);
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-main);
         }
@@ -357,6 +391,24 @@
             font-size: 11px;
             color: var(--accent);
             margin-left: 2px;
+        }
+
+        .telemetry-delta {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .telemetry-delta.plus {
+            color: var(--success);
+            background: rgba(0, 230, 118, 0.1);
+        }
+
+        .telemetry-delta.minus {
+            color: var(--danger);
+            background: rgba(255, 23, 68, 0.1);
         }
 
         .balance-bar-wrapper {
@@ -534,11 +586,16 @@
     <!-- HEADER -->
     <header>
         <div class="title-group">
-            <h1>F1 Aero Tuner <span>2026 Spec</span></h1>
-            <p>Interactive Ground-Effect Aerodynamics Wind Tunnel & Mathematical Analysis Platform</p>
+            <h1>F1 Aero Tuner <span>Realistic CFD Physics</span></h1>
+            <p>Interactive Ground-Effect Aerodynamics Wind Tunnel & Telemetry Platform</p>
         </div>
         <div class="header-actions">
-            <button class="btn" id="openCalcBtn">📐 Formulas & Engineering Calculations</button>
+            <!-- Unit Selector -->
+            <div class="unit-toggle-group">
+                <button class="unit-btn active" id="unitMetricBtn">Metric</button>
+                <button class="unit-btn" id="unitImperialBtn">Imperial</button>
+            </div>
+            <button class="btn" id="openCalcBtn">📐 Calculations</button>
             <button class="btn btn-primary" id="resetBtn">🔄 Reset Tunnel</button>
         </div>
     </header>
@@ -618,7 +675,7 @@
             </div>
 
             <div class="toggle-row">
-                <span>VORTEX / Turbulence Vectors</span>
+                <span>Force Vector Overlay</span>
                 <label class="toggle-switch">
                     <input type="checkbox" id="toggleVectors" checked>
                     <span class="slider-round"></span>
@@ -630,7 +687,7 @@
         <div class="canvas-container">
             <div class="canvas-overlay-top">
                 <div class="hud-badge">
-                    CHASSIS: <strong>FW46 / Ground-Effect Venturi Spec</strong>
+                    CHASSIS: <strong>FW46 Ground-Effect Spec</strong>
                 </div>
                 <div class="hud-badge">
                     STATUS: <strong id="drsStatus" style="color: var(--success);">DRS CLOSED</strong>
@@ -642,11 +699,11 @@
             <div class="legend-bar">
                 <div>
                     <span>Pressure Delta:</span>
-                    <span style="color:#00e676">Low (Suction)</span>
+                    <span style="color:#00e676">Low Pressure (Suction)</span>
                     <span class="pressure-gradient-bar"></span>
-                    <span style="color:#ff1744">High (Stagnation)</span>
+                    <span style="color:#ff1744">High Pressure (Stagnation)</span>
                 </div>
-                <div>Hover cursor over F1 components to inspect aerodynamic hotspots</div>
+                <div>Hover cursor over car components for CFD analysis</div>
             </div>
         </div>
 
@@ -655,21 +712,40 @@
             <div class="panel-title">Real-Time Telemetry 📊</div>
 
             <div class="telemetry-grid">
+                <!-- Downforce -->
                 <div class="telemetry-card">
-                    <span class="telemetry-label">Total Downforce ($F_L$)</span>
-                    <div class="telemetry-value" id="metricDF">14,250<span class="telemetry-unit">N</span></div>
+                    <span class="telemetry-label">Downforce ($F_L$)</span>
+                    <div class="telemetry-value-row">
+                        <div class="telemetry-value" id="metricDF">14,250<span class="telemetry-unit" id="unitDF">N</span></div>
+                        <span class="telemetry-delta" id="deltaDF">+0</span>
+                    </div>
                 </div>
+
+                <!-- Drag -->
                 <div class="telemetry-card">
                     <span class="telemetry-label">Total Drag ($F_D$)</span>
-                    <div class="telemetry-value" id="metricDrag">3,820<span class="telemetry-unit">N</span></div>
+                    <div class="telemetry-value-row">
+                        <div class="telemetry-value" id="metricDrag">3,820<span class="telemetry-unit" id="unitDrag">N</span></div>
+                        <span class="telemetry-delta" id="deltaDrag">+0</span>
+                    </div>
                 </div>
+
+                <!-- Efficiency -->
                 <div class="telemetry-card">
                     <span class="telemetry-label">Efficiency ($L/D$)</span>
-                    <div class="telemetry-value" id="metricLD">3.73</div>
+                    <div class="telemetry-value-row">
+                        <div class="telemetry-value" id="metricLD">3.73</div>
+                        <span class="telemetry-delta" id="deltaLD">+0.00</span>
+                    </div>
                 </div>
+
+                <!-- Power Req -->
                 <div class="telemetry-card">
-                    <span class="telemetry-label">Engine Power Req.</span>
-                    <div class="telemetry-value" id="metricPower">254<span class="telemetry-unit">kW</span></div>
+                    <span class="telemetry-label">Power Required</span>
+                    <div class="telemetry-value-row">
+                        <div class="telemetry-value" id="metricPower">254<span class="telemetry-unit" id="unitPower">kW</span></div>
+                        <span class="telemetry-delta" id="deltaPower">+0</span>
+                    </div>
                 </div>
             </div>
 
@@ -689,7 +765,7 @@
             <div class="panel-title" style="margin-top: 10px;">Hotspot Inspector 🔍</div>
             <div class="hotspot-info" id="hotspotBox">
                 <strong>Hover over chassis elements</strong>
-                Move your pointer across the F1 car in the wind tunnel to analyze local flow velocities, pressure differentials, and component vortex shedding.
+                Move your pointer across the F1 car in the wind tunnel to inspect localized flow velocities, vortex shedding, and pressure gradients.
             </div>
         </div>
     </div>
@@ -703,65 +779,37 @@
             <button class="close-btn" id="closeCalcBtn">&times;</button>
         </div>
 
-        <!-- SECTION 1: AERODYNAMIC DOWNFORCE & DRAG -->
         <div class="calc-section">
-            <h3>1. Total Aerodynamic Downforce ($F_L$) & Drag ($F_D$)</h3>
+            <h3>1. Aerodynamic Downforce ($F_L$) & Drag ($F_D$)</h3>
             <div class="formula-box">
                 F_L = 0.5 · ρ · v² · A_ref · C_L(α, h)<br>
                 F_D = 0.5 · ρ · v² · A_ref · C_D(α, h)
             </div>
             <p class="calc-desc">
                 Where:
-                <br>• <strong>ρ (Fluid Density):</strong> Standard sea-level air density = $1.225 \text{ kg/m}^3$.
-                <br>• <strong>v (Velocity):</strong> Freestream air velocity relative to car ($\text{m/s}$).
-                <br>• <strong>A_ref (Frontal Area):</strong> Standard F1 reference frontal area = $1.60 \text{ m}^2$.
-                <br>• <strong>C_L / C_D:</strong> Non-dimensional Lift and Drag Coefficients synthesized from front wing, rear wing, and floor ground effect.
+                <br>• <strong>ρ (Air Density):</strong> Standard density = $1.225 \text{ kg/m}^3$.
+                <br>• <strong>v (Air Velocity):</strong> Freestream wind speed.
+                <br>• <strong>A_ref (Reference Area):</strong> F1 reference frontal area = $1.60 \text{ m}^2$.
             </p>
         </div>
 
-        <!-- SECTION 2: GROUND EFFECT VENTURI SUCTION -->
         <div class="calc-section">
-            <h3>2. Underfloor Ground-Effect Venturi Channel Suction</h3>
+            <h3>2. Ground Effect Venturi Suction</h3>
             <div class="formula-box">
                 p_1 + 0.5 · ρ · v_1² = p_2 + 0.5 · ρ · v_2² &nbsp; (Bernoulli's Principle)<br>
-                C_{L,floor} = C_{L0,floor} · (h_0 / h_{avg})^{0.65} · \cos(\theta_{pitch})
+                C_{L,floor} = C_{L0,floor} · (h_0 / h_{avg})^{0.65}
             </div>
             <p class="calc-desc">
-                Ground effect downforce relies on Bernoulli's principle and Venturi throat constriction. As underbody clearance ($h_{avg}$) decreases toward optimum seal point ($~25\text{mm}$), underbody velocity ($v_2$) accelerates relative to freestream ($v_1$), dropping static pressure ($p_2$) underneath the floor and sucking the chassis down to the asphalt.
+                As underbody ride clearance drops, Venturi channel constriction accelerates underbody airflow, decreasing static pressure under the floor and sucking the chassis down to the ground.
             </p>
         </div>
 
-        <!-- SECTION 3: WING INDUCED DRAG -->
         <div class="calc-section">
-            <h3>3. Wing-Induced Drag ($C_{D,induced}$)</h3>
-            <div class="formula-box">
-                C_{D,induced} = (C_{L,wing}²) / (π · AR · e)
-            </div>
-            <p class="calc-desc">
-                Where <strong>AR</strong> is the wing Aspect Ratio ($b^2 / S$) and <strong>e</strong> is the Oswald planform efficiency factor ($~0.82$). High wing angle of attack increases $C_L$, generating proportional wingtip vortex shedding and induced drag penalty.
-            </p>
-        </div>
-
-        <!-- SECTION 4: AERO BALANCE & POWER REQUIREMENTS -->
-        <div class="calc-section">
-            <h3>4. Aerodynamic Balance & Power Overcoming Drag</h3>
-            <div class="formula-box">
-                Balance_{\% front} = (F_{L,front} / F_{L,total}) · 100\%<br>
-                Power_{req} = F_D · v &nbsp; (\text{Watts})
-            </div>
-            <p class="calc-desc">
-                Aero balance determines high-speed cornering stability. Power required to overcome aerodynamic drag scales with the cube of velocity ($v^3$), placing immense demand on modern hybrid power units at speeds exceeding $300\text{ km/h}$.
-            </p>
-        </div>
-
-        <!-- SOURCES -->
-        <div class="calc-section">
-            <h3>Academic References & Engineering Sources</h3>
+            <h3>Academic References & Sources</h3>
             <ul class="sources-list">
                 <li>1. Katz, J. (2006). <em>Race Car Aerodynamics: Designing for Speed</em>. Bentley Publishers.</li>
                 <li>2. Wright, P. (2001). <em>Formula 1 Technology</em>. SAE International.</li>
                 <li>3. McBeath, S. (2015). <em>Competition Car Aerodynamics: A Practical Handbook</em>. Veloce Publishing.</li>
-                <li>4. OptimumG Vehicle Dynamics Technical Papers - Aerodynamic Analysis & Balance Protocols.</li>
             </ul>
         </div>
     </div>
@@ -782,6 +830,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
+    // Unit Management State
+    let currentUnit = "metric"; // 'metric' or 'imperial'
+
+    // Baseline Baseline tracking for Deltas
+    let baselineData = null;
+
     // Controls DOM
     const inputSpeed = document.getElementById("inputSpeed");
     const inputFWing = document.getElementById("inputFWing");
@@ -791,6 +845,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleDRS = document.getElementById("toggleDRS");
     const toggleHeatmap = document.getElementById("toggleHeatmap");
     const toggleVectors = document.getElementById("toggleVectors");
+
+    // Unit Buttons DOM
+    const unitMetricBtn = document.getElementById("unitMetricBtn");
+    const unitImperialBtn = document.getElementById("unitImperialBtn");
 
     // Labels DOM
     const valSpeed = document.getElementById("valSpeed");
@@ -805,57 +863,73 @@ document.addEventListener("DOMContentLoaded", () => {
     const metricDrag = document.getElementById("metricDrag");
     const metricLD = document.getElementById("metricLD");
     const metricPower = document.getElementById("metricPower");
+    const unitDF = document.getElementById("unitDF");
+    const unitDrag = document.getElementById("unitDrag");
+    const unitPower = document.getElementById("unitPower");
+
+    // Deltas DOM
+    const deltaDF = document.getElementById("deltaDF");
+    const deltaDrag = document.getElementById("deltaDrag");
+    const deltaLD = document.getElementById("deltaLD");
+    const deltaPower = document.getElementById("deltaPower");
+
     const metricBalance = document.getElementById("metricBalance");
     const barBalanceFront = document.getElementById("barBalanceFront");
     const barBalanceRear = document.getElementById("barBalanceRear");
     const hotspotBox = document.getElementById("hotspotBox");
 
-    // Simulation State
-    let mouseX = -100, mouseY = -100;
-    const NUM_PARTICLES = 320;
-    const particles = [];
-
-    // Initialize Smoke Streamline Particles
-    for (let i = 0; i < NUM_PARTICLES; i++) {
-        particles.push({
-            x: Math.random() * 1000,
-            y: Math.random() * 500,
-            size: Math.random() * 2 + 1.2,
-            life: Math.random() * 100
-        });
-    }
-
     // Interactive Hotspots Data
     const hotspots = [
         { id: "fw", name: "Front Wing Assembly", xMin: 0.12, xMax: 0.28, yMin: 0.58, yMax: 0.75,
-          desc: "Generates front downforce and directs clean/vortex air around front tires and into underbody Venturi inlets." },
-        { id: "susp", name: "Front Suspension & Brake Duct", xMin: 0.28, xMax: 0.38, yMin: 0.52, yMax: 0.72,
-          desc: "Creates localized drag turbulence; modern suspension wishbones are profiled as airfoils to condition flow." },
-        { id: "halo", name: "Halo Safety Structure", xMin: 0.44, xMax: 0.54, yMin: 0.35, yMax: 0.52,
-          desc: "Mandatory cockpit protection; fairings condition airflow into engine airbox intake." },
+          desc: "Generates front downforce and directs clean/vortex air around front tires into underbody Venturi inlets." },
+        { id: "susp", name: "Front Suspension Wishbones", xMin: 0.28, xMax: 0.38, yMin: 0.52, yMax: 0.72,
+          desc: "Wishbones are profiled as airfoils to condition flow entering the sidepod air intakes." },
+        { id: "halo", name: "Halo Cockpit Ring", xMin: 0.44, xMax: 0.54, yMin: 0.35, yMax: 0.52,
+          desc: "Mandatory cockpit safety fairing that conditions airflow feeding the engine airbox." },
         { id: "floor", name: "Underbody Venturi Tunnels", xMin: 0.38, xMax: 0.72, yMin: 0.65, yMax: 0.78,
-          desc: "Generates over 60% of total car downforce via low-pressure suction, highly sensitive to front ground clearance." },
-        { id: "pod", name: "Sidepod Inlets & Downwash Bodywork", xMin: 0.42, xMax: 0.68, yMin: 0.48, yMax: 0.66,
-          desc: "Feeds internal radiators for thermal cooling while washing high-energy air down to the rear diffuser top surface." },
+          desc: "Generates over 60% of total downforce via low-pressure Bernoulli suction under the floor." },
+        { id: "pod", name: "Sidepod Inlets & Downwash", xMin: 0.42, xMax: 0.68, yMin: 0.48, yMax: 0.66,
+          desc: "Feeds internal radiators for thermal cooling while washing high-energy air down to the diffuser." },
         { id: "diff", name: "Rear Diffuser Expansion Chamber", xMin: 0.70, xMax: 0.82, yMin: 0.62, yMax: 0.76,
-          desc: "Expands underbody airflow back to atmospheric pressure, creating massive low-pressure suction beneath the floor." },
-        { id: "rw", name: "Rear Wing & Beam Wing", xMin: 0.78, xMax: 0.90, yMin: 0.32, yMax: 0.58,
-          desc: "High angle-of-attack multi-element wing producing huge rear downforce and upwash flow, subject to DRS activation." }
+          desc: "Expands underbody airflow back to ambient pressure, creating massive suction underneath." },
+        { id: "rw", name: "Rear Wing & DRS Flap", xMin: 0.78, xMax: 0.90, yMin: 0.32, yMax: 0.58,
+          desc: "High angle-of-attack wing producing rear downforce and upwash flow, subject to DRS activation." }
     ];
 
-    // Mouse Move Event
-    canvas.addEventListener("mousemove", (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouseX = e.clientX - rect.left;
-        mouseY = e.clientY - rect.top;
+    let mouseX = -100, mouseY = -100;
+
+    // REALISTIC SMOKE STREAMLINES PHYSICS ENGINE
+    const NUM_STREAMLINES = 38;
+    const streamlines = [];
+
+    for (let i = 0; i < NUM_STREAMLINES; i++) {
+        streamlines.push({
+            startY: 40 + i * 11,
+            particles: Array.from({ length: 40 }, (_, idx) => ({
+                x: idx * 25,
+                y: 40 + i * 11,
+                vx: 0,
+                vy: 0
+            }))
+        });
+    }
+
+    // Unit Toggle Events
+    unitMetricBtn.addEventListener("click", () => {
+        currentUnit = "metric";
+        unitMetricBtn.classList.add("active");
+        unitImperialBtn.classList.remove("active");
+        updatePhysics();
     });
 
-    canvas.addEventListener("mouseleave", () => {
-        mouseX = -100;
-        mouseY = -100;
+    unitImperialBtn.addEventListener("click", () => {
+        currentUnit = "imperial";
+        unitImperialBtn.classList.add("active");
+        unitMetricBtn.classList.remove("active");
+        updatePhysics();
     });
 
-    // Update Telemetry & Physics Calculations
+    // Update Telemetry & Delta Metrics
     function updatePhysics() {
         const velocityKmh = parseFloat(inputSpeed.value);
         const velocityMs = velocityKmh / 3.6;
@@ -874,72 +948,114 @@ document.addEventListener("DOMContentLoaded", () => {
             drsStatus.style.color = "var(--success)";
         }
 
-        // Coefficients Calculation
-        const rho = 1.225; // Air density kg/m3
-        const areaRef = 1.60; // Frontal area m2
+        // Aerodynamic Coefficients
+        const rho = 1.225;
+        const areaRef = 1.60;
 
-        // Front Wing CL
         const cL_fw = 0.45 + (fWingAoA * 0.045);
-        // Rear Wing CL
         const cL_rw = 0.65 + (rWingAoA * 0.052);
-
-        // Ground Effect Floor CL (Exponential Ground Proximity)
         const avgRide = (fRide + rRide) / 2;
         const cL_floor = 1.65 * Math.pow(28 / Math.max(12, avgRide), 0.55);
 
         const totalCL = cL_fw + cL_rw + cL_floor;
+        const totalCD = 0.28 + (fWingAoA * 0.012) + (rWingAoA * (isDRS ? 0.008 : 0.024)) + (cL_floor * 0.08);
 
-        // Drag Coefficients
-        const cD_base = 0.28;
-        const cD_fw = fWingAoA * 0.012;
-        const cD_rw = rWingAoA * (isDRS ? 0.008 : 0.024);
-        const cD_floor = cL_floor * 0.08;
-
-        const totalCD = cD_base + cD_fw + cD_rw + cD_floor;
-
-        // Force Calculations: 0.5 * rho * v^2 * A * C
         const dynamicPressure = 0.5 * rho * Math.pow(velocityMs, 2);
         const downforceN = dynamicPressure * areaRef * totalCL;
         const dragN = dynamicPressure * areaRef * totalCD;
         const efficiency = downforceN / Math.max(1, dragN);
         const powerkW = (dragN * velocityMs) / 1000;
 
-        // Aero Balance (% Front Downforce)
         const frontDFN = dynamicPressure * areaRef * (cL_fw + cL_floor * 0.42);
         const balanceFrontPct = (frontDFN / downforceN) * 100;
 
-        // DOM Updates
-        valSpeed.textContent = `${velocityKmh} km/h`;
+        // Baseline initialization for deltas
+        if (!baselineData) {
+            baselineData = { downforceN, dragN, efficiency, powerkW };
+        }
+
+        // Unit Conversions
+        let displaySpeed = velocityKmh;
+        let speedUnitStr = "km/h";
+        let displayRideF = fRide;
+        let displayRideR = rRide;
+        let rideUnitStr = "mm";
+
+        let displayDF = downforceN;
+        let displayDrag = dragN;
+        let forceUnitStr = "N";
+
+        let displayPower = powerkW;
+        let powerUnitStr = "kW";
+
+        if (currentUnit === "imperial") {
+            displaySpeed = velocityKmh * 0.621371;
+            speedUnitStr = "mph";
+            displayRideF = fRide * 0.0393701;
+            displayRideR = rRide * 0.0393701;
+            rideUnitStr = "in";
+
+            displayDF = downforceN * 0.224809; // lbf
+            displayDrag = dragN * 0.224809; // lbf
+            forceUnitStr = "lbf";
+
+            displayPower = powerkW * 1.34102; // HP
+            powerUnitStr = "HP";
+        }
+
+        // Update Slider Labels
+        valSpeed.textContent = `${Math.round(displaySpeed)} ${speedUnitStr}`;
         valFWing.textContent = `${fWingAoA.toFixed(1)}°`;
         valRWing.textContent = `${rWingAoA.toFixed(1)}°`;
-        valFRide.textContent = `${fRide} mm`;
-        valRRide.textContent = `${rRide} mm`;
+        valFRide.textContent = `${displayRideF.toFixed(currentUnit === "imperial" ? 2 : 0)} ${rideUnitStr}`;
+        valRRide.textContent = `${displayRideR.toFixed(currentUnit === "imperial" ? 2 : 0)} ${rideUnitStr}`;
 
-        metricDF.innerHTML = `${Math.round(downforceN).toLocaleString()}<span class="telemetry-unit">N</span>`;
-        metricDrag.innerHTML = `${Math.round(dragN).toLocaleString()}<span class="telemetry-unit">N</span>`;
+        // Telemetry Values
+        metricDF.innerHTML = `${Math.round(displayDF).toLocaleString()}<span class="telemetry-unit">${forceUnitStr}</span>`;
+        metricDrag.innerHTML = `${Math.round(displayDrag).toLocaleString()}<span class="telemetry-unit">${forceUnitStr}</span>`;
         metricLD.textContent = efficiency.toFixed(2);
-        metricPower.innerHTML = `${Math.round(powerkW)}<span class="telemetry-unit">kW</span>`;
-        metricBalance.textContent = `${balanceFrontPct.toFixed(1)}%`;
+        metricPower.innerHTML = `${Math.round(displayPower)}<span class="telemetry-unit">${powerUnitStr}</span>`;
 
+        // Update Deltas
+        const diffDF = downforceN - baselineData.downforceN;
+        const diffDrag = dragN - baselineData.dragN;
+        const diffLD = efficiency - baselineData.efficiency;
+        const diffPower = powerkW - baselineData.powerkW;
+
+        formatDelta(deltaDF, diffDF * (currentUnit === "imperial" ? 0.224809 : 1), forceUnitStr);
+        formatDelta(deltaDrag, diffDrag * (currentUnit === "imperial" ? 0.224809 : 1), forceUnitStr);
+        formatDelta(deltaLD, diffLD, "", 2);
+        formatDelta(deltaPower, diffPower * (currentUnit === "imperial" ? 1.34102 : 1), powerUnitStr);
+
+        metricBalance.textContent = `${balanceFrontPct.toFixed(1)}%`;
         barBalanceFront.style.width = `${balanceFrontPct}%`;
         barBalanceRear.style.width = `${100 - balanceFrontPct}%`;
 
-        return { velocityMs, totalCL, totalCD, fRide, rRide, isDRS };
+        return { velocityMs, downforceN, dragN };
+    }
+
+    function formatDelta(element, value, unit, decimals = 0) {
+        if (Math.abs(value) < 0.01) {
+            element.textContent = "+0";
+            element.className = "telemetry-delta";
+            return;
+        }
+
+        const sign = value > 0 ? "+" : "";
+        element.textContent = `${sign}${value.toFixed(decimals)}${unit ? ' ' + unit : ''}`;
+        element.className = `telemetry-delta ${value >= 0 ? "plus" : "minus"}`;
     }
 
     // MAIN RENDER LOOP
     function render() {
-        const { velocityMs } = updatePhysics();
+        const { velocityMs, downforceN, dragN } = updatePhysics();
         const w = canvas.getBoundingClientRect().width;
         const h = canvas.getBoundingClientRect().height;
 
         ctx.clearRect(0, 0, w, h);
-
-        // 1. Draw Tunnel Flow Background
         ctx.fillStyle = "#020408";
         ctx.fillRect(0, 0, w, h);
 
-        // Ground Track Surface
         const groundY = h * 0.78;
         ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
         ctx.lineWidth = 2;
@@ -948,23 +1064,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.lineTo(w, groundY);
         ctx.stroke();
 
-        // Ground speed tick animation
-        const time = Date.now() * 0.005 * (velocityMs / 50);
-        ctx.strokeStyle = "rgba(58, 163, 255, 0.15)";
-        ctx.lineWidth = 1;
-        for (let x = (time % 40) - 40; x < w; x += 40) {
-            ctx.beginPath();
-            ctx.moveTo(x, groundY);
-            ctx.lineTo(x + 20, h);
-            ctx.stroke();
-        }
-
-        // F1 Car Coordinates Scale
         const carX = w * 0.15;
         const carWidth = w * 0.70;
         const carY = groundY - (h * 0.18);
 
-        // 2. Heatmap Pressure Field Overlay
+        // Heatmap Field
         if (toggleHeatmap.checked) {
             const gradHigh = ctx.createRadialGradient(carX + carWidth * 0.18, carY + 30, 10, carX + carWidth * 0.18, carY + 30, 80);
             gradHigh.addColorStop(0, "rgba(255, 23, 68, 0.35)");
@@ -972,7 +1076,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillStyle = gradHigh;
             ctx.fillRect(0, 0, w, h);
 
-            // Floor Low Pressure Suction Zone
             const gradSuction = ctx.createLinearGradient(carX + carWidth * 0.3, groundY - 10, carX + carWidth * 0.7, groundY - 10);
             gradSuction.addColorStop(0, "rgba(0, 230, 118, 0.4)");
             gradSuction.addColorStop(0.5, "rgba(156, 39, 176, 0.5)");
@@ -981,43 +1084,57 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillRect(carX + carWidth * 0.28, groundY - 30, carWidth * 0.48, 28);
         }
 
-        // 3. Draw Detailed F1 Chassis Profile (CAD Vector)
+        // Draw F1 Car
         drawF1Car(ctx, carX, carY, carWidth, groundY, toggleDRS.checked);
 
-        // 4. Streamline Particle Physics & Rendering
-        ctx.fillStyle = "#3aa3ff";
-        particles.forEach(p => {
-            const speedFact = (velocityMs / 30) * 8;
-            p.x += speedFact;
-
-            if (p.x > w) {
-                p.x = 0;
-                p.y = Math.random() * (groundY - 20);
-            }
-
-            // Deflect particles around car body contours
-            const relX = (p.x - carX) / carWidth;
-            if (relX > 0 && relX < 1) {
-                // Front Wing upward deflection
-                if (relX < 0.25 && Math.abs(p.y - (carY + 60)) < 40) {
-                    p.y -= 0.8;
-                }
-                // Underbody tunnel acceleration
-                if (relX >= 0.28 && relX <= 0.75 && p.y > groundY - 35) {
-                    p.x += speedFact * 0.4;
-                }
-                // Rear wing upwash
-                if (relX > 0.78 && p.y < carY + 40) {
-                    p.y -= 1.8;
-                }
-            }
-
+        // REALISTIC STREAMLINE FLUID DYNAMICS
+        const speedFact = (velocityMs / 30) * 12;
+        streamlines.forEach(line => {
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.strokeStyle = "rgba(58, 163, 255, 0.45)";
+            ctx.lineWidth = 1.6;
+
+            line.particles.forEach((p, idx) => {
+                p.x += speedFact;
+                if (p.x > w) p.x = 0;
+
+                // Flow Deflection Equations around Car Profile
+                const relX = (p.x - carX) / carWidth;
+                let targetY = line.startY;
+
+                if (relX > -0.05 && relX < 1.05) {
+                    if (relX < 0.22 && Math.abs(p.y - (carY + 50)) < 60) {
+                        targetY -= 28 * Math.sin(relX * Math.PI * 4); // Front Wing upwash/downwash
+                    } else if (relX >= 0.22 && relX <= 0.72 && p.y > groundY - 45) {
+                        targetY = groundY - 12; // Underbody Venturi compression
+                    } else if (relX > 0.75 && line.startY < carY + 60) {
+                        targetY -= 42; // Rear Wing Upwash
+                    }
+                }
+
+                p.y += (targetY - p.y) * 0.12; // Smooth fluid transition
+
+                if (idx === 0) ctx.moveTo(p.x, p.y);
+                else ctx.lineTo(p.x, p.y);
+            });
+            ctx.stroke();
         });
 
-        // 5. Hotspot Collision Check
+        // FORCE VECTORS OVERLAY
+        if (toggleVectors.checked) {
+            const vecX = carX + carWidth * 0.5;
+            const vecY = carY + 30;
+
+            // Downforce Arrow (Downwards)
+            const dfLength = Math.min(140, (downforceN / 20000) * 100);
+            drawArrow(ctx, vecX, vecY, vecX, vecY + dfLength, "#00e676", "Downforce");
+
+            // Drag Arrow (Rightwards / Rearward)
+            const dragLength = Math.min(100, (dragN / 6000) * 80);
+            drawArrow(ctx, vecX, vecY, vecX + dragLength, vecY, "#ff1744", "Drag");
+        }
+
+        // Hotspots Detection
         let hoveredHotspot = null;
         const normMouseX = mouseX / w;
         const normMouseY = mouseY / h;
@@ -1033,11 +1150,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (hoveredHotspot) {
             hotspotBox.innerHTML = `<strong>${hoveredHotspot.name}</strong>${hoveredHotspot.desc}`;
-        } else {
-            hotspotBox.innerHTML = `<strong>Hover over chassis elements</strong>Move your pointer across the F1 car in the wind tunnel to analyze local flow velocities, pressure differentials, and component vortex shedding.`;
         }
 
         requestAnimationFrame(render);
+    }
+
+    function drawArrow(c, fromx, fromy, tox, toy, color, label) {
+        const headlen = 10;
+        const dx = tox - fromx;
+        const dy = toy - fromy;
+        const angle = Math.atan2(dy, dx);
+
+        c.save();
+        c.strokeStyle = color;
+        c.fillStyle = color;
+        c.lineWidth = 3;
+
+        c.beginPath();
+        c.moveTo(fromx, fromy);
+        c.lineTo(tox, toy);
+        c.stroke();
+
+        c.beginPath();
+        c.moveTo(tox, toy);
+        c.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+        c.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+        c.closePath();
+        c.fill();
+
+        c.font = "bold 11px system-ui";
+        c.fillText(label, tox + (dx === 0 ? 8 : -20), toy + (dy === 0 ? -8 : 14));
+        c.restore();
     }
 
     // DRAW F1 CAR CAD VECTOR
@@ -1047,63 +1190,55 @@ document.addEventListener("DOMContentLoaded", () => {
         c.strokeStyle = "#3aa3ff";
         c.lineWidth = 1.8;
 
-        // Tires
         const frontTireX = x + width * 0.22;
         const rearTireX = x + width * 0.80;
         const tireRadius = width * 0.065;
 
-        // Front Tire
         c.beginPath();
         c.arc(frontTireX, groundY - tireRadius, tireRadius, 0, Math.PI * 2);
         c.fill();
         c.stroke();
 
-        // Rear Tire
         c.beginPath();
         c.arc(rearTireX, groundY - tireRadius, tireRadius, 0, Math.PI * 2);
         c.fill();
         c.stroke();
 
-        // Nosecone & Cockpit Monocoque
         c.beginPath();
         c.moveTo(x + width * 0.12, groundY - 18);
         c.lineTo(x + width * 0.38, y + 45);
-        c.lineTo(x + width * 0.52, y + 25); // Engine intake airbox
+        c.lineTo(x + width * 0.52, y + 25);
         c.lineTo(x + width * 0.75, y + 40);
-        c.lineTo(x + width * 0.78, groundY - 40); // Engine cover spine
-        c.lineTo(x + width * 0.28, groundY - 14); // Floor line
+        c.lineTo(x + width * 0.78, groundY - 40);
+        c.lineTo(x + width * 0.28, groundY - 14);
         c.closePath();
         c.fill();
         c.stroke();
 
-        // Halo Structure
         c.strokeStyle = "rgba(255, 255, 255, 0.7)";
         c.beginPath();
         c.moveTo(x + width * 0.44, y + 35);
         c.lineTo(x + width * 0.50, y + 22);
         c.stroke();
 
-        // Front Wing Assembly
         c.strokeStyle = "#3aa3ff";
         c.beginPath();
         c.moveTo(x + width * 0.08, groundY - 22);
         c.lineTo(x + width * 0.22, groundY - 14);
         c.stroke();
 
-        // Rear Wing Assembly & DRS Flap
         c.beginPath();
         c.rect(x + width * 0.82, y + 10, width * 0.08, 30);
         c.stroke();
 
-        // DRS Flap
         c.strokeStyle = drsOpen ? "#ff1744" : "#00e676";
         c.beginPath();
         if (drsOpen) {
             c.moveTo(x + width * 0.82, y + 12);
-            c.lineTo(x + width * 0.90, y + 12); // Horizontal open flap
+            c.lineTo(x + width * 0.90, y + 12);
         } else {
             c.moveTo(x + width * 0.82, y + 12);
-            c.lineTo(x + width * 0.90, y + 24); // Angled closed flap
+            c.lineTo(x + width * 0.90, y + 24);
         }
         c.stroke();
 
@@ -1130,6 +1265,14 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleDRS.checked = false;
         toggleHeatmap.checked = true;
         toggleVectors.checked = true;
+        baselineData = null;
+        updatePhysics();
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
     });
 
     // Start Simulation Loop
