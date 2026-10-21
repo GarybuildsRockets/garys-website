@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Wind Tunnel Aerodynamics & Engineering Calculations</title>
+
+    <style>
+        :root {
+            --bg-main: #05070b;
+            --bg-elevated: #0b1018;
+            --bg-elevated-soft: #0f141e;
+            --accent: #3aa3ff;
+            --accent-soft: rgba(58, 163, 255, 0.25);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --text-main: #f5f7fb;
+            --text-muted: #a4afc3;
+            --danger: #ff4d5a;
+            --success: #00e676;
+            --warning: #ffb300;
+            --radius-large: 16px;
+            --radius-medium: 10px;
+            --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.7);
+            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at top left, #141b29 0%, #05070b 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-large);
+            padding: 16px 24px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .title-group h1 {
+            font-size: 22px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-group h1 span {
+            color: var(--accent);
+            font-size: 14px;
+            border: 1px solid var(--accent);
+            padding: 2px 8px;
+            border-radius: 999px;
+            letter-spacing: 0;
+        }
+
+        .title-group p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(58, 163, 255, 0.15);
+            border-color: var(--accent);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #020308;
+            font-weight: 600;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: #52afff;
+            box-shadow: 0 0 16px rgba(58, 163, 255, 0.5);
+            color: #000;
+        }
+
+        /* MAIN LAYOUT GRID */
+        .simulation-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* SIDEBAR PANELS */
+        .panel {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-large);
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* CONTROL SLIDERS */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .control-val {
+            font-family: var(--font-mono);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(58, 163, 255, 0.8);
+            transition: transform 0.1s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* TOGGLE SWITCHES */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 42px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .slider-round {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            transition: 0.2s ease;
+        }
+
+        .slider-round::before {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.2s ease;
+        }
+
+        input:checked + .slider-round {
+            background: var(--accent);
+        }
+
+        input:checked + .slider-round::before {
+            transform: translateX(20px);
+        }
+
+        /* CANVAS AREA */
+        .canvas-container {
+            position: relative;
+            background: #020408;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-soft);
+        }
+
+        canvas {
+            width: 100%;
+            height: 540px;
+            display: block;
+            cursor: crosshair;
+        }
+
+        /* CANVAS HUD & LEGEND OVERLAYS */
+        .canvas-overlay-top {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .hud-badge {
+            background: rgba(5, 8, 15, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-medium);
+            padding: 8px 14px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+
+        .hud-badge strong {
+            color: var(--text-main);
+            font-family: var(--font-mono);
+        }
+
+        .legend-bar {
+            position: absolute;
+            bottom: 14px;
+            left: 16px;
+            right: 16px;
+            background: rgba(5, 8, 15, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-medium);
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .pressure-gradient-bar {
+            width: 140px;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #00e676 0%, #3aa3ff 35%, #9c27b0 70%, #ff1744 100%);
+            margin: 0 8px;
+            display: inline-block;
+        }
+
+        /* TELEMETRY METRICS */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .telemetry-card {
+            background: var(--bg-elevated-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-medium);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .telemetry-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .telemetry-value {
+            font-family: var(--font-mono);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .telemetry-unit {
+            font-size: 11px;
+            color: var(--accent);
+            margin-left: 2px;
+        }
+
+        .balance-bar-wrapper {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .balance-bar-container {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .balance-front {
+            background: var(--accent);
+            height: 100%;
+            transition: width 0.1s ease;
+        }
+
+        .balance-rear {
+            background: #ab47bc;
+            height: 100%;
+            transition: width 0.1s ease;
+        }
+
+        /* HOTSPOT TOOLTIP */
+        .hotspot-info {
+            background: var(--bg-elevated-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-medium);
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .hotspot-info strong {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 4, 8, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-large);
+            width: 100%;
+            max-width: 960px;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 32px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover { color: var(--text-main); }
+
+        .calc-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--bg-elevated-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-medium);
+            padding: 20px;
+        }
+
+        .calc-section h3 {
+            font-size: 16px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .formula-box {
+            background: rgba(2, 4, 8, 0.8);
+            border: 1px solid rgba(58, 163, 255, 0.3);
+            border-left: 4px solid var(--accent);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: #64b5f6;
+            overflow-x: auto;
+        }
+
+        .calc-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .sources-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .sources-list li a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .sources-list li a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1100px) {
+            .simulation-grid {
+                grid-template-columns: 1fr;
+            }
+            canvas {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- HEADER -->
+    <header>
+        <div class="title-group">
+            <h1>F1 Aero Tuner <span>2026 Spec</span></h1>
+            <p>Interactive Ground-Effect Aerodynamics Wind Tunnel & Mathematical Analysis Platform</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn" id="openCalcBtn">📐 Formulas & Engineering Calculations</button>
+            <button class="btn btn-primary" id="resetBtn">🔄 Reset Tunnel</button>
+        </div>
+    </header>
+
+    <!-- SIMULATION GRID -->
+    <div class="simulation-grid">
+        
+        <!-- LEFT PANEL: CONTROLS -->
+        <div class="panel">
+            <div class="panel-title">
+                Wind Tunnel Controls 🛠️
+            </div>
+
+            <!-- Flow Velocity -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Freestream Air Velocity ($v$)</span>
+                    <span class="control-val" id="valSpeed">240 km/h</span>
+                </div>
+                <input type="range" id="inputSpeed" min="60" max="360" value="240" step="5">
+            </div>
+
+            <!-- Front Wing AoA -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Front Wing Angle ($\alpha_{fw}$)</span>
+                    <span class="control-val" id="valFWing">14.0°</span>
+                </div>
+                <input type="range" id="inputFWing" min="4" max="28" value="14" step="0.5">
+            </div>
+
+            <!-- Rear Wing AoA -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Rear Wing Angle ($\alpha_{rw}$)</span>
+                    <span class="control-val" id="valRWing">22.0°</span>
+                </div>
+                <input type="range" id="inputRWing" min="8" max="38" value="22" step="0.5">
+            </div>
+
+            <!-- Front Ride Height -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Front Ground Clearance ($h_f$)</span>
+                    <span class="control-val" id="valFRide">28 mm</span>
+                </div>
+                <input type="range" id="inputFRide" min="15" max="55" value="28" step="1">
+            </div>
+
+            <!-- Rear Ride Height -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Rear Ground Clearance ($h_r$)</span>
+                    <span class="control-val" id="valRRide">75 mm</span>
+                </div>
+                <input type="range" id="inputRRide" min="45" max="115" value="75" step="1">
+            </div>
+
+            <!-- DRS Switch -->
+            <div class="toggle-row">
+                <span>Drag Reduction System (DRS)</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleDRS">
+                    <span class="slider-round"></span>
+                </label>
+            </div>
+
+            <!-- Vis Toggles -->
+            <div class="panel-title" style="margin-top: 10px;">Visualization Layers 👁️</div>
+
+            <div class="toggle-row">
+                <span>Pressure Heatmap Field</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleHeatmap" checked>
+                    <span class="slider-round"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <span>VORTEX / Turbulence Vectors</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggleVectors" checked>
+                    <span class="slider-round"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: CANVAS SIMULATOR -->
+        <div class="canvas-container">
+            <div class="canvas-overlay-top">
+                <div class="hud-badge">
+                    CHASSIS: <strong>FW46 / Ground-Effect Venturi Spec</strong>
+                </div>
+                <div class="hud-badge">
+                    STATUS: <strong id="drsStatus" style="color: var(--success);">DRS CLOSED</strong>
+                </div>
+            </div>
+
+            <canvas id="tunnelCanvas"></canvas>
+
+            <div class="legend-bar">
+                <div>
+                    <span>Pressure Delta:</span>
+                    <span style="color:#00e676">Low (Suction)</span>
+                    <span class="pressure-gradient-bar"></span>
+                    <span style="color:#ff1744">High (Stagnation)</span>
+                </div>
+                <div>Hover cursor over F1 components to inspect aerodynamic hotspots</div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: TELEMETRY & HOTSPOT METRICS -->
+        <div class="panel">
+            <div class="panel-title">Real-Time Telemetry 📊</div>
+
+            <div class="telemetry-grid">
+                <div class="telemetry-card">
+                    <span class="telemetry-label">Total Downforce ($F_L$)</span>
+                    <div class="telemetry-value" id="metricDF">14,250<span class="telemetry-unit">N</span></div>
+                </div>
+                <div class="telemetry-card">
+                    <span class="telemetry-label">Total Drag ($F_D$)</span>
+                    <div class="telemetry-value" id="metricDrag">3,820<span class="telemetry-unit">N</span></div>
+                </div>
+                <div class="telemetry-card">
+                    <span class="telemetry-label">Efficiency ($L/D$)</span>
+                    <div class="telemetry-value" id="metricLD">3.73</div>
+                </div>
+                <div class="telemetry-card">
+                    <span class="telemetry-label">Engine Power Req.</span>
+                    <div class="telemetry-value" id="metricPower">254<span class="telemetry-unit">kW</span></div>
+                </div>
+            </div>
+
+            <!-- Aero Balance -->
+            <div class="balance-bar-wrapper">
+                <div class="control-label">
+                    <span>Aero Balance (% Front)</span>
+                    <span class="control-val" id="metricBalance">44.2%</span>
+                </div>
+                <div class="balance-bar-container">
+                    <div class="balance-front" id="barBalanceFront" style="width: 44.2%;"></div>
+                    <div class="balance-rear" id="barBalanceRear" style="width: 55.8%;"></div>
+                </div>
+            </div>
+
+            <!-- Dynamic Hotspot Inspector -->
+            <div class="panel-title" style="margin-top: 10px;">Hotspot Inspector 🔍</div>
+            <div class="hotspot-info" id="hotspotBox">
+                <strong>Hover over chassis elements</strong>
+                Move your pointer across the F1 car in the wind tunnel to analyze local flow velocities, pressure differentials, and component vortex shedding.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MATHEMATICAL CALCULATIONS & FORMULAS MODAL -->
+<div class="modal-overlay" id="calcModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>F1 Aerodynamics Physics & Mathematical Model</h2>
+            <button class="close-btn" id="closeCalcBtn">&times;</button>
+        </div>
+
+        <!-- SECTION 1: AERODYNAMIC DOWNFORCE & DRAG -->
+        <div class="calc-section">
+            <h3>1. Total Aerodynamic Downforce ($F_L$) & Drag ($F_D$)</h3>
+            <div class="formula-box">
+                F_L = 0.5 · ρ · v² · A_ref · C_L(α, h)<br>
+                F_D = 0.5 · ρ · v² · A_ref · C_D(α, h)
+            </div>
+            <p class="calc-desc">
+                Where:
+                <br>• <strong>ρ (Fluid Density):</strong> Standard sea-level air density = $1.225 \text{ kg/m}^3$.
+                <br>• <strong>v (Velocity):</strong> Freestream air velocity relative to car ($\text{m/s}$).
+                <br>• <strong>A_ref (Frontal Area):</strong> Standard F1 reference frontal area = $1.60 \text{ m}^2$.
+                <br>• <strong>C_L / C_D:</strong> Non-dimensional Lift and Drag Coefficients synthesized from front wing, rear wing, and floor ground effect.
+            </p>
+        </div>
+
+        <!-- SECTION 2: GROUND EFFECT VENTURI SUCTION -->
+        <div class="calc-section">
+            <h3>2. Underfloor Ground-Effect Venturi Channel Suction</h3>
+            <div class="formula-box">
+                p_1 + 0.5 · ρ · v_1² = p_2 + 0.5 · ρ · v_2² &nbsp; (Bernoulli's Principle)<br>
+                C_{L,floor} = C_{L0,floor} · (h_0 / h_{avg})^{0.65} · \cos(\theta_{pitch})
+            </div>
+            <p class="calc-desc">
+                Ground effect downforce relies on Bernoulli's principle and Venturi throat constriction. As underbody clearance ($h_{avg}$) decreases toward optimum seal point ($~25\text{mm}$), underbody velocity ($v_2$) accelerates relative to freestream ($v_1$), dropping static pressure ($p_2$) underneath the floor and sucking the chassis down to the asphalt.
+            </p>
+        </div>
+
+        <!-- SECTION 3: WING INDUCED DRAG -->
+        <div class="calc-section">
+            <h3>3. Wing-Induced Drag ($C_{D,induced}$)</h3>
+            <div class="formula-box">
+                C_{D,induced} = (C_{L,wing}²) / (π · AR · e)
+            </div>
+            <p class="calc-desc">
+                Where <strong>AR</strong> is the wing Aspect Ratio ($b^2 / S$) and <strong>e</strong> is the Oswald planform efficiency factor ($~0.82$). High wing angle of attack increases $C_L$, generating proportional wingtip vortex shedding and induced drag penalty.
+            </p>
+        </div>
+
+        <!-- SECTION 4: AERO BALANCE & POWER REQUIREMENTS -->
+        <div class="calc-section">
+            <h3>4. Aerodynamic Balance & Power Overcoming Drag</h3>
+            <div class="formula-box">
+                Balance_{\% front} = (F_{L,front} / F_{L,total}) · 100\%<br>
+                Power_{req} = F_D · v &nbsp; (\text{Watts})
+            </div>
+            <p class="calc-desc">
+                Aero balance determines high-speed cornering stability. Power required to overcome aerodynamic drag scales with the cube of velocity ($v^3$), placing immense demand on modern hybrid power units at speeds exceeding $300\text{ km/h}$.
+            </p>
+        </div>
+
+        <!-- SOURCES -->
+        <div class="calc-section">
+            <h3>Academic References & Engineering Sources</h3>
+            <ul class="sources-list">
+                <li>1. Katz, J. (2006). <em>Race Car Aerodynamics: Designing for Speed</em>. Bentley Publishers.</li>
+                <li>2. Wright, P. (2001). <em>Formula 1 Technology</em>. SAE International.</li>
+                <li>3. McBeath, S. (2015). <em>Competition Car Aerodynamics: A Practical Handbook</em>. Veloce Publishing.</li>
+                <li>4. OptimumG Vehicle Dynamics Technical Papers - Aerodynamic Analysis & Balance Protocols.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Canvas Setup
+    const canvas = document.getElementById("tunnelCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    // Controls DOM
+    const inputSpeed = document.getElementById("inputSpeed");
+    const inputFWing = document.getElementById("inputFWing");
+    const inputRWing = document.getElementById("inputRWing");
+    const inputFRide = document.getElementById("inputFRide");
+    const inputRRide = document.getElementById("inputRRide");
+    const toggleDRS = document.getElementById("toggleDRS");
+    const toggleHeatmap = document.getElementById("toggleHeatmap");
+    const toggleVectors = document.getElementById("toggleVectors");
+
+    // Labels DOM
+    const valSpeed = document.getElementById("valSpeed");
+    const valFWing = document.getElementById("valFWing");
+    const valRWing = document.getElementById("valRWing");
+    const valFRide = document.getElementById("valFRide");
+    const valRRide = document.getElementById("valRRide");
+    const drsStatus = document.getElementById("drsStatus");
+
+    // Telemetry DOM
+    const metricDF = document.getElementById("metricDF");
+    const metricDrag = document.getElementById("metricDrag");
+    const metricLD = document.getElementById("metricLD");
+    const metricPower = document.getElementById("metricPower");
+    const metricBalance = document.getElementById("metricBalance");
+    const barBalanceFront = document.getElementById("barBalanceFront");
+    const barBalanceRear = document.getElementById("barBalanceRear");
+    const hotspotBox = document.getElementById("hotspotBox");
+
+    // Simulation State
+    let mouseX = -100, mouseY = -100;
+    const NUM_PARTICLES = 320;
+    const particles = [];
+
+    // Initialize Smoke Streamline Particles
+    for (let i = 0; i < NUM_PARTICLES; i++) {
+        particles.push({
+            x: Math.random() * 1000,
+            y: Math.random() * 500,
+            size: Math.random() * 2 + 1.2,
+            life: Math.random() * 100
+        });
+    }
+
+    // Interactive Hotspots Data
+    const hotspots = [
+        { id: "fw", name: "Front Wing Assembly", xMin: 0.12, xMax: 0.28, yMin: 0.58, yMax: 0.75,
+          desc: "Generates front downforce and directs clean/vortex air around front tires and into underbody Venturi inlets." },
+        { id: "susp", name: "Front Suspension & Brake Duct", xMin: 0.28, xMax: 0.38, yMin: 0.52, yMax: 0.72,
+          desc: "Creates localized drag turbulence; modern suspension wishbones are profiled as airfoils to condition flow." },
+        { id: "halo", name: "Halo Safety Structure", xMin: 0.44, xMax: 0.54, yMin: 0.35, yMax: 0.52,
+          desc: "Mandatory cockpit protection; fairings condition airflow into engine airbox intake." },
+        { id: "floor", name: "Underbody Venturi Tunnels", xMin: 0.38, xMax: 0.72, yMin: 0.65, yMax: 0.78,
+          desc: "Generates over 60% of total car downforce via low-pressure suction, highly sensitive to front ground clearance." },
+        { id: "pod", name: "Sidepod Inlets & Downwash Bodywork", xMin: 0.42, xMax: 0.68, yMin: 0.48, yMax: 0.66,
+          desc: "Feeds internal radiators for thermal cooling while washing high-energy air down to the rear diffuser top surface." },
+        { id: "diff", name: "Rear Diffuser Expansion Chamber", xMin: 0.70, xMax: 0.82, yMin: 0.62, yMax: 0.76,
+          desc: "Expands underbody airflow back to atmospheric pressure, creating massive low-pressure suction beneath the floor." },
+        { id: "rw", name: "Rear Wing & Beam Wing", xMin: 0.78, xMax: 0.90, yMin: 0.32, yMax: 0.58,
+          desc: "High angle-of-attack multi-element wing producing huge rear downforce and upwash flow, subject to DRS activation." }
+    ];
+
+    // Mouse Move Event
+    canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+        mouseX = -100;
+        mouseY = -100;
+    });
+
+    // Update Telemetry & Physics Calculations
+    function updatePhysics() {
+        const velocityKmh = parseFloat(inputSpeed.value);
+        const velocityMs = velocityKmh / 3.6;
+        const fWingAoA = parseFloat(inputFWing.value);
+        let rWingAoA = parseFloat(inputRWing.value);
+        const fRide = parseFloat(inputFRide.value);
+        const rRide = parseFloat(inputRRide.value);
+        const isDRS = toggleDRS.checked;
+
+        if (isDRS) {
+            rWingAoA = Math.max(2, rWingAoA - 16);
+            drsStatus.textContent = "DRS OPEN (LOW DRAG)";
+            drsStatus.style.color = "var(--accent)";
+        } else {
+            drsStatus.textContent = "DRS CLOSED";
+            drsStatus.style.color = "var(--success)";
+        }
+
+        // Coefficients Calculation
+        const rho = 1.225; // Air density kg/m3
+        const areaRef = 1.60; // Frontal area m2
+
+        // Front Wing CL
+        const cL_fw = 0.45 + (fWingAoA * 0.045);
+        // Rear Wing CL
+        const cL_rw = 0.65 + (rWingAoA * 0.052);
+
+        // Ground Effect Floor CL (Exponential Ground Proximity)
+        const avgRide = (fRide + rRide) / 2;
+        const cL_floor = 1.65 * Math.pow(28 / Math.max(12, avgRide), 0.55);
+
+        const totalCL = cL_fw + cL_rw + cL_floor;
+
+        // Drag Coefficients
+        const cD_base = 0.28;
+        const cD_fw = fWingAoA * 0.012;
+        const cD_rw = rWingAoA * (isDRS ? 0.008 : 0.024);
+        const cD_floor = cL_floor * 0.08;
+
+        const totalCD = cD_base + cD_fw + cD_rw + cD_floor;
+
+        // Force Calculations: 0.5 * rho * v^2 * A * C
+        const dynamicPressure = 0.5 * rho * Math.pow(velocityMs, 2);
+        const downforceN = dynamicPressure * areaRef * totalCL;
+        const dragN = dynamicPressure * areaRef * totalCD;
+        const efficiency = downforceN / Math.max(1, dragN);
+        const powerkW = (dragN * velocityMs) / 1000;
+
+        // Aero Balance (% Front Downforce)
+        const frontDFN = dynamicPressure * areaRef * (cL_fw + cL_floor * 0.42);
+        const balanceFrontPct = (frontDFN / downforceN) * 100;
+
+        // DOM Updates
+        valSpeed.textContent = `${velocityKmh} km/h`;
+        valFWing.textContent = `${fWingAoA.toFixed(1)}°`;
+        valRWing.textContent = `${rWingAoA.toFixed(1)}°`;
+        valFRide.textContent = `${fRide} mm`;
+        valRRide.textContent = `${rRide} mm`;
+
+        metricDF.innerHTML = `${Math.round(downforceN).toLocaleString()}<span class="telemetry-unit">N</span>`;
+        metricDrag.innerHTML = `${Math.round(dragN).toLocaleString()}<span class="telemetry-unit">N</span>`;
+        metricLD.textContent = efficiency.toFixed(2);
+        metricPower.innerHTML = `${Math.round(powerkW)}<span class="telemetry-unit">kW</span>`;
+        metricBalance.textContent = `${balanceFrontPct.toFixed(1)}%`;
+
+        barBalanceFront.style.width = `${balanceFrontPct}%`;
+        barBalanceRear.style.width = `${100 - balanceFrontPct}%`;
+
+        return { velocityMs, totalCL, totalCD, fRide, rRide, isDRS };
+    }
+
+    // MAIN RENDER LOOP
+    function render() {
+        const { velocityMs } = updatePhysics();
+        const w = canvas.getBoundingClientRect().width;
+        const h = canvas.getBoundingClientRect().height;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // 1. Draw Tunnel Flow Background
+        ctx.fillStyle = "#020408";
+        ctx.fillRect(0, 0, w, h);
+
+        // Ground Track Surface
+        const groundY = h * 0.78;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, groundY);
+        ctx.lineTo(w, groundY);
+        ctx.stroke();
+
+        // Ground speed tick animation
+        const time = Date.now() * 0.005 * (velocityMs / 50);
+        ctx.strokeStyle = "rgba(58, 163, 255, 0.15)";
+        ctx.lineWidth = 1;
+        for (let x = (time % 40) - 40; x < w; x += 40) {
+            ctx.beginPath();
+            ctx.moveTo(x, groundY);
+            ctx.lineTo(x + 20, h);
+            ctx.stroke();
+        }
+
+        // F1 Car Coordinates Scale
+        const carX = w * 0.15;
+        const carWidth = w * 0.70;
+        const carY = groundY - (h * 0.18);
+
+        // 2. Heatmap Pressure Field Overlay
+        if (toggleHeatmap.checked) {
+            const gradHigh = ctx.createRadialGradient(carX + carWidth * 0.18, carY + 30, 10, carX + carWidth * 0.18, carY + 30, 80);
+            gradHigh.addColorStop(0, "rgba(255, 23, 68, 0.35)");
+            gradHigh.addColorStop(1, "transparent");
+            ctx.fillStyle = gradHigh;
+            ctx.fillRect(0, 0, w, h);
+
+            // Floor Low Pressure Suction Zone
+            const gradSuction = ctx.createLinearGradient(carX + carWidth * 0.3, groundY - 10, carX + carWidth * 0.7, groundY - 10);
+            gradSuction.addColorStop(0, "rgba(0, 230, 118, 0.4)");
+            gradSuction.addColorStop(0.5, "rgba(156, 39, 176, 0.5)");
+            gradSuction.addColorStop(1, "rgba(0, 230, 118, 0.3)");
+            ctx.fillStyle = gradSuction;
+            ctx.fillRect(carX + carWidth * 0.28, groundY - 30, carWidth * 0.48, 28);
+        }
+
+        // 3. Draw Detailed F1 Chassis Profile (CAD Vector)
+        drawF1Car(ctx, carX, carY, carWidth, groundY, toggleDRS.checked);
+
+        // 4. Streamline Particle Physics & Rendering
+        ctx.fillStyle = "#3aa3ff";
+        particles.forEach(p => {
+            const speedFact = (velocityMs / 30) * 8;
+            p.x += speedFact;
+
+            if (p.x > w) {
+                p.x = 0;
+                p.y = Math.random() * (groundY - 20);
+            }
+
+            // Deflect particles around car body contours
+            const relX = (p.x - carX) / carWidth;
+            if (relX > 0 && relX < 1) {
+                // Front Wing upward deflection
+                if (relX < 0.25 && Math.abs(p.y - (carY + 60)) < 40) {
+                    p.y -= 0.8;
+                }
+                // Underbody tunnel acceleration
+                if (relX >= 0.28 && relX <= 0.75 && p.y > groundY - 35) {
+                    p.x += speedFact * 0.4;
+                }
+                // Rear wing upwash
+                if (relX > 0.78 && p.y < carY + 40) {
+                    p.y -= 1.8;
+                }
+            }
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // 5. Hotspot Collision Check
+        let hoveredHotspot = null;
+        const normMouseX = mouseX / w;
+        const normMouseY = mouseY / h;
+
+        hotspots.forEach(hs => {
+            if (normMouseX >= hs.xMin && normMouseX <= hs.xMax && normMouseY >= hs.yMin && normMouseY <= hs.yMax) {
+                hoveredHotspot = hs;
+                ctx.strokeStyle = "rgba(58, 163, 255, 0.8)";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(hs.xMin * w, hs.yMin * h, (hs.xMax - hs.xMin) * w, (hs.yMax - hs.yMin) * h);
+            }
+        });
+
+        if (hoveredHotspot) {
+            hotspotBox.innerHTML = `<strong>${hoveredHotspot.name}</strong>${hoveredHotspot.desc}`;
+        } else {
+            hotspotBox.innerHTML = `<strong>Hover over chassis elements</strong>Move your pointer across the F1 car in the wind tunnel to analyze local flow velocities, pressure differentials, and component vortex shedding.`;
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    // DRAW F1 CAR CAD VECTOR
+    function drawF1Car(c, x, y, width, groundY, drsOpen) {
+        c.save();
+        c.fillStyle = "#0d1522";
+        c.strokeStyle = "#3aa3ff";
+        c.lineWidth = 1.8;
+
+        // Tires
+        const frontTireX = x + width * 0.22;
+        const rearTireX = x + width * 0.80;
+        const tireRadius = width * 0.065;
+
+        // Front Tire
+        c.beginPath();
+        c.arc(frontTireX, groundY - tireRadius, tireRadius, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+
+        // Rear Tire
+        c.beginPath();
+        c.arc(rearTireX, groundY - tireRadius, tireRadius, 0, Math.PI * 2);
+        c.fill();
+        c.stroke();
+
+        // Nosecone & Cockpit Monocoque
+        c.beginPath();
+        c.moveTo(x + width * 0.12, groundY - 18);
+        c.lineTo(x + width * 0.38, y + 45);
+        c.lineTo(x + width * 0.52, y + 25); // Engine intake airbox
+        c.lineTo(x + width * 0.75, y + 40);
+        c.lineTo(x + width * 0.78, groundY - 40); // Engine cover spine
+        c.lineTo(x + width * 0.28, groundY - 14); // Floor line
+        c.closePath();
+        c.fill();
+        c.stroke();
+
+        // Halo Structure
+        c.strokeStyle = "rgba(255, 255, 255, 0.7)";
+        c.beginPath();
+        c.moveTo(x + width * 0.44, y + 35);
+        c.lineTo(x + width * 0.50, y + 22);
+        c.stroke();
+
+        // Front Wing Assembly
+        c.strokeStyle = "#3aa3ff";
+        c.beginPath();
+        c.moveTo(x + width * 0.08, groundY - 22);
+        c.lineTo(x + width * 0.22, groundY - 14);
+        c.stroke();
+
+        // Rear Wing Assembly & DRS Flap
+        c.beginPath();
+        c.rect(x + width * 0.82, y + 10, width * 0.08, 30);
+        c.stroke();
+
+        // DRS Flap
+        c.strokeStyle = drsOpen ? "#ff1744" : "#00e676";
+        c.beginPath();
+        if (drsOpen) {
+            c.moveTo(x + width * 0.82, y + 12);
+            c.lineTo(x + width * 0.90, y + 12); // Horizontal open flap
+        } else {
+            c.moveTo(x + width * 0.82, y + 12);
+            c.lineTo(x + width * 0.90, y + 24); // Angled closed flap
+        }
+        c.stroke();
+
+        c.restore();
+    }
+
+    // Modal Events
+    const openCalcBtn = document.getElementById("openCalcBtn");
+    const closeCalcBtn = document.getElementById("closeCalcBtn");
+    const calcModal = document.getElementById("calcModal");
+
+    openCalcBtn.addEventListener("click", () => calcModal.classList.add("active"));
+    closeCalcBtn.addEventListener("click", () => calcModal.classList.remove("active"));
+    calcModal.addEventListener("click", (e) => {
+        if (e.target === calcModal) calcModal.classList.remove("active");
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+        inputSpeed.value = 240;
+        inputFWing.value = 14;
+        inputRWing.value = 22;
+        inputFRide.value = 28;
+        inputRRide.value = 75;
+        toggleDRS.checked = false;
+        toggleHeatmap.checked = true;
+        toggleVectors.checked = true;
+    });
+
+    // Start Simulation Loop
+    render();
+});
+</script>
+</body>
+</html>
