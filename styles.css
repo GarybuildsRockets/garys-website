@@ -459,6 +459,24 @@ body {
     display: flex;
     justify-content: flex-end;
 }
+.animation-card {
+    background: var(--bg-elevated-soft);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-large);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: var(--shadow-soft);
+}
+
+.animation-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
 
 /* ===========================
    CONTACT
