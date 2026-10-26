@@ -1,5 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
     /* ===========================
+       NAVBAR ACTIVE SECTION HIGHLIGHT
+       =========================== */
+    const sections = document.querySelectorAll("section");
+    const navItems = document.querySelectorAll(".desktop-nav a");
+
+    window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 120;
+            if (window.scrollY >= sectionTop) {
+                current = section.getAttribute("id");
+            }
+        });
+
+        navItems.forEach(a => {
+            a.classList.remove("active");
+            if (a.getAttribute("href") === `#${current}`) {
+                a.classList.add("active");
+            }
+        });
+    });
+    /* ===========================
        TYPEWRITER EFFECT
        =========================== */
     function typeWriterEffect(elementId, text, speed = 75) {
