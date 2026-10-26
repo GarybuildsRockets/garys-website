@@ -1,0 +1,66 @@
+/* ===== GARAGE INTRO ===== */
+:root { --car-color: #0b0e13; }
+#garage-intro { position: fixed; inset: 0; z-index: 9999; overflow: hidden; background: #03050a;
+  transition: opacity .9s ease; }
+#garage-intro.done { opacity: 0; pointer-events: none; }
+.garage-scene { position: absolute; inset: 0; transform-origin: 50% 70%;
+  transition: transform 3.6s cubic-bezier(.45,0,.2,1); }
+#garage-intro.open .garage-scene { transform: scale(1.18); }
+.garage-wall { position: absolute; inset: 0 0 28% 0;
+  background: repeating-linear-gradient(90deg, #0d1522 0 78px, #0a111c 78px 80px); }
+.garage-floor { position: absolute; inset: 72% 0 0 0;
+  background: linear-gradient(#141c29, #05080e); border-top: 2px solid rgba(255,255,255,.08); }
+.garage-light { position: absolute; top: 0; left: 50%; width: 70%; height: 80%; transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 0, rgba(180,215,255,.28), transparent 70%); }
+.garage-car { position: absolute; left: 50%; bottom: 14%; width: min(78vw, 760px); transform: translateX(-50%); }
+.garage-door { position: absolute; inset: 0 0 28% 0; display: flex; flex-direction: column;
+  transform: translateY(0); transition: transform 2.4s cubic-bezier(.6,0,.3,1) .2s;
+  box-shadow: 0 20px 40px rgba(0,0,0,.8); z-index: 3; }
+#garage-intro.open .garage-door { transform: translateY(-102%); }
+.door-panel { flex: 1; background: linear-gradient(#aeb9c7, #7d8998); border-bottom: 3px solid #4b5563;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.4); position: relative; }
+.door-panel::after { content: ""; position: absolute; inset: 22% 6%; border: 2px solid rgba(0,0,0,.18); border-radius: 6px; }
+.door-label { position: absolute; z-index: 4; top: 8%; width: 100%; text-align: center; color: #fff;
+  letter-spacing: .3em; text-transform: uppercase; font-weight: 700; text-shadow: 0 2px 8px #000;
+  transition: opacity .6s; pointer-events: none; }
+.door-label small { display: block; letter-spacing: .2em; opacity: .8; margin-top: 6px; font-weight: 500; }
+#garage-intro.open .door-label { opacity: 0; }
+#garage-intro.rumble .garage-door { animation: rumble .12s linear infinite; }
+@keyframes rumble { 50% { margin-top: 1px; } }
+.garage-skip { position: absolute; z-index: 5; right: 20px; bottom: 20px; padding: 8px 18px; border-radius: 999px;
+  background: rgba(10,15,24,.7); color: #f0f4f8; border: 1px solid rgba(255,255,255,.25); cursor: pointer; }
+body.intro-lock { overflow: hidden; }
+
+/* Car */
+.car-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.car-body { fill: var(--car-color); stroke: rgba(120,185,255,.55); stroke-width: 1.5; }
+.car-glow { fill: var(--accent); opacity: .45; filter: blur(8px); }
+.car-drl { stroke: #fff; stroke-width: 2.5; fill: none; filter: drop-shadow(0 0 4px #fff); stroke-linecap: round; }
+.car-glass { fill: #04070c; stroke: rgba(150,200,255,.35); stroke-width: 1.5; }
+.car-tire { fill: #0a0a0c; }
+.car-rim { stroke: #3d4a5c; stroke-width: 3; }
+.car-spin { transform-box: fill-box; transform-origin: center; transition: transform .2s linear; }
+.car-head { fill: #1b2433; transition: fill .4s, filter .4s; }
+.car-lit .car-head { fill: #fff8d8; filter: drop-shadow(0 0 14px #fff3b0); }
+.car-beam { fill: url(#beamGrad); opacity: 0; transition: opacity .6s; }
+.car-lit .car-beam { opacity: 1; }
+.car-tail { fill: #7a0f18; }
+.car-lit .car-tail { fill: #ff2a3a; filter: drop-shadow(0 0 8px #ff2a3a); }
+.car-shadow { fill: rgba(0,0,0,.6); }
+#garage-intro.open .car-spin { animation: wheelroll 2.4s ease-out; }
+@keyframes wheelroll { from { transform: rotate(0); } to { transform: rotate(540deg); } }
+
+/* Hero strip */
+.garage-strip { position: relative; max-width: var(--max-width); margin: 40px auto 0; padding-top: 30px; }
+.garage-strip::after { content: ""; position: absolute; left: 4%; right: 4%; bottom: 6%; height: 3px; border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent-secondary), var(--accent), transparent);
+  box-shadow: 0 0 24px var(--accent-glow); }
+.garage-strip .car-svg { width: min(100%, 720px); margin: 0 auto; transition: transform .25s ease-out; filter: drop-shadow(0 18px 20px rgba(0,0,0,.7)); }
+.garage-strip .car-svg { animation: carIn 1.2s ease-out both 3.4s; }
+.no-intro .garage-strip .car-svg { animation: none; }
+@keyframes carIn { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .garage-door, .garage-scene, .car-spin, .reveal { transition: none !important; animation: none !important; }
+}
