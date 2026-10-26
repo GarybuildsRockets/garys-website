@@ -3,21 +3,24 @@
    =========================== */
 
 :root {
-    --bg-main: #05070b;
-    --bg-elevated: #0b1018;
-    --bg-elevated-soft: #0f141e;
+    --bg-main: #03060d;
+    --bg-elevated: #080e18;
+    --bg-elevated-soft: rgba(15, 20, 30, 0.75);
     --accent: #3aa3ff;
-    --accent-soft: rgba(58, 163, 255, 0.25);
+    --accent-glow: rgba(58, 163, 255, 0.4);
+    --accent-soft: rgba(58, 163, 255, 0.18);
     --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(58, 163, 255, 0.45);
     --text-main: #f5f7fb;
     --text-muted: #a4afc3;
     --danger: #ff4d5a;
     --radius-large: 20px;
     --radius-medium: 14px;
     --radius-round: 999px;
-    --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.7);
-    --transition-fast: 0.2s ease;
-    --transition-med: 0.3s ease;
+    --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.75);
+    --shadow-glow: 0 0 25px rgba(58, 163, 255, 0.22);
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-med: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     --max-width: 1120px;
 }
 
@@ -29,9 +32,14 @@ body {
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Segoe UI", Roboto, sans-serif;
-    background:
-        radial-gradient(circle at top left, #141b29 0, transparent 60%),
-        radial-gradient(circle at bottom right, #050813 0, #020308 65%);
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(58, 163, 255, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(13, 28, 51, 0.8) 0px, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
 }
@@ -51,8 +59,11 @@ body {
     font-size: 32px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0 0 10px;
+    background: linear-gradient(135deg, #ffffff 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .section-accent-line {
@@ -60,6 +71,7 @@ body {
     height: 3px;
     border-radius: 999px;
     background: linear-gradient(to right, var(--accent), transparent);
+    box-shadow: 0 0 10px var(--accent-glow);
 }
 
 /* Buttons */
@@ -70,10 +82,10 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 20px;
+    padding: 10px 22px;
     border-radius: 999px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     border: 1px solid transparent;
     cursor: pointer;
     text-decoration: none;
@@ -85,34 +97,40 @@ body {
 .primary-btn {
     background: var(--accent);
     color: #020308;
-    box-shadow: 0 12px 24px rgba(58, 163, 255, 0.35);
+    box-shadow: 0 8px 20px rgba(58, 163, 255, 0.35);
 }
 
 .primary-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 16px 32px rgba(58, 163, 255, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(58, 163, 255, 0.5);
+    background: #53adff;
 }
 
 .secondary-btn {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.03);
     border-color: var(--border-subtle);
     color: var(--text-main);
+    backdrop-filter: blur(8px);
 }
 
 .secondary-btn:hover {
     border-color: var(--accent);
+    background: rgba(58, 163, 255, 0.1);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
 }
 
 .ghost-btn {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.03);
     border-color: var(--border-subtle);
     color: var(--text-main);
 }
 
 .ghost-btn:hover {
     border-color: var(--accent);
+    background: rgba(58, 163, 255, 0.15);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+    transform: translateY(-1px);
 }
 
 /* ===========================
@@ -122,7 +140,7 @@ body {
 .curved-navbar {
     position: fixed;
     inset-inline: 0;
-    top: 10px;
+    top: 12px;
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -138,15 +156,22 @@ body {
 
 .nav-inner {
     pointer-events: auto;
-    width: min(1120px, 96%);
-    padding: 12px 20px;
+    width: min(1120px, 94%);
+    padding: 12px 22px;
     border-radius: 999px;
-    background: rgba(2, 6, 16, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(2, 6, 16, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     gap: 20px;
+    transition: border-color var(--transition-med);
+}
+
+.nav-inner:hover {
+    border-color: rgba(58, 163, 255, 0.3);
 }
 
 /* Logo */
@@ -157,7 +182,7 @@ body {
 }
 
 .logo-name {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 16px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -179,21 +204,23 @@ body {
     padding: 0;
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 16px;
 }
 
 .desktop-nav a {
     font-size: 14px;
+    font-weight: 500;
     text-decoration: none;
     color: var(--text-muted);
-    padding: 6px 10px;
+    padding: 6px 14px;
     border-radius: 999px;
     transition: color var(--transition-med), background var(--transition-med);
 }
 
-.desktop-nav a:hover {
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--text-main);
+.desktop-nav a:hover,
+.desktop-nav a.active {
+    background: rgba(58, 163, 255, 0.15);
+    color: var(--accent);
 }
 
 /* Hamburger (mobile) */
@@ -243,8 +270,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(18px);
-    background: rgba(1, 4, 12, 0.84);
+    backdrop-filter: blur(20px);
+    background: rgba(1, 4, 12, 0.88);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--transition-med);
@@ -279,7 +306,7 @@ body {
    =========================== */
 
 .hero {
-    padding-top: 140px;
+    padding-top: 150px;
 }
 
 .hero-content {
@@ -292,23 +319,27 @@ body {
 }
 
 .hero-title {
-    font-size: 40px;
+    font-size: 42px;
+    font-weight: 800;
     margin: 0 0 10px;
 }
 
 .hero-subtitle {
     margin: 0 0 12px;
     color: var(--accent);
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 13px;
+    text-shadow: 0 0 12px var(--accent-glow);
 }
 
 .hero-body {
     margin: 0 0 24px;
     color: var(--text-muted);
     max-width: 500px;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 .hero-image {
@@ -317,9 +348,10 @@ body {
 }
 
 .profile-ring {
-    padding: 4px;
-    border-radius: 999px;
-    background: radial-gradient(circle at top, var(--accent-soft), transparent 60%);
+    padding: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at top left, var(--accent), transparent 70%);
+    box-shadow: var(--shadow-glow);
 }
 
 .profile-pic {
@@ -353,9 +385,10 @@ body {
 }
 
 .about-ring {
-    padding: 4px;
-    border-radius: 999px;
-    background: radial-gradient(circle at top, var(--accent-soft), transparent 60%);
+    padding: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at bottom right, var(--accent), transparent 70%);
+    box-shadow: var(--shadow-glow);
 }
 
 .about-img {
@@ -369,6 +402,7 @@ body {
 .about-text p {
     margin: 0 0 16px;
     color: var(--text-muted);
+    line-height: 1.6;
 }
 
 /* ===========================
@@ -388,7 +422,7 @@ body {
 }
 
 .filter {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 999px;
     border: 1px solid var(--border-subtle);
     padding: 6px 16px;
@@ -397,18 +431,21 @@ body {
     letter-spacing: 0.1em;
     color: var(--text-muted);
     cursor: pointer;
+    backdrop-filter: blur(8px);
     transition: background var(--transition-med), border-color var(--transition-med),
-        color var(--transition-med), transform var(--transition-fast);
+        color var(--transition-med), transform var(--transition-fast), box-shadow var(--transition-med);
 }
 
 .filter.active {
     background: rgba(58, 163, 255, 0.18);
     border-color: var(--accent);
     color: var(--text-main);
+    box-shadow: 0 0 15px var(--accent-soft);
 }
 
 .filter:hover {
     transform: translateY(-1px);
+    border-color: var(--accent);
 }
 
 .projects-grid {
@@ -421,10 +458,12 @@ body {
 
 .project-card {
     background: var(--bg-elevated-soft);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: var(--radius-large);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-soft);
-    padding: 16px 16px 14px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -434,9 +473,9 @@ body {
 }
 
 .project-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.85);
+    transform: translateY(-5px);
+    border-color: var(--border-hover);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.85), 0 0 20px var(--accent-soft);
 }
 
 .project-body {
@@ -446,19 +485,21 @@ body {
 .project-title {
     margin: 0 0 8px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .project-description {
     margin: 0;
     font-size: 14px;
     color: var(--text-muted);
+    line-height: 1.5;
 }
 
 .project-footer {
     display: flex;
     justify-content: flex-end;
 }
+
 .animation-card {
     background: var(--bg-elevated-soft);
     border: 1px solid var(--border-subtle);
@@ -497,8 +538,9 @@ body {
 
 .contact-form {
     background: var(--bg-elevated-soft);
+    backdrop-filter: blur(12px);
     border-radius: var(--radius-large);
-    padding: 20px 20px 22px;
+    padding: 22px;
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-soft);
     display: flex;
@@ -521,7 +563,7 @@ textarea {
     flex: 1;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(3, 8, 18, 0.9);
+    background: rgba(3, 8, 18, 0.8);
     color: var(--text-main);
     padding: 10px 12px;
     font-size: 14px;
@@ -543,15 +585,16 @@ textarea::placeholder {
 input:focus,
 textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 1px rgba(58, 163, 255, 0.7);
+    box-shadow: 0 0 12px var(--accent-soft);
 }
 
 .contact-side {
-    padding: 20px;
+    padding: 22px;
     border-radius: var(--radius-large);
     background: radial-gradient(circle at top left, var(--accent-soft), transparent 65%),
         radial-gradient(circle at bottom right, rgba(58, 163, 255, 0.14), transparent 60%),
-        var(--bg-elevated);
+        var(--bg-elevated-soft);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-soft);
     display: flex;
@@ -562,6 +605,7 @@ textarea:focus {
 .contact-side p {
     margin: 0 0 18px;
     color: var(--text-muted);
+    line-height: 1.5;
 }
 
 /* ===========================
@@ -570,7 +614,7 @@ textarea:focus {
 
 .site-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 16px;
+    padding: 20px 16px;
     text-align: center;
     font-size: 12px;
     color: var(--text-muted);
@@ -682,11 +726,6 @@ textarea:focus {
    LOTUS PLOTTER UNIFORM BUTTONS & LAYOUT
    =========================== */
 
-/* ===========================
-   LOTUS PLOTTER & TREND METRICS LAYOUT
-   =========================== */
-
-/* Update plotter container grid to accommodate side-by-side view */
 .plotter-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -983,6 +1022,7 @@ textarea:focus {
         grid-template-columns: 1fr;
     }
 }
+
 /* CAD Versus Specific Styles */
 .game-container {
     max-width: var(--max-width);
