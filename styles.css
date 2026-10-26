@@ -1,16 +1,17 @@
 /* ===========================
-   BASE & THEME
+   BASE & THEME (WATER REFLECTION EDITION)
    =========================== */
 
 :root {
-    --bg-main: #03060d;
-    --bg-elevated: #080e18;
-    --bg-elevated-soft: rgba(15, 20, 30, 0.75);
+    --bg-main: #020710;
+    --bg-elevated: #060d1a;
+    --bg-elevated-soft: rgba(10, 22, 40, 0.65);
     --accent: #3aa3ff;
-    --accent-glow: rgba(58, 163, 255, 0.4);
+    --accent-glow: rgba(58, 163, 255, 0.45);
     --accent-soft: rgba(58, 163, 255, 0.18);
+    --water-shimmer: rgba(82, 196, 255, 0.12);
     --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(58, 163, 255, 0.45);
+    --border-hover: rgba(58, 163, 255, 0.55);
     --text-main: #f5f7fb;
     --text-muted: #a4afc3;
     --danger: #ff4d5a;
@@ -18,7 +19,7 @@
     --radius-medium: 14px;
     --radius-round: 999px;
     --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.75);
-    --shadow-glow: 0 0 25px rgba(58, 163, 255, 0.22);
+    --shadow-water: 0 12px 30px rgba(0, 100, 200, 0.25);
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-med: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     --max-width: 1120px;
@@ -33,21 +34,50 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-main);
+    /* Dynamic Water Caustics / Ripple Gradient Background */
     background-image: 
-        radial-gradient(at 0% 0%, rgba(58, 163, 255, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(13, 28, 51, 0.8) 0px, transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        radial-gradient(ellipse at 50% -20%, rgba(58, 163, 255, 0.25) 0%, transparent 60%),
+        radial-gradient(circle at 100% 80%, rgba(10, 60, 110, 0.5) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(5, 25, 55, 0.8) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
     background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Subtle Shimmer Overlay on Body */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        var(--water-shimmer) 30%,
+        transparent 60%
+    );
+    background-size: 200% 200%;
+    animation: waterRipple 12s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes waterRipple {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
 }
 
 /* Utility */
 
 .section {
     padding: 100px 16px 80px;
+    position: relative;
+    z-index: 2;
 }
 
 .section-header {
@@ -61,7 +91,7 @@ body {
     text-transform: uppercase;
     font-weight: 700;
     margin: 0 0 10px;
-    background: linear-gradient(135deg, #ffffff 40%, var(--accent));
+    background: linear-gradient(135deg, #ffffff 30%, #7bc0ff 70%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -71,7 +101,7 @@ body {
     height: 3px;
     border-radius: 999px;
     background: linear-gradient(to right, var(--accent), transparent);
-    box-shadow: 0 0 10px var(--accent-glow);
+    box-shadow: 0 0 12px var(--accent-glow);
 }
 
 /* Buttons */
@@ -92,31 +122,51 @@ body {
     transition: background var(--transition-med), color var(--transition-med),
         border-color var(--transition-med), transform var(--transition-fast),
         box-shadow var(--transition-med);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Water sheen line on buttons */
+.primary-btn::after,
+.secondary-btn::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.25);
+    transform: rotate(25deg);
+    transition: left 0.6s ease;
+}
+
+.primary-btn:hover::after,
+.secondary-btn:hover::after {
+    left: 130%;
 }
 
 .primary-btn {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent) 0%, #1e83e6 100%);
     color: #020308;
-    box-shadow: 0 8px 20px rgba(58, 163, 255, 0.35);
+    box-shadow: 0 8px 22px rgba(58, 163, 255, 0.4);
 }
 
 .primary-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 28px rgba(58, 163, 255, 0.5);
-    background: #53adff;
+    box-shadow: 0 14px 28px rgba(58, 163, 255, 0.6);
 }
 
 .secondary-btn {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: var(--border-subtle);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
     color: var(--text-main);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
 }
 
 .secondary-btn:hover {
     border-color: var(--accent);
-    background: rgba(58, 163, 255, 0.1);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+    background: rgba(58, 163, 255, 0.12);
+    box-shadow: var(--shadow-water);
     transform: translateY(-2px);
 }
 
@@ -129,7 +179,7 @@ body {
 .ghost-btn:hover {
     border-color: var(--accent);
     background: rgba(58, 163, 255, 0.15);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     transform: translateY(-1px);
 }
 
@@ -147,31 +197,25 @@ body {
     pointer-events: none;
 }
 
-.curved-navbar::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-}
-
 .nav-inner {
     pointer-events: auto;
     width: min(1120px, 94%);
     padding: 12px 22px;
     border-radius: 999px;
-    background: rgba(2, 6, 16, 0.78);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    background: rgba(4, 12, 26, 0.65);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
     gap: 20px;
-    transition: border-color var(--transition-med);
+    transition: border-color var(--transition-med), box-shadow var(--transition-med);
 }
 
 .nav-inner:hover {
-    border-color: rgba(58, 163, 255, 0.3);
+    border-color: rgba(58, 163, 255, 0.4);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(58, 163, 255, 0.2);
 }
 
 /* Logo */
@@ -270,8 +314,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(20px);
-    background: rgba(1, 4, 12, 0.88);
+    backdrop-filter: blur(24px);
+    background: rgba(2, 8, 18, 0.92);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--transition-med);
@@ -302,7 +346,7 @@ body {
 }
 
 /* ===========================
-   HERO
+   HERO & WATER REFLECTION
    =========================== */
 
 .hero {
@@ -342,24 +386,52 @@ body {
     line-height: 1.6;
 }
 
+/* Profile Image with Water Reflection Below */
 .hero-image {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 .profile-ring {
     padding: 6px;
     border-radius: 50%;
-    background: radial-gradient(circle at top left, var(--accent), transparent 70%);
-    box-shadow: var(--shadow-glow);
+    background: radial-gradient(circle at top left, var(--accent), transparent 75%);
+    box-shadow: 0 0 30px var(--accent-glow);
+    animation: floatGently 4s ease-in-out infinite alternate;
 }
 
 .profile-pic {
-    width: 260px;
-    height: 260px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
+}
+
+/* Mirror Water Reflection effect below profile */
+.hero-image::after {
+    content: "";
+    width: 250px;
+    height: 80px;
+    margin-top: -10px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(58, 163, 255, 0.25) 0%, transparent 70%);
+    filter: blur(8px);
+    transform: scaleY(0.4);
+    opacity: 0.7;
+    animation: rippleGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatGently {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-8px); }
+}
+
+@keyframes rippleGlow {
+    0% { transform: scaleY(0.4) scaleX(0.9); opacity: 0.5; }
+    100% { transform: scaleY(0.5) scaleX(1.1); opacity: 0.8; }
 }
 
 /* ===========================
@@ -381,19 +453,21 @@ body {
 
 .about-image {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .about-ring {
     padding: 6px;
     border-radius: 50%;
-    background: radial-gradient(circle at bottom right, var(--accent), transparent 70%);
-    box-shadow: var(--shadow-glow);
+    background: radial-gradient(circle at bottom right, var(--accent), transparent 75%);
+    box-shadow: 0 0 30px var(--accent-glow);
+    animation: floatGently 4.5s ease-in-out infinite alternate-reverse;
 }
 
 .about-img {
-    width: 260px;
-    height: 260px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
@@ -406,7 +480,7 @@ body {
 }
 
 /* ===========================
-   PROJECTS
+   PROJECTS (WATER REFLECTION CARDS)
    =========================== */
 
 .projects {
@@ -432,15 +506,14 @@ body {
     color: var(--text-muted);
     cursor: pointer;
     backdrop-filter: blur(8px);
-    transition: background var(--transition-med), border-color var(--transition-med),
-        color var(--transition-med), transform var(--transition-fast), box-shadow var(--transition-med);
+    transition: all var(--transition-med);
 }
 
 .filter.active {
-    background: rgba(58, 163, 255, 0.18);
+    background: rgba(58, 163, 255, 0.2);
     border-color: var(--accent);
     color: var(--text-main);
-    box-shadow: 0 0 15px var(--accent-soft);
+    box-shadow: 0 0 20px var(--accent-soft);
 }
 
 .filter:hover {
@@ -456,26 +529,51 @@ body {
     gap: 20px;
 }
 
+/* Glass-liquid Cards */
 .project-card {
-    background: var(--bg-elevated-soft);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: linear-gradient(
+        165deg,
+        rgba(15, 28, 48, 0.65) 0%,
+        rgba(5, 12, 24, 0.75) 100%
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border-radius: var(--radius-large);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-soft);
-    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 180px;
+    position: relative;
+    overflow: hidden;
     transition: transform var(--transition-med), box-shadow var(--transition-med),
         border-color var(--transition-med);
 }
 
+/* Subtle fluid sheen reflection on card top */
+.project-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(58, 163, 255, 0.12) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-med);
+    pointer-events: none;
+}
+
+.project-card:hover::before {
+    opacity: 1;
+}
+
 .project-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
     border-color: var(--border-hover);
-    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.85), 0 0 20px var(--accent-soft);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85), 0 0 25px var(--accent-soft);
 }
 
 .project-body {
@@ -537,12 +635,12 @@ body {
 }
 
 .contact-form {
-    background: var(--bg-elevated-soft);
-    backdrop-filter: blur(12px);
+    background: linear-gradient(165deg, rgba(12, 22, 38, 0.7) 0%, rgba(4, 10, 20, 0.8) 100%);
+    backdrop-filter: blur(14px);
     border-radius: var(--radius-large);
     padding: 22px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -562,7 +660,7 @@ input,
 textarea {
     flex: 1;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(3, 8, 18, 0.8);
     color: var(--text-main);
     padding: 10px 12px;
@@ -585,7 +683,8 @@ textarea::placeholder {
 input:focus,
 textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 12px var(--accent-soft);
+    box-shadow: 0 0 15px var(--accent-soft);
+    background: rgba(5, 14, 28, 0.9);
 }
 
 .contact-side {
@@ -730,7 +829,7 @@ textarea:focus {
     max-width: 1400px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 360px 1fr 300px; /* Controls | Graph | Trend Panel */
+    grid-template-columns: 360px 1fr 300px;
     gap: 20px;
     align-items: start;
     background: var(--bg-elevated);
@@ -740,7 +839,6 @@ textarea:focus {
     box-shadow: var(--shadow-soft);
 }
 
-/* Side Trend Panel styling on the website */
 .plotter-trends-panel {
     background: var(--bg-elevated-soft);
     border: 1px solid var(--border-subtle);
@@ -765,7 +863,7 @@ textarea:focus {
 .trend-card {
     background: var(--bg-elevated);
     border: 1px solid var(--border-subtle);
-    border-left: 4px solid var(--accent); /* Dynamic series color indicator */
+    border-left: 4px solid var(--accent);
     border-radius: 8px;
     padding: 10px 12px;
 }
@@ -791,7 +889,6 @@ textarea:focus {
     color: var(--text-main);
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
     .plotter-container {
         grid-template-columns: 1fr;
@@ -835,7 +932,6 @@ textarea:focus {
     color: var(--text-muted);
 }
 
-/* Custom Toggle Switch for Color Mode & Labels */
 .toggle-switch {
     display: flex;
     align-items: center;
