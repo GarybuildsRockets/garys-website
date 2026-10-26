@@ -1,25 +1,33 @@
 /* ===========================
-   BASE & THEME (WATER REFLECTION EDITION)
+   BASE & THEME (ANODIZED METAL EDITION)
    =========================== */
 
 :root {
-    --bg-main: #020710;
-    --bg-elevated: #060d1a;
-    --bg-elevated-soft: rgba(10, 22, 40, 0.65);
-    --accent: #3aa3ff;
-    --accent-glow: rgba(58, 163, 255, 0.45);
-    --accent-soft: rgba(58, 163, 255, 0.18);
-    --water-shimmer: rgba(82, 196, 255, 0.12);
+    --bg-main: #05080e;
+    --bg-elevated: #0a0f18;
+    --bg-elevated-soft: rgba(14, 20, 30, 0.75);
+    
+    /* Anodized Accent Colors */
+    --accent: #2e9bf5;                  /* Electric Anodized Blue */
+    --accent-secondary: #00d2ff;        /* Bright Cyan Sheen */
+    --accent-glow: rgba(46, 155, 245, 0.35);
+    --accent-soft: rgba(46, 155, 245, 0.15);
+    
+    /* Metal Highlight & Border Gradients */
     --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(58, 163, 255, 0.55);
-    --text-main: #f5f7fb;
-    --text-muted: #a4afc3;
+    --border-metal: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(46, 155, 245, 0.3) 100%);
+    --border-hover: rgba(46, 155, 245, 0.55);
+    
+    --text-main: #f0f4f8;
+    --text-muted: #919eab;
     --danger: #ff4d5a;
-    --radius-large: 20px;
-    --radius-medium: 14px;
+    
+    --radius-large: 18px;
+    --radius-medium: 12px;
     --radius-round: 999px;
-    --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.75);
-    --shadow-water: 0 12px 30px rgba(0, 100, 200, 0.25);
+    --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.85);
+    --shadow-metal: 0 12px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(46, 155, 245, 0.15);
+    
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-med: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     --max-width: 1120px;
@@ -34,14 +42,14 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-main);
-    /* Dynamic Water Caustics / Ripple Gradient Background */
+    
+    /* Anodized Brushed Metal Background with Linear Reflection Angles */
     background-image: 
-        radial-gradient(ellipse at 50% -20%, rgba(58, 163, 255, 0.25) 0%, transparent 60%),
-        radial-gradient(circle at 100% 80%, rgba(10, 60, 110, 0.5) 0%, transparent 50%),
-        radial-gradient(circle at 0% 100%, rgba(5, 25, 55, 0.8) 0%, transparent 60%),
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        linear-gradient(115deg, rgba(255, 255, 255, 0.02) 0%, transparent 40%, rgba(46, 155, 245, 0.05) 70%, transparent 100%),
+        radial-gradient(ellipse at 50% 0%, rgba(18, 32, 54, 0.7) 0%, transparent 75%),
+        linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
     background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
@@ -49,27 +57,20 @@ body {
     position: relative;
 }
 
-/* Subtle Shimmer Overlay on Body */
+/* Metallic Sheen Reflection Layer */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     background: linear-gradient(
-        120deg,
+        135deg,
         transparent 0%,
-        var(--water-shimmer) 30%,
+        rgba(255, 255, 255, 0.02) 20%,
+        rgba(46, 155, 245, 0.04) 40%,
         transparent 60%
     );
-    background-size: 200% 200%;
-    animation: waterRipple 12s ease-in-out infinite alternate;
     pointer-events: none;
     z-index: 1;
-}
-
-@keyframes waterRipple {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
 }
 
 /* Utility */
@@ -91,7 +92,7 @@ body::before {
     text-transform: uppercase;
     font-weight: 700;
     margin: 0 0 10px;
-    background: linear-gradient(135deg, #ffffff 30%, #7bc0ff 70%, var(--accent) 100%);
+    background: linear-gradient(135deg, #ffffff 20%, #b8c4d4 60%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -100,11 +101,11 @@ body::before {
     width: 64px;
     height: 3px;
     border-radius: 999px;
-    background: linear-gradient(to right, var(--accent), transparent);
+    background: linear-gradient(to right, var(--accent), var(--accent-secondary), transparent);
     box-shadow: 0 0 12px var(--accent-glow);
 }
 
-/* Buttons */
+/* Buttons - Anodized Metallic Finish */
 
 .primary-btn,
 .secondary-btn,
@@ -126,65 +127,72 @@ body::before {
     overflow: hidden;
 }
 
-/* Water sheen line on buttons */
+/* Anodized Specular Highlight Swipe */
 .primary-btn::after,
 .secondary-btn::after {
     content: "";
     position: absolute;
     top: -50%;
-    left: -60%;
-    width: 40%;
+    left: -75%;
+    width: 50%;
     height: 200%;
-    background: rgba(255, 255, 255, 0.25);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.35),
+        transparent
+    );
     transform: rotate(25deg);
-    transition: left 0.6s ease;
+    transition: left 0.5s ease;
 }
 
 .primary-btn:hover::after,
 .secondary-btn:hover::after {
-    left: 130%;
+    left: 125%;
 }
 
 .primary-btn {
-    background: linear-gradient(135deg, var(--accent) 0%, #1e83e6 100%);
-    color: #020308;
-    box-shadow: 0 8px 22px rgba(58, 163, 255, 0.4);
+    background: linear-gradient(135deg, #1c7ed6 0%, var(--accent) 50%, #0c5699 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .primary-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 28px rgba(58, 163, 255, 0.6);
+    box-shadow: 0 10px 25px rgba(46, 155, 245, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .secondary-btn {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     color: var(--text-main);
     backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .secondary-btn:hover {
     border-color: var(--accent);
-    background: rgba(58, 163, 255, 0.12);
-    box-shadow: var(--shadow-water);
+    background: rgba(46, 155, 245, 0.12);
+    box-shadow: var(--shadow-metal);
     transform: translateY(-2px);
 }
 
 .ghost-btn {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
     border-color: var(--border-subtle);
     color: var(--text-main);
 }
 
 .ghost-btn:hover {
     border-color: var(--accent);
-    background: rgba(58, 163, 255, 0.15);
+    background: rgba(46, 155, 245, 0.15);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     transform: translateY(-1px);
 }
 
 /* ===========================
-   NAVBAR
+   NAVBAR (ANODIZED BEZEL)
    =========================== */
 
 .curved-navbar {
@@ -202,11 +210,15 @@ body::before {
     width: min(1120px, 94%);
     padding: 12px 22px;
     border-radius: 999px;
-    background: rgba(4, 12, 26, 0.65);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    background: linear-gradient(
+        135deg,
+        rgba(15, 22, 34, 0.85) 0%,
+        rgba(8, 12, 20, 0.9) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     gap: 20px;
@@ -214,8 +226,8 @@ body::before {
 }
 
 .nav-inner:hover {
-    border-color: rgba(58, 163, 255, 0.4);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(58, 163, 255, 0.2);
+    border-color: rgba(46, 155, 245, 0.45);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(46, 155, 245, 0.2);
 }
 
 /* Logo */
@@ -263,8 +275,8 @@ body::before {
 
 .desktop-nav a:hover,
 .desktop-nav a.active {
-    background: rgba(58, 163, 255, 0.15);
-    color: var(--accent);
+    background: rgba(46, 155, 245, 0.15);
+    color: var(--accent-secondary);
 }
 
 /* Hamburger (mobile) */
@@ -315,7 +327,7 @@ body::before {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(24px);
-    background: rgba(2, 8, 18, 0.92);
+    background: rgba(5, 8, 14, 0.94);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--transition-med);
@@ -346,7 +358,7 @@ body::before {
 }
 
 /* ===========================
-   HERO & WATER REFLECTION
+   HERO & ANODIZED REFLECTION
    =========================== */
 
 .hero {
@@ -386,7 +398,7 @@ body::before {
     line-height: 1.6;
 }
 
-/* Profile Image with Water Reflection Below */
+/* Metallic Rim Profile Frame */
 .hero-image {
     display: flex;
     flex-direction: column;
@@ -397,9 +409,9 @@ body::before {
 .profile-ring {
     padding: 6px;
     border-radius: 50%;
-    background: radial-gradient(circle at top left, var(--accent), transparent 75%);
-    box-shadow: 0 0 30px var(--accent-glow);
-    animation: floatGently 4s ease-in-out infinite alternate;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, var(--accent) 50%, rgba(0, 0, 0, 0.8) 100%);
+    box-shadow: 0 0 25px var(--accent-glow);
+    position: relative;
 }
 
 .profile-pic {
@@ -410,28 +422,24 @@ body::before {
     display: block;
 }
 
-/* Mirror Water Reflection effect below profile */
+/* Anodized Specular Ground Reflection Effect */
 .hero-image::after {
     content: "";
-    width: 250px;
-    height: 80px;
-    margin-top: -10px;
+    width: 220px;
+    height: 40px;
+    margin-top: 12px;
     border-radius: 50%;
-    background: radial-gradient(ellipse at center, rgba(58, 163, 255, 0.25) 0%, transparent 70%);
-    filter: blur(8px);
-    transform: scaleY(0.4);
-    opacity: 0.7;
-    animation: rippleGlow 4s ease-in-out infinite alternate;
-}
-
-@keyframes floatGently {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-8px); }
-}
-
-@keyframes rippleGlow {
-    0% { transform: scaleY(0.4) scaleX(0.9); opacity: 0.5; }
-    100% { transform: scaleY(0.5) scaleX(1.1); opacity: 0.8; }
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(46, 155, 245, 0.25) 30%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(46, 155, 245, 0.25) 70%,
+        transparent 100%
+    );
+    filter: blur(6px);
+    transform: scaleY(0.3);
+    opacity: 0.6;
 }
 
 /* ===========================
@@ -460,9 +468,8 @@ body::before {
 .about-ring {
     padding: 6px;
     border-radius: 50%;
-    background: radial-gradient(circle at bottom right, var(--accent), transparent 75%);
-    box-shadow: 0 0 30px var(--accent-glow);
-    animation: floatGently 4.5s ease-in-out infinite alternate-reverse;
+    background: linear-gradient(135deg, var(--accent) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(0, 0, 0, 0.8) 100%);
+    box-shadow: 0 0 25px var(--accent-glow);
 }
 
 .about-img {
@@ -480,7 +487,7 @@ body::before {
 }
 
 /* ===========================
-   PROJECTS (WATER REFLECTION CARDS)
+   PROJECTS (ANODIZED METAL CARDS)
    =========================== */
 
 .projects {
@@ -496,7 +503,7 @@ body::before {
 }
 
 .filter {
-    background: rgba(255, 255, 255, 0.03);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
     border-radius: 999px;
     border: 1px solid var(--border-subtle);
     padding: 6px 16px;
@@ -510,10 +517,10 @@ body::before {
 }
 
 .filter.active {
-    background: rgba(58, 163, 255, 0.2);
+    background: linear-gradient(135deg, rgba(46, 155, 245, 0.25) 0%, rgba(46, 155, 245, 0.08) 100%);
     border-color: var(--accent);
     color: var(--text-main);
-    box-shadow: 0 0 20px var(--accent-soft);
+    box-shadow: 0 0 15px var(--accent-soft);
 }
 
 .filter:hover {
@@ -529,18 +536,18 @@ body::before {
     gap: 20px;
 }
 
-/* Glass-liquid Cards */
+/* Chamfered Anodized Cards */
 .project-card {
     background: linear-gradient(
-        165deg,
-        rgba(15, 28, 48, 0.65) 0%,
-        rgba(5, 12, 24, 0.75) 100%
+        145deg,
+        rgba(20, 28, 42, 0.75) 0%,
+        rgba(8, 12, 18, 0.85) 100%
     );
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border-radius: var(--radius-large);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.18);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -552,28 +559,33 @@ body::before {
         border-color var(--transition-med);
 }
 
-/* Subtle fluid sheen reflection on card top */
+/* Specular Light Reflection Sweep across Cards */
 .project-card::before {
     content: "";
     position: absolute;
     top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 100%;
-    background: radial-gradient(ellipse at center, rgba(58, 163, 255, 0.12) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity var(--transition-med);
+    left: -100%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        transparent
+    );
+    transform: rotate(30deg);
+    transition: left 0.7s ease;
     pointer-events: none;
 }
 
 .project-card:hover::before {
-    opacity: 1;
+    left: 140%;
 }
 
 .project-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
     border-color: var(--border-hover);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85), 0 0 25px var(--accent-soft);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9), 0 0 22px rgba(46, 155, 245, 0.25);
 }
 
 .project-body {
@@ -635,12 +647,12 @@ body::before {
 }
 
 .contact-form {
-    background: linear-gradient(165deg, rgba(12, 22, 38, 0.7) 0%, rgba(4, 10, 20, 0.8) 100%);
+    background: linear-gradient(145deg, rgba(16, 24, 36, 0.8) 0%, rgba(6, 10, 16, 0.9) 100%);
     backdrop-filter: blur(14px);
     border-radius: var(--radius-large);
     padding: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -661,7 +673,7 @@ textarea {
     flex: 1;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(3, 8, 18, 0.8);
+    background: rgba(4, 8, 14, 0.85);
     color: var(--text-main);
     padding: 10px 12px;
     font-size: 14px;
@@ -677,25 +689,24 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-    color: rgba(164, 175, 195, 0.8);
+    color: rgba(145, 158, 171, 0.8);
 }
 
 input:focus,
 textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 15px var(--accent-soft);
-    background: rgba(5, 14, 28, 0.9);
+    box-shadow: 0 0 12px var(--accent-soft);
+    background: rgba(6, 12, 22, 0.95);
 }
 
 .contact-side {
     padding: 22px;
     border-radius: var(--radius-large);
     background: radial-gradient(circle at top left, var(--accent-soft), transparent 65%),
-        radial-gradient(circle at bottom right, rgba(58, 163, 255, 0.14), transparent 60%),
-        var(--bg-elevated-soft);
+        linear-gradient(145deg, rgba(16, 24, 36, 0.8) 0%, rgba(6, 10, 16, 0.9) 100%);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -797,7 +808,7 @@ textarea:focus {
 }
 
 .why-btn:hover {
-    background: rgba(58,163,255,0.15);
+    background: rgba(46,155,245,0.15);
     border-color: var(--accent);
     color: var(--text-main);
 }
@@ -1067,7 +1078,7 @@ textarea:focus {
 }
 
 .uniform-btn:hover {
-    background: rgba(58, 163, 255, 0.12);
+    background: rgba(46, 155, 245, 0.12);
     border-color: var(--accent);
     transform: translateY(-1px);
 }
@@ -1221,7 +1232,7 @@ textarea:focus {
     font-family: monospace;
     font-size: 28px;
     color: var(--accent);
-    background: rgba(58, 163, 255, 0.1);
+    background: rgba(46, 155, 245, 0.1);
     padding: 6px 16px;
     border-radius: 8px;
 }
